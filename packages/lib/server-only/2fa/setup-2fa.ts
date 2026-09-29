@@ -1,8 +1,8 @@
+import crypto from 'node:crypto';
+import { createTOTPKeyURI } from '@documenso/lib/server-only/2fa/otp';
 import { prisma } from '@documenso/prisma';
 import type { User } from '@prisma/client';
 import { base32 } from '@scure/base';
-import crypto from 'crypto';
-import { createTOTPKeyURI } from 'oslo/otp';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../constants/crypto';
 import { symmetricEncrypt } from '../../universal/crypto';

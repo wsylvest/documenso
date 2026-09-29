@@ -1,4 +1,4 @@
-import { generateHOTP } from 'oslo/otp';
+import { generateHOTP } from '@documenso/lib/server-only/2fa/otp';
 
 import { generateTwoFactorCredentialsFromEmail } from './generate-2fa-credentials-from-email';
 

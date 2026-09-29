@@ -1,6 +1,6 @@
+import { generateHOTP } from '@documenso/lib/server-only/2fa/otp';
 import type { User } from '@prisma/client';
 import { base32 } from '@scure/base';
-import { generateHOTP } from 'oslo/otp';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../constants/crypto';
 import { symmetricDecrypt } from '../../universal/crypto';

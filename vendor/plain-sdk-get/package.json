@@ -1,0 +1,9 @@
+{
+  "name": "@documenso/plain-sdk-get",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.cjs",
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}
