@@ -141,6 +141,11 @@ export default function AdminEmailDomainsPage() {
         <Trans>Email Domains</Trans>
       </h2>
 
+      <Button asChild className="mt-4">
+        <Link to="/admin/email-domains/new">
+          <Trans>Create / import domain</Trans>
+        </Link>
+      </Button>
       <div className="mt-8">
         <div className="flex flex-col gap-4 sm:flex-row">
           <Input

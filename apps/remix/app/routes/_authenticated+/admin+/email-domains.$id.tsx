@@ -1,4 +1,4 @@
-import { generateEmailDomainRecords } from '@documenso/lib/utils/email-domains';
+import { getEmailDomainRecords } from '@documenso/lib/utils/email-domains';
 import { trpc } from '@documenso/trpc/react';
 import {
   AlertDialog,
@@ -49,21 +49,29 @@ export default function AdminEmailDomainDetailPage({ loaderData }: Route.Compone
   const { mutate: reregisterDomain, isPending: isReregistering } = trpc.admin.emailDomain.reregister.useMutation({
     onSuccess: () => {
       toast({
-        title: _(msg`Domain re-registered`),
-        description: _(
-          msg`The SES identity has been deleted and recreated with the same keys. DNS records remain unchanged.`,
-        ),
+        title: emailDomain?.resendId ? _(msg`Verification requested`) : _(msg`Domain re-registered`),
+        description: emailDomain?.resendId
+          ? _(msg`Resend is checking the DNS records. Sync status again after DNS propagation.`)
+          : _(msg`The SES identity has been deleted and recreated with the same keys. DNS records remain unchanged.`),
       });
 
       void refetch();
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: _(msg`Error`),
-        description: _(msg`Failed to re-register email domain`),
+        description: error.message,
         variant: 'destructive',
       });
     },
+  });
+
+  const { mutate: syncDomain, isPending: isSyncing } = trpc.admin.emailDomain.sync.useMutation({
+    onSuccess: () => {
+      void refetch();
+      toast({ title: _(msg`Domain status updated`) });
+    },
+    onError: (error) => toast({ title: _(msg`Error`), description: error.message, variant: 'destructive' }),
   });
 
   const dnsRecords = useMemo(() => {
@@ -71,7 +79,7 @@ export default function AdminEmailDomainDetailPage({ loaderData }: Route.Compone
       return [];
     }
 
-    return generateEmailDomainRecords(emailDomain.selector, emailDomain.publicKey);
+    return getEmailDomainRecords(emailDomain);
   }, [emailDomain]);
 
   const emailColumns = useMemo(() => {
@@ -152,7 +160,7 @@ export default function AdminEmailDomainDetailPage({ loaderData }: Route.Compone
           </Link>
         </div>
         <div>
-          <Trans>Selector</Trans>: {emailDomain.selector}
+          <Trans>Provider</Trans>: {emailDomain.resendId ? 'Resend' : 'AWS SES'}
         </div>
         <div>
           <Trans>Created</Trans>: {i18n.date(emailDomain.createdAt, DateTime.DATETIME_MED)}
@@ -175,40 +183,49 @@ export default function AdminEmailDomainDetailPage({ loaderData }: Route.Compone
       </h3>
 
       <div className="mt-2 flex gap-x-4">
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="outline" loading={isReregistering}>
-              <RotateCcwIcon className="mr-2 h-4 w-4" />
-              <Trans>Re-register</Trans>
-            </Button>
-          </AlertDialogTrigger>
-
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                <Trans>Re-register Email Domain</Trans>
-              </AlertDialogTitle>
-
-              <AlertDialogDescription>
-                <Trans>
-                  This will delete the existing SES identity for <strong>{emailDomain.domain}</strong> and recreate it
-                  using the same DKIM keys. The user will not need to update their DNS records. The domain status will
-                  be reset to Pending.
-                </Trans>
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                <Trans>Cancel</Trans>
-              </AlertDialogCancel>
-
-              <AlertDialogAction onClick={() => reregisterDomain({ emailDomainId: emailDomain.id })}>
+        <Button variant="outline" loading={isSyncing} onClick={() => syncDomain({ emailDomainId })}>
+          <Trans>Sync status</Trans>
+        </Button>
+        {emailDomain.resendId ? (
+          <Button loading={isReregistering} onClick={() => reregisterDomain({ emailDomainId })}>
+            <Trans>Verify DNS</Trans>
+          </Button>
+        ) : (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" loading={isReregistering}>
+                <RotateCcwIcon className="mr-2 h-4 w-4" />
                 <Trans>Re-register</Trans>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  <Trans>Re-register Email Domain</Trans>
+                </AlertDialogTitle>
+
+                <AlertDialogDescription>
+                  <Trans>
+                    This will delete the existing SES identity for <strong>{emailDomain.domain}</strong> and recreate it
+                    using the same DKIM keys. The user will not need to update their DNS records. The domain status will
+                    be reset to Pending.
+                  </Trans>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>
+                  <Trans>Cancel</Trans>
+                </AlertDialogCancel>
+
+                <AlertDialogAction onClick={() => reregisterDomain({ emailDomainId: emailDomain.id })}>
+                  <Trans>Re-register</Trans>
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
 
       <hr className="my-4" />
@@ -232,6 +249,17 @@ export default function AdminEmailDomainDetailPage({ loaderData }: Route.Compone
             </div>
 
             <div className="mt-2 space-y-1 text-sm">
+              {record.priority !== undefined && (
+                <div>
+                  <Trans>Priority</Trans>: {record.priority}
+                </div>
+              )}
+              {record.ttl && <div>TTL: {record.ttl}</div>}
+              {record.status && (
+                <div>
+                  <Trans>Status</Trans>: {record.status}
+                </div>
+              )}
               <div>
                 <span className="text-muted-foreground">
                   <Trans>Name</Trans>:{' '}

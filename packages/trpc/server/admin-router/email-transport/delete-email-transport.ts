@@ -1,3 +1,4 @@
+import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { prisma } from '@documenso/prisma';
 
 import { adminProcedure } from '../../trpc';
@@ -15,6 +16,12 @@ export const deleteEmailTransportRoute = adminProcedure
         id: input.id,
       },
     });
+
+    if (await prisma.emailDomain.count({ where: { emailTransportId: input.id } })) {
+      throw new AppError(AppErrorCode.INVALID_REQUEST, {
+        message: 'Remove the linked email domains before deleting this transport.',
+      });
+    }
 
     await prisma.emailTransport.delete({
       where: {

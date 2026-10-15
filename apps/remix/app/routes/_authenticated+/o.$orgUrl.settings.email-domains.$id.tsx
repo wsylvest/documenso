@@ -1,6 +1,7 @@
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
-import { IS_BILLING_ENABLED, IS_DOCUMENSO_CLOUD } from '@documenso/lib/constants/app';
-import { generateEmailDomainRecords } from '@documenso/lib/utils/email-domains';
+import { IS_DOCUMENSO_CLOUD } from '@documenso/lib/constants/app';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
+import { getEmailDomainRecords } from '@documenso/lib/utils/email-domains';
 import { trpc } from '@documenso/trpc/react';
 import type { TGetOrganisationEmailDomainResponse } from '@documenso/trpc/server/enterprise-router/get-organisation-email-domain.types';
 import { Alert, AlertDescription, AlertTitle } from '@documenso/ui/primitives/alert';
@@ -100,11 +101,7 @@ export default function OrganisationEmailDomainSettingsPage({ params }: Route.Co
   const pageHeader = t`Email Domain Settings`;
   const pageSubtitle = t`Manage your email domain settings.`;
 
-  if (!IS_BILLING_ENABLED()) {
-    return null;
-  }
-
-  if (!organisation.organisationClaim.flags.emailDomains && IS_DOCUMENSO_CLOUD()) {
+  if (!isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && IS_DOCUMENSO_CLOUD()) {
     return (
       <div>
         <SettingsHeader hideDivider title={pageHeader} subtitle={pageSubtitle} />
@@ -142,7 +139,7 @@ export default function OrganisationEmailDomainSettingsPage({ params }: Route.Co
     );
   }
 
-  const records = generateEmailDomainRecords(emailDomain.selector, emailDomain.publicKey);
+  const records = getEmailDomainRecords(emailDomain);
 
   return (
     <div>

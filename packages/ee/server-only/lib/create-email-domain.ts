@@ -9,6 +9,7 @@ import { prisma } from '@documenso/prisma';
 import { EmailDomainStatus } from '@prisma/client';
 import { generateKeyPair } from 'crypto';
 import { promisify } from 'util';
+import { saveResendEmailDomain } from './save-resend-email-domain';
 
 export const getSesClient = () => {
   const accessKeyId = env('NEXT_PRIVATE_SES_ACCESS_KEY_ID');
@@ -50,6 +51,7 @@ export async function verifyDomainWithDKIM(domain: string, selector: string, pri
 }
 
 type CreateEmailDomainOptions = {
+  emailTransportId?: string | null;
   domain: string;
   organisationId: string;
 };
@@ -60,7 +62,15 @@ type DomainRecord = {
   type: string;
 };
 
-export const createEmailDomain = async ({ domain, organisationId }: CreateEmailDomainOptions) => {
+export const createEmailDomain = async ({ domain, organisationId, emailTransportId }: CreateEmailDomainOptions) => {
+  // Organisation requests use their assigned transport; only admin callers can override it.
+  const claim = await prisma.organisationClaim.findFirstOrThrow({ where: { organisation: { id: organisationId } } });
+  const transportId = emailTransportId === undefined ? claim.emailTransportId : emailTransportId;
+  const transport = transportId ? await prisma.emailTransport.findUniqueOrThrow({ where: { id: transportId } }) : null;
+  if (transport?.type === 'RESEND' || (!transport && env('NEXT_PRIVATE_SMTP_TRANSPORT') === 'resend')) {
+    return saveResendEmailDomain({ domain, organisationId, emailTransportId: transportId });
+  }
+
   const encryptionKey = DOCUMENSO_ENCRYPTION_KEY;
 
   if (!encryptionKey) {
@@ -137,6 +147,9 @@ export const createEmailDomain = async ({ domain, organisationId }: CreateEmailD
       status: true,
       organisationId: true,
       domain: true,
+      resendId: true,
+      dnsRecords: true,
+      emailTransportId: true,
       selector: true,
       publicKey: true,
       createdAt: true,

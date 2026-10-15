@@ -1,5 +1,7 @@
 import { mailer } from '@documenso/email/mailer';
 import type { BrandingSettings } from '@documenso/email/providers/branding';
+import { buildTransport } from '@documenso/email/transports/build-transport';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { prisma } from '@documenso/prisma';
 import type {
   DocumentMeta,
@@ -11,8 +13,6 @@ import type {
 import { EmailDomainStatus, type OrganisationClaim, type OrganisationGlobalSettings } from '@documenso/prisma/client';
 import type { Transporter } from 'nodemailer';
 import { match, P } from 'ts-pattern';
-
-import { IS_BILLING_ENABLED } from '../../constants/app';
 import { DOCUMENSO_INTERNAL_EMAIL } from '../../constants/email';
 import { AppError, AppErrorCode } from '../../errors/app-error';
 import { logger } from '../../utils/logger';
@@ -21,6 +21,7 @@ import {
   teamGlobalSettingsToBranding,
 } from '../../utils/team-global-settings-to-branding';
 import { extractDerivedTeamSettings } from '../../utils/teams';
+import { getResendApiKey } from './resend-domains';
 import { resolveEmailTransport } from './resolve-email-transport';
 
 type EmailMetaOption = Partial<Pick<DocumentMeta, 'emailId' | 'emailReplyTo' | 'language'>>;
@@ -157,12 +158,15 @@ export const getEmailContext = async (options: GetEmailContextOptions): Promise<
     emailContext.settings.emailId = null;
   }
 
-  // Custom-domain sender (emailDomains): always use the env mailer (SES) and the
-  // custom sender; the per-plan transport is ignored entirely here.
+  // Custom-domain senders use the provider account which verified that domain.
   if (foundSenderEmail) {
+    const domain = await prisma.emailDomain.findUniqueOrThrow({ where: { id: foundSenderEmail.emailDomainId } });
+    const domainTransport = domain.resendId
+      ? buildTransport({ type: 'RESEND', apiKey: await getResendApiKey(domain.emailTransportId) })
+      : mailer;
     return {
       ...emailContext,
-      emailTransport: mailer,
+      emailTransport: domainTransport,
       senderEmail: {
         name: foundSenderEmail.emailName,
         address: foundSenderEmail.email,
@@ -220,10 +224,10 @@ const handleOrganisationEmailContext = async (organisationId: string) => {
   const branding = organisationGlobalSettingsToBranding(
     organisation.organisationGlobalSettings,
     organisation.id,
-    claims.flags.hidePoweredBy ?? false,
+    isClaimFlagEnabled(claims.flags, 'hidePoweredBy'),
   );
 
-  const allowBrandedEmailColors = !IS_BILLING_ENABLED() || claims.flags.embedSigningWhiteLabel === true;
+  const allowBrandedEmailColors = isClaimFlagEnabled(claims.flags, 'embedSigningWhiteLabel');
 
   if (!allowBrandedEmailColors) {
     branding.brandingColors = undefined;
@@ -281,9 +285,13 @@ const handleTeamEmailContext = async (teamId: number) => {
 
   const teamSettings = extractDerivedTeamSettings(organisation.organisationGlobalSettings, team.teamGlobalSettings);
 
-  const branding = teamGlobalSettingsToBranding(teamSettings, teamId, claims.flags.hidePoweredBy ?? false);
+  const branding = teamGlobalSettingsToBranding(
+    teamSettings,
+    teamId,
+    isClaimFlagEnabled(claims.flags, 'hidePoweredBy'),
+  );
 
-  const allowBrandedEmailColors = !IS_BILLING_ENABLED() || claims.flags.embedSigningWhiteLabel === true;
+  const allowBrandedEmailColors = isClaimFlagEnabled(claims.flags, 'embedSigningWhiteLabel');
 
   if (!allowBrandedEmailColors) {
     branding.brandingColors = undefined;
@@ -306,7 +314,7 @@ const getAllowedEmails = (
     organisationClaim: OrganisationClaim;
   },
 ) => {
-  if (!organisation.organisationClaim.flags.emailDomains) {
+  if (!isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains')) {
     return [];
   }
 

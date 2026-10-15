@@ -27,6 +27,12 @@ export const updateEmailTransportRoute = adminProcedure
       throw new AppError(AppErrorCode.NOT_FOUND, { message: 'Email transport not found' });
     }
 
+    if (data.config.type !== 'RESEND' && (await prisma.emailDomain.count({ where: { emailTransportId: id } }))) {
+      throw new AppError(AppErrorCode.INVALID_REQUEST, {
+        message: 'This transport has linked Resend domains and must remain a Resend transport.',
+      });
+    }
+
     const existingConfig = decryptEmailTransportConfig(existing.config);
 
     // Start from the incoming config; backfill empty secret fields from the existing

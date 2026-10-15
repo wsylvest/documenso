@@ -4,8 +4,8 @@ import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { symmetricDecrypt } from '@documenso/lib/universal/crypto';
 import { prisma } from '@documenso/prisma';
 import { EmailDomainStatus } from '@prisma/client';
-
 import { getSesClient, verifyDomainWithDKIM } from './create-email-domain';
+import { verifyEmailDomain } from './verify-email-domain';
 
 type ReregisterEmailDomainOptions = {
   emailDomainId: string;
@@ -20,12 +20,6 @@ type ReregisterEmailDomainOptions = {
  * Permission is assumed to be checked in the caller.
  */
 export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDomainOptions) => {
-  const encryptionKey = DOCUMENSO_ENCRYPTION_KEY;
-
-  if (!encryptionKey) {
-    throw new Error('Missing DOCUMENSO_ENCRYPTION_KEY');
-  }
-
   const emailDomain = await prisma.emailDomain.findUnique({
     where: {
       id: emailDomainId,
@@ -36,6 +30,19 @@ export const reregisterEmailDomain = async ({ emailDomainId }: ReregisterEmailDo
     throw new AppError(AppErrorCode.NOT_FOUND, {
       message: 'Email domain not found',
     });
+  }
+
+  if (emailDomain.resendId) {
+    return (await verifyEmailDomain(emailDomain.id, true)).emailDomain;
+  }
+  if (!emailDomain.privateKey || !emailDomain.selector) {
+    throw new AppError(AppErrorCode.NOT_SETUP, { message: 'SES domain keys are missing.' });
+  }
+
+  const encryptionKey = DOCUMENSO_ENCRYPTION_KEY;
+
+  if (!encryptionKey) {
+    throw new Error('Missing DOCUMENSO_ENCRYPTION_KEY');
   }
 
   const sesClient = getSesClient();

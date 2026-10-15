@@ -1185,14 +1185,21 @@ model EmailDomain {
 
   status EmailDomainStatus @default(PENDING)
 
-  selector       String    @unique
+  selector       String?   @unique
   domain         String    @unique
-  publicKey      String
-  privateKey     String
+  publicKey      String?
+  privateKey     String?
   lastVerifiedAt DateTime?
 
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  // Null resendId identifies existing AWS SES domains.
+  resendId String? @unique
+  /// [EmailDomainDnsRecords]
+  dnsRecords Json @default("[]")
+  emailTransportId String?
+  emailTransport EmailTransport? @relation(fields: [emailTransportId], references: [id], onDelete: Restrict)
 
   emails OrganisationEmail[]
 }
@@ -1240,6 +1247,7 @@ model EmailTransport {
 
   subscriptionClaims SubscriptionClaim[]
   organisationClaims OrganisationClaim[]
+  emailDomains EmailDomain[]
 }
 
 model OrganisationAuthenticationPortal {

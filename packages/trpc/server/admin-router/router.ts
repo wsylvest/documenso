@@ -38,6 +38,7 @@ import { resetOrganisationMonthlyStatRoute } from './reset-organisation-monthly-
 import { resetTwoFactorRoute } from './reset-two-factor-authentication';
 import { resyncLicenseRoute } from './resync-license';
 import { swapOrganisationSubscriptionRoute } from './swap-organisation-subscription';
+import { syncEmailDomainRoute } from './sync-email-domain';
 import { syncOrganisationSubscriptionRoute } from './sync-organisation-subscription';
 import { updateAdminOrganisationRoute } from './update-admin-organisation';
 import { updateOrganisationMemberRoleRoute } from './update-organisation-member-role';
@@ -105,6 +106,7 @@ export const adminRouter = router({
     find: findEmailDomainsRoute,
     get: getEmailDomainRoute,
     reregister: reregisterEmailDomainRoute,
+    sync: syncEmailDomainRoute,
   },
   emailTransport: {
     find: findEmailTransportsRoute,

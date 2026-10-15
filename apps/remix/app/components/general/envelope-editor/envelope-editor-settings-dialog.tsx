@@ -15,6 +15,7 @@ import {
   ZDocumentMetaDateFormatSchema,
   ZDocumentMetaTimezoneSchema,
 } from '@documenso/lib/types/document-meta';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { isHttpUrl } from '@documenso/lib/utils/is-http-url';
 import { canAccessTeamDocument, DocumentSignatureType, extractTeamSignatureSettings } from '@documenso/lib/utils/teams';
@@ -747,44 +748,45 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
                   ))
                   .with({ activeTab: 'notifications', settings: { allowConfigureDistribution: true } }, () => (
                     <>
-                      {settings.allowConfigureEmailSender && organisation.organisationClaim.flags.emailDomains && (
-                        <FormField
-                          control={form.control}
-                          name="meta.emailId"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>
-                                <Trans>Email Sender</Trans>
-                              </FormLabel>
+                      {settings.allowConfigureEmailSender &&
+                        isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && (
+                          <FormField
+                            control={form.control}
+                            name="meta.emailId"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>
+                                  <Trans>Email Sender</Trans>
+                                </FormLabel>
 
-                              <FormControl>
-                                <Select
-                                  {...field}
-                                  value={field.value === null ? '-1' : field.value}
-                                  onValueChange={(value) => field.onChange(value === '-1' ? null : value)}
-                                  disabled={!isEmailDistribution}
-                                >
-                                  <SelectTrigger loading={isLoadingEmails} className="bg-background">
-                                    <SelectValue />
-                                  </SelectTrigger>
+                                <FormControl>
+                                  <Select
+                                    {...field}
+                                    value={field.value === null ? '-1' : field.value}
+                                    onValueChange={(value) => field.onChange(value === '-1' ? null : value)}
+                                    disabled={!isEmailDistribution}
+                                  >
+                                    <SelectTrigger loading={isLoadingEmails} className="bg-background">
+                                      <SelectValue />
+                                    </SelectTrigger>
 
-                                  <SelectContent>
-                                    {emails.map((email) => (
-                                      <SelectItem key={email.id} value={email.id}>
-                                        {email.email}
-                                      </SelectItem>
-                                    ))}
+                                    <SelectContent>
+                                      {emails.map((email) => (
+                                        <SelectItem key={email.id} value={email.id}>
+                                          {email.email}
+                                        </SelectItem>
+                                      ))}
 
-                                    <SelectItem value={'-1'}>Documenso</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </FormControl>
+                                      <SelectItem value={'-1'}>Documenso</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </FormControl>
 
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        )}
 
                       {settings.allowConfigureEmailReplyTo && (
                         <FormField
@@ -880,7 +882,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
                   ))
                   .with({ activeTab: 'security' }, () => (
                     <>
-                      {organisation.organisationClaim.flags.cfr21 && (
+                      {isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
                         <FormField
                           control={form.control}
                           name="globalActionAuth"

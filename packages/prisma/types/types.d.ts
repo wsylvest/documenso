@@ -1,3 +1,4 @@
+import type { TEmailDomainRecord } from '@documenso/lib/utils/email-domains';
 /* eslint-disable @typescript-eslint/no-namespace */
 import type { TDefaultRecipient } from '@documenso/lib/types/default-recipients';
 import type { TDocumentAuthOptions, TRecipientAuthOptions } from '@documenso/lib/types/document-auth';
@@ -13,6 +14,7 @@ import type { TClaimFlags } from '@documenso/lib/types/subscription';
 declare global {
   namespace PrismaJson {
     type ClaimFlags = TClaimFlags;
+    type EmailDomainDnsRecords = TEmailDomainRecord[];
 
     type DocumentFormValues = TDocumentFormValues;
     type DocumentAuthOptions = TDocumentAuthOptions;

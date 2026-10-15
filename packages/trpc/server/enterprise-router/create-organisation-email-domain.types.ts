@@ -17,6 +17,9 @@ export const ZCreateOrganisationEmailDomainResponseSchema = z.object({
       name: z.string(),
       value: z.string(),
       type: z.string(),
+      priority: z.number().optional(),
+      ttl: z.string().optional(),
+      status: z.string().optional(),
     }),
   ),
 });

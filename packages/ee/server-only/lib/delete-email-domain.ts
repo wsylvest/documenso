@@ -27,6 +27,13 @@ export const deleteEmailDomain = async ({ emailDomainId }: DeleteEmailDomainOpti
     });
   }
 
+  // Resend domains may already be used by other applications. Removing the local
+  // organisation mapping must not delete their shared provider identity.
+  if (emailDomain.resendId) {
+    await prisma.emailDomain.delete({ where: { id: emailDomainId } });
+    return;
+  }
+
   const sesClient = getSesClient();
 
   await sesClient

@@ -26,6 +26,9 @@ type DomainRecord = {
   name: string;
   value: string;
   type: string;
+  priority?: number;
+  ttl?: string;
+  status?: string;
 };
 
 export const OrganisationEmailDomainRecordsDialog = ({
@@ -62,7 +65,18 @@ export const OrganisationEmailDomainRecordContent = ({ records }: { records: Dom
       <div className="space-y-6">
         <div className="space-y-4">
           {records.map((record) => (
-            <div className="space-y-4 rounded-md border p-4" key={record.name}>
+            <div className="space-y-4 rounded-md border p-4" key={`${record.name}-${record.type}`}>
+              {record.priority !== undefined && (
+                <p>
+                  <Trans>Priority</Trans>: {record.priority}
+                </p>
+              )}
+              {record.ttl && <p>TTL: {record.ttl}</p>}
+              {record.status && (
+                <p>
+                  <Trans>Status</Trans>: {record.status}
+                </p>
+              )}
               <div className="space-y-2">
                 <Label>
                   <Trans>Record Type</Trans>
