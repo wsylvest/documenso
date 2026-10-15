@@ -197,12 +197,24 @@ test.describe('API V2 native signing', () => {
       expect(dbEnvelope.status).toBe(DocumentStatus.COMPLETED);
     }).toPass();
 
-    // 6. Audit log records the forwarded signer, not the test runner.
+    // 6. The sealed file digest is recorded on the completion event.
+    const completedLog = await prisma.documentAuditLog.findFirstOrThrow({
+      where: { envelopeId: envelope.id, type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED },
+    });
+
+    const completedData = completedLog.data as { documents?: Array<{ envelopeItemId: string; sha256: string }> };
+
+    expect(completedData.documents).toHaveLength(1);
+    expect(completedData.documents?.[0].envelopeItemId).toBe(envelope.envelopeItems[0].id);
+    expect(completedData.documents?.[0].sha256).toMatch(/^[a-f0-9]{64}$/);
+
+    // 7. Audit log records the forwarded signer, not the test runner.
     const auditLogs = await prisma.documentAuditLog.findMany({
       where: {
         envelopeId: envelope.id,
         type: {
           in: [
+            DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED,
             DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED,
             DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_FIELD_INSERTED,
             DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED,

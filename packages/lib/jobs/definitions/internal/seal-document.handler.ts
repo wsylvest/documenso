@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { PDFDocument } from '@cantoo/pdf-lib';
 import { finalizeTspEnvelopeCompletion } from '@documenso/ee/server-only/signing/csc/finalize-tsp-completion';
@@ -208,7 +209,13 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
     const needsCertificate = settings.includeSigningCertificate;
     const needsAuditLog = settings.includeAuditLog;
 
-    const newDocumentData: Array<{ oldDocumentDataId: string; newDocumentDataId: string }> = [];
+    const newDocumentData: Array<{
+      envelopeItemId: string;
+      envelopeItemTitle: string;
+      oldDocumentDataId: string;
+      newDocumentDataId: string;
+      sha256: string;
+    }> = [];
 
     for (const { envelopeItem, pdfData } of prefetchedItems) {
       const envelopeItemFields = envelope.envelopeItems.find((item) => item.id === envelopeItem.id)?.field;
@@ -287,6 +294,19 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
 
       newDocumentData.push(result);
     }
+
+    // Record the digest of every sealed file so integrity can be verified against
+    // the database independently of the signature embedded in the PDF. The
+    // certificate and audit pages were rendered before sealing, so this only
+    // lands in the stored audit log, never inside the file it describes.
+    envelopeCompletedAuditLog.data = {
+      ...envelopeCompletedAuditLog.data,
+      documents: newDocumentData.map(({ envelopeItemId, envelopeItemTitle, sha256 }) => ({
+        envelopeItemId,
+        title: envelopeItemTitle,
+        sha256,
+      })),
+    };
 
     await prisma.$transaction(async (tx) => {
       for (const { oldDocumentDataId, newDocumentDataId } of newDocumentData) {
@@ -490,6 +510,8 @@ const decorateAndSignPdf = async ({
 
   const pdfBytes = await signPdf({ pdf: pdfDoc });
 
+  const sha256 = createHash('sha256').update(pdfBytes).digest('hex');
+
   const { name } = path.parse(envelopeItem.title);
 
   // Add suffix based on document status
@@ -505,7 +527,10 @@ const decorateAndSignPdf = async ({
   );
 
   return {
+    envelopeItemId: envelopeItem.id,
+    envelopeItemTitle: envelopeItem.title,
     oldDocumentDataId: envelopeItem.documentData.id,
     newDocumentDataId: newDocumentData.id,
+    sha256,
   };
 };

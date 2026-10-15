@@ -259,6 +259,21 @@ export const ZDocumentAuditLogEventDocumentCompletedSchema = z.object({
   type: z.literal(DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED),
   data: z.object({
     transactionId: z.string(),
+
+    /**
+     * SHA-256 digest of each sealed PDF as stored, recorded after the PAdES
+     * signature is applied so integrity can be verified against the database
+     * independently of the signature embedded in the file.
+     */
+    documents: z
+      .array(
+        z.object({
+          envelopeItemId: z.string(),
+          title: z.string(),
+          sha256: z.string(),
+        }),
+      )
+      .optional(),
   }),
 });
 

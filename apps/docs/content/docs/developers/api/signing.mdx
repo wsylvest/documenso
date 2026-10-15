@@ -212,6 +212,14 @@ curl -X POST "https://your-instance.com/api/v2/signing/complete" \
 Validation rules configured on the field, such as required, min and max length, number ranges and
 character limits, are enforced server side and return `400` with a message.
 
+## Integrity evidence
+
+When the last recipient finishes, Documenso flattens the fields, appends the signing certificate (and the
+audit log when the team enables it), and signs the file with a PAdES signature. The `DOCUMENT_COMPLETED`
+audit event then records a SHA-256 digest of each sealed PDF as stored, so you can verify a file you
+hold against the database record independently of the signature embedded in the PDF. Read it with
+`GET /envelope/{envelopeId}/audit-logs` or from the `DOCUMENT_COMPLETED` webhook payload's envelope.
+
 ## See also
 
 - [Envelopes](/docs/developers/api/documents) for creating and distributing documents
