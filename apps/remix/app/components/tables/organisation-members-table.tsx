@@ -129,7 +129,7 @@ export const OrganisationMembersDataTable = () => {
                       )
                     }
                     onSelect={(e) => e.preventDefault()}
-                    title="Update organisation member role"
+                    title={_(msg`Update organisation member role`)}
                   >
                     <Edit className="mr-2 h-4 w-4" />
                     <Trans>Update role</Trans>
