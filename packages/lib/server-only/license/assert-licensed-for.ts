@@ -1,3 +1,4 @@
+import { IS_BILLING_ENABLED } from '../../constants/app';
 import { AppError, AppErrorCode } from '../../errors/app-error';
 import type { LicenseFlag, TCachedLicense } from '../../types/license';
 import { env } from '../../utils/env';
@@ -23,6 +24,7 @@ type AssertLicensedForOptions = {
  * Assert the configured Documenso licence grants `flag`. Reads the
  * {@link LicenseClient} cache; never re-pings the licence server.
  *
+ * - Billing disabled → all features are available.
  * - No `NEXT_PRIVATE_DOCUMENSO_LICENSE_KEY` → throws. No licensing intent.
  * - Key set, claim unverifiable (no client, null cache, read throws,
  *   `license: null`) → passes. Mirrors how org-claim gates keep running on
@@ -32,6 +34,10 @@ type AssertLicensedForOptions = {
  *   → throws.
  */
 export const assertLicensedFor = async (flag: LicenseFlag, options?: AssertLicensedForOptions): Promise<void> => {
+  if (!IS_BILLING_ENABLED()) {
+    return;
+  }
+
   const denied = (): AppError =>
     new AppError(options?.errorCode ?? AppErrorCode.FORBIDDEN, {
       message: options?.message ?? `License does not include the "${flag}" feature.`,

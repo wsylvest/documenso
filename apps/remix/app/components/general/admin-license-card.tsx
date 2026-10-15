@@ -1,4 +1,5 @@
 import { useCopyToClipboard } from '@documenso/lib/client-only/hooks/use-copy-to-clipboard';
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import type { TCachedLicense } from '@documenso/lib/types/license';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
 import { trpc } from '@documenso/trpc/react';
@@ -36,6 +37,10 @@ export const AdminLicenseCard = ({ licenseData }: AdminLicenseCardProps) => {
   const [isLicenseKeyVisible, setIsLicenseKeyVisible] = useState(false);
 
   const { license } = licenseData || {};
+
+  if (!IS_BILLING_ENABLED()) {
+    return null;
+  }
 
   if (!license) {
     return (

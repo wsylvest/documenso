@@ -1,6 +1,7 @@
 import { authClient } from '@documenso/auth/client';
 import { getOptionalSession } from '@documenso/auth/server/lib/utils/get-session';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { prisma } from '@documenso/prisma';
 import { Button } from '@documenso/ui/primitives/button';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
@@ -71,7 +72,7 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   if (
     !organisation ||
     !organisation.organisationAuthenticationPortal.enabled ||
-    !organisation.organisationClaim.flags.authenticationPortal
+    !isClaimFlagEnabled(organisation.organisationClaim.flags, 'authenticationPortal')
   ) {
     throw new AppError(AppErrorCode.NOT_FOUND, {
       message: 'Organisation not found',

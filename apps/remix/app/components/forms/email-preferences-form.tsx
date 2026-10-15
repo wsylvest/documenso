@@ -2,6 +2,7 @@ import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/org
 import { useSession } from '@documenso/lib/client-only/providers/session';
 import { FROM_ADDRESS } from '@documenso/lib/constants/email';
 import { DEFAULT_DOCUMENT_EMAIL_SETTINGS, ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { zEmail } from '@documenso/lib/utils/zod';
 import { trpc } from '@documenso/trpc/react';
 import { DocumentEmailCheckboxes } from '@documenso/ui/components/document/document-email-checkboxes';
@@ -89,7 +90,7 @@ export const EmailPreferencesForm = ({ settings, onFormSubmit, canInherit }: Ema
     <Form {...form}>
       <form onSubmit={handleFormSubmit}>
         <fieldset className="flex h-full flex-col gap-y-6" disabled={form.formState.isSubmitting}>
-          {organisation.organisationClaim.flags.emailDomains && (
+          {isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && (
             <FormField
               control={form.control}
               name="emailId"

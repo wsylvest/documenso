@@ -88,6 +88,10 @@ export class LicenseClient {
   }
 
   private async initialize(): Promise<void> {
+    if (!IS_BILLING_ENABLED()) {
+      return;
+    }
+
     console.log('[License] Checking license with server...');
 
     const cachedLicense = await this.loadFromFile();

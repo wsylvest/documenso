@@ -5,6 +5,7 @@ import { isTemplateRecipientEmailPlaceholder } from '@documenso/lib/constants/te
 import { ZRecipientAuthOptionsSchema } from '@documenso/lib/types/document-auth';
 import type { TRecipientLite } from '@documenso/lib/types/recipient';
 import { nanoid } from '@documenso/lib/universal/id';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { generateRecipientPlaceholder } from '@documenso/lib/utils/templates';
 import { AnimateGenericFadeInOut } from '@documenso/ui/components/animate/animate-generic-fade-in-out';
 import { RecipientActionAuthSelect } from '@documenso/ui/components/recipient/recipient-action-auth-select';
@@ -685,29 +686,30 @@ export const AddTemplatePlaceholderRecipientsFormPartial = ({
                                 )}
                               />
 
-                              {showAdvancedSettings && organisation.organisationClaim.flags.cfr21 && (
-                                <FormField
-                                  control={form.control}
-                                  name={`signers.${index}.actionAuth`}
-                                  render={({ field }) => (
-                                    <FormItem
-                                      className={cn('col-span-8', {
-                                        'col-span-10': isSigningOrderSequential,
-                                      })}
-                                    >
-                                      <FormControl>
-                                        <RecipientActionAuthSelect
-                                          {...field}
-                                          onValueChange={field.onChange}
-                                          disabled={isSubmitting}
-                                        />
-                                      </FormControl>
+                              {showAdvancedSettings &&
+                                isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
+                                  <FormField
+                                    control={form.control}
+                                    name={`signers.${index}.actionAuth`}
+                                    render={({ field }) => (
+                                      <FormItem
+                                        className={cn('col-span-8', {
+                                          'col-span-10': isSigningOrderSequential,
+                                        })}
+                                      >
+                                        <FormControl>
+                                          <RecipientActionAuthSelect
+                                            {...field}
+                                            onValueChange={field.onChange}
+                                            disabled={isSubmitting}
+                                          />
+                                        </FormControl>
 
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              )}
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                )}
 
                               <div className="col-span-2 flex gap-x-2">
                                 <FormField
@@ -806,7 +808,7 @@ export const AddTemplatePlaceholderRecipientsFormPartial = ({
               </Button>
             </div>
 
-            {!alwaysShowAdvancedSettings && organisation.organisationClaim.flags.cfr21 && (
+            {!alwaysShowAdvancedSettings && isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
               <div className="mt-4 flex flex-row items-center">
                 <Checkbox
                   id="showAdvancedRecipientSettings"

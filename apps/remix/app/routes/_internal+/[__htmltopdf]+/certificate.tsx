@@ -6,6 +6,7 @@ import { decryptSecondaryData } from '@documenso/lib/server-only/crypto/decrypt'
 import { getDocumentCertificateAuditLogs } from '@documenso/lib/server-only/document/get-document-certificate-audit-logs';
 import { getOrganisationClaimByTeamId } from '@documenso/lib/server-only/organisation/get-organisation-claims';
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { mapSecondaryIdToDocumentId } from '@documenso/lib/utils/envelope';
 import { getTranslations } from '@documenso/lib/utils/i18n';
@@ -85,7 +86,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       deletedAt: envelope.deletedAt,
       documentMeta: envelope.documentMeta,
     },
-    hidePoweredBy: organisationClaim.flags.hidePoweredBy,
+    hidePoweredBy: isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy'),
     documentLanguage,
     auditLogs,
     messages,

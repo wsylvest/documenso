@@ -1,3 +1,4 @@
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { PDF } from '@libpdf/core';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -138,7 +139,7 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
     envelopeOwner,
     envelopeId: envelope.id,
     qrToken: envelope.qrToken,
-    hidePoweredBy: organisationClaim.flags.hidePoweredBy ?? false,
+    hidePoweredBy: isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy'),
     pageWidth,
     pageHeight,
     i18n,

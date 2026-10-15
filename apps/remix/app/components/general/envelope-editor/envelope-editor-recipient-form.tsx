@@ -7,6 +7,7 @@ import { useOptionalSession } from '@documenso/lib/client-only/providers/session
 import type { TDetectedRecipientSchema } from '@documenso/lib/server-only/ai/envelope/detect-recipients/schema';
 import { ZRecipientAuthOptionsSchema } from '@documenso/lib/types/document-auth';
 import { nanoid } from '@documenso/lib/universal/id';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import {
   isAssistantLastSigner,
   isCcRecipient,
@@ -671,10 +672,11 @@ export const EnvelopeEditorRecipientForm = () => {
           <div
             className={cn('-mt-2 mb-2 space-y-4 rounded-md bg-accent/50 p-4', {
               hidden:
-                !editorConfig.recipients?.allowConfigureSigningOrder && !organisation.organisationClaim.flags.cfr21,
+                !editorConfig.recipients?.allowConfigureSigningOrder &&
+                !isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21'),
             })}
           >
-            {organisation.organisationClaim.flags.cfr21 && (
+            {isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
               <div className="flex flex-row items-center">
                 <Checkbox
                   id="showAdvancedRecipientSettings"
@@ -1038,34 +1040,35 @@ export const EnvelopeEditorRecipientForm = () => {
                                 </Button>
                               </div>
 
-                              {showAdvancedSettings && organisation.organisationClaim.flags.cfr21 && (
-                                <FormField
-                                  control={form.control}
-                                  name={`signers.${index}.actionAuth`}
-                                  render={({ field }) => (
-                                    <FormItem
-                                      className={cn('mt-2 w-full', {
-                                        'mb-6':
-                                          form.formState.errors.signers?.[index] &&
-                                          !form.formState.errors.signers[index]?.actionAuth,
-                                        'pl-6': isSigningOrderSequential,
-                                      })}
-                                    >
-                                      <FormControl>
-                                        <RecipientActionAuthSelect
-                                          {...field}
-                                          onValueChange={field.onChange}
-                                          disabled={
-                                            snapshot.isDragging || isSubmitting || !canRecipientBeModified(signer.id)
-                                          }
-                                        />
-                                      </FormControl>
+                              {showAdvancedSettings &&
+                                isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
+                                  <FormField
+                                    control={form.control}
+                                    name={`signers.${index}.actionAuth`}
+                                    render={({ field }) => (
+                                      <FormItem
+                                        className={cn('mt-2 w-full', {
+                                          'mb-6':
+                                            form.formState.errors.signers?.[index] &&
+                                            !form.formState.errors.signers[index]?.actionAuth,
+                                          'pl-6': isSigningOrderSequential,
+                                        })}
+                                      >
+                                        <FormControl>
+                                          <RecipientActionAuthSelect
+                                            {...field}
+                                            onValueChange={field.onChange}
+                                            disabled={
+                                              snapshot.isDragging || isSubmitting || !canRecipientBeModified(signer.id)
+                                            }
+                                          />
+                                        </FormControl>
 
-                                      <FormMessage />
-                                    </FormItem>
-                                  )}
-                                />
-                              )}
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                )}
                             </motion.fieldset>
                           </div>
                         )}

@@ -1,6 +1,7 @@
 import { prisma } from '@documenso/prisma';
 import type { OrganisationClaim } from '@prisma/client';
 import { match } from 'ts-pattern';
+import { IS_BILLING_ENABLED } from '../../constants/app';
 import { AppError, AppErrorCode } from '../../errors/app-error';
 import { ZRateLimitArraySchema } from '../../types/subscription';
 import { checkMonthlyQuota } from './check-monthly-quota';
@@ -65,7 +66,7 @@ export const assertOrganisationRatesAndLimits = async (
     }))
     .with('document', () => ({
       rateLimits: ZRateLimitArraySchema.parse(organisationClaim.documentRateLimits),
-      quota: organisationClaim.documentQuota,
+      quota: IS_BILLING_ENABLED() ? organisationClaim.documentQuota : null,
     }))
     .with('email', () => ({
       rateLimits: ZRateLimitArraySchema.parse(organisationClaim.emailRateLimits),

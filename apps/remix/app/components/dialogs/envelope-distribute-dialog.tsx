@@ -3,6 +3,7 @@ import { useCurrentEnvelopeEditor } from '@documenso/lib/client-only/providers/e
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
 import { DO_NOT_INVALIDATE_QUERY_ON_MUTATION } from '@documenso/lib/constants/trpc';
 import { AppError } from '@documenso/lib/errors/app-error';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { hasOverlappingFields } from '@documenso/lib/utils/fields-overlap';
 import { getRecipientsWithMissingFields } from '@documenso/lib/utils/recipients';
@@ -308,7 +309,7 @@ export const EnvelopeDistributeDialog = ({
 
                 <div
                   className={cn('min-h-72', {
-                    'min-h-[23rem]': organisation.organisationClaim.flags.emailDomains,
+                    'min-h-[23rem]': isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains'),
                   })}
                 >
                   <AnimatePresence initial={false} mode="wait">
@@ -333,7 +334,7 @@ export const EnvelopeDistributeDialog = ({
                             className="mt-2 flex flex-col gap-y-4 rounded-lg"
                             disabled={form.formState.isSubmitting}
                           >
-                            {organisation.organisationClaim.flags.emailDomains && (
+                            {isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && (
                               <FormField
                                 control={form.control}
                                 name="meta.emailId"

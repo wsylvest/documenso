@@ -1,4 +1,5 @@
 import type { TDocumentAuditLog } from '@documenso/lib/types/document-audit-logs';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { prisma } from '@documenso/prisma';
 import { PDF } from '@libpdf/core';
 import { i18n } from '@lingui/core';
@@ -48,7 +49,7 @@ export const generateAuditLogPdf = async (options: GenerateAuditLogPdfOptions) =
     envelopeItems,
     recipients,
     auditLogs,
-    hidePoweredBy: organisationClaim.flags.hidePoweredBy ?? false,
+    hidePoweredBy: isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy'),
     pageWidth,
     pageHeight,
     i18n,

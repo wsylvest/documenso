@@ -7,6 +7,7 @@ import { ZDefaultRecipientsSchema } from '@documenso/lib/types/default-recipient
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import type { ApiRequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
 import { nanoid, prefixedId } from '@documenso/lib/universal/id';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { createDocumentAuditLogData } from '@documenso/lib/utils/document-audit-logs';
 import { prisma } from '@documenso/prisma';
 import type { DocumentMeta, DocumentVisibility, TemplateType } from '@prisma/client';
@@ -269,7 +270,7 @@ export const createEnvelope = async ({
   // Check if user has permission to set the global action auth.
   if (
     (authOptions.globalActionAuth.length > 0 || recipientsHaveActionAuth) &&
-    !team.organisation.organisationClaim.flags.cfr21
+    !isClaimFlagEnabled(team.organisation.organisationClaim.flags, 'cfr21')
   ) {
     throw new AppError(AppErrorCode.UNAUTHORIZED, {
       message: 'You do not have permission to set the action auth',

@@ -15,6 +15,7 @@ import { getRecipientByToken } from '@documenso/lib/server-only/recipient/get-re
 import { getRecipientsForAssistant } from '@documenso/lib/server-only/recipient/get-recipients-for-assistant';
 import { DocumentAccessAuth } from '@documenso/lib/types/document-auth';
 import { fireAndForget } from '@documenso/lib/universal/fire-and-forget';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { isDocumentCompleted } from '@documenso/lib/utils/document';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { isRecipientExpired } from '@documenso/lib/utils/recipients';
@@ -63,13 +64,13 @@ async function handleV1Loader({ params, request }: Route.LoaderArgs) {
 
   const organisationClaim = await getOrganisationClaimByTeamId({ teamId: document.teamId });
 
-  const allowEmbedSigningWhitelabel = organisationClaim.flags.embedSigningWhiteLabel;
-  const hidePoweredBy = organisationClaim.flags.hidePoweredBy;
+  const allowEmbedSigningWhitelabel = isClaimFlagEnabled(organisationClaim.flags, 'embedSigningWhiteLabel');
+  const hidePoweredBy = isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy');
 
   // TODO: Make this more robust, we need to ensure the owner is either
   // TODO: the member of a team that has an active subscription, is an early
   // TODO: adopter or is an enterprise user.
-  if (IS_BILLING_ENABLED() && !organisationClaim.flags.embedSigning) {
+  if (IS_BILLING_ENABLED() && !isClaimFlagEnabled(organisationClaim.flags, 'embedSigning')) {
     throw data(
       {
         type: 'embed-paywall',
@@ -231,10 +232,10 @@ async function handleV2Loader({ params, request }: Route.LoaderArgs) {
 
   const organisationClaim = await getOrganisationClaimByTeamId({ teamId: envelope.teamId });
 
-  const allowEmbedSigningWhitelabel = organisationClaim.flags.embedSigningWhiteLabel;
-  const hidePoweredBy = organisationClaim.flags.hidePoweredBy;
+  const allowEmbedSigningWhitelabel = isClaimFlagEnabled(organisationClaim.flags, 'embedSigningWhiteLabel');
+  const hidePoweredBy = isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy');
 
-  if (IS_BILLING_ENABLED() && !organisationClaim.flags.embedSigning) {
+  if (IS_BILLING_ENABLED() && !isClaimFlagEnabled(organisationClaim.flags, 'embedSigning')) {
     throw data(
       {
         type: 'embed-paywall',

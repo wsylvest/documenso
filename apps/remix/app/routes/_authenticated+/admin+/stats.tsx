@@ -1,3 +1,4 @@
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { getDocumentStats } from '@documenso/lib/server-only/admin/get-documents-stats';
 import { getRecipientsStats } from '@documenso/lib/server-only/admin/get-recipients-stats';
 import {
@@ -46,7 +47,7 @@ export async function loader() {
     licenseData,
   ] = await Promise.all([
     getUsersCount(),
-    getOrganisationsWithSubscriptionsCount(),
+    IS_BILLING_ENABLED() ? getOrganisationsWithSubscriptionsCount() : 0,
     getDocumentStats(),
     getRecipientsStats(),
     getSignerConversionMonthly(),
@@ -90,7 +91,13 @@ export default function AdminStatsPage({ loaderData }: Route.ComponentProps) {
       <div className="mt-8 grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <CardMetric icon={Users} title={_(msg`Total Users`)} value={usersCount} />
         <CardMetric icon={File} title={_(msg`Total Documents`)} value={docStats.ALL} />
-        <CardMetric icon={UserPlus} title={_(msg`Active Subscriptions`)} value={organisationsWithSubscriptionsCount} />
+        {IS_BILLING_ENABLED() && (
+          <CardMetric
+            icon={UserPlus}
+            title={_(msg`Active Subscriptions`)}
+            value={organisationsWithSubscriptionsCount}
+          />
+        )}
 
         <CardMetric icon={FileCog} title={_(msg`App Version`)} value={`v${version}`} />
       </div>

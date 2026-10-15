@@ -2,6 +2,7 @@ import {
   DIRECT_TEMPLATE_RECIPIENT_EMAIL,
   DIRECT_TEMPLATE_RECIPIENT_NAME,
 } from '@documenso/lib/constants/direct-templates';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { prisma } from '@documenso/prisma';
 import type { Recipient } from '@prisma/client';
 import { EnvelopeType, RecipientRole } from '@prisma/client';
@@ -55,7 +56,7 @@ export const setTemplateRecipients = async ({ userId, teamId, id, recipients }: 
   );
 
   // Check if user has permission to set the global action auth.
-  if (recipientsHaveActionAuth && !envelope.team.organisation.organisationClaim.flags.cfr21) {
+  if (recipientsHaveActionAuth && !isClaimFlagEnabled(envelope.team.organisation.organisationClaim.flags, 'cfr21')) {
     throw new AppError(AppErrorCode.UNAUTHORIZED, {
       message: 'You do not have permission to set the action auth',
     });

@@ -7,6 +7,7 @@ import { verifyEmbeddingPresignToken } from '@documenso/lib/server-only/embeddin
 import { getOrganisationClaimByTeamId } from '@documenso/lib/server-only/organisation/get-organisation-claims';
 import { getTeamSettings } from '@documenso/lib/server-only/team/get-team-settings';
 import { ZBaseEmbedDataSchema } from '@documenso/lib/types/embed-base-schemas';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { dynamicActivate } from '@documenso/lib/utils/i18n';
 import { TrpcProvider } from '@documenso/trpc/react';
 import type { OrganisationSession } from '@documenso/trpc/server/organisation-router/get-organisation-session.types';
@@ -64,7 +65,7 @@ export default function AuthoringLayout() {
 
   const [hasFinishedInit, setHasFinishedInit] = useState(false);
 
-  const allowEmbedAuthoringWhiteLabel = organisationClaim.flags.embedAuthoringWhiteLabel ?? false;
+  const allowEmbedAuthoringWhiteLabel = isClaimFlagEnabled(organisationClaim.flags, 'embedAuthoringWhiteLabel');
 
   useLayoutEffect(() => {
     try {

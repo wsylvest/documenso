@@ -1,3 +1,4 @@
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import type { OrganisationMemberRole, TeamMemberRole } from '@prisma/client';
@@ -127,7 +128,7 @@ export const getSettingsNavGroups = ({
             label: msg`Certificates`,
             isSubNav: true,
           },
-          ...((isBillingEnabled && organisation.organisationClaim.flags.emailDomains) || isDocumensoCloud
+          ...(isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') || isDocumensoCloud
             ? [
                 {
                   key: 'email-domains',
@@ -155,7 +156,7 @@ export const getSettingsNavGroups = ({
             label: msg`Groups`,
             icon: GroupIcon,
           },
-          ...((isBillingEnabled && organisation.organisationClaim.flags.authenticationPortal) || isDocumensoCloud
+          ...(isClaimFlagEnabled(organisation.organisationClaim.flags, 'authenticationPortal') || isDocumensoCloud
             ? [
                 {
                   key: 'sso',

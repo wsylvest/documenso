@@ -2,6 +2,7 @@ import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-upda
 import type { TLicenseClaim } from '@documenso/lib/types/license';
 import { ZUrlSearchParamsSchema } from '@documenso/lib/types/search-params';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { trpc } from '@documenso/trpc/react';
 import { CopyTextButton } from '@documenso/ui/components/common/copy-text-button';
 import type { DataTableColumnDef } from '@documenso/ui/primitives/data-table';
@@ -87,7 +88,9 @@ export const AdminClaimsTable = ({ licenseFlags }: AdminClaimsTableProps) => {
       {
         header: t`Feature Flags`,
         cell: ({ row }) => {
-          const flags = Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).filter(({ key }) => row.original.flags[key]);
+          const flags = Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).filter(({ key }) =>
+            isClaimFlagEnabled(row.original.flags, key),
+          );
 
           if (flags.length === 0) {
             return <p className="text-muted-foreground text-xs">{t`None`}</p>;

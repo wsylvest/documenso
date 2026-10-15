@@ -3,6 +3,7 @@ import type { TRecipientAccessAuthTypes } from '@documenso/lib/types/document-au
 import { type TRecipientActionAuthTypes, ZRecipientAuthOptionsSchema } from '@documenso/lib/types/document-auth';
 import type { ApiRequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
 import { nanoid } from '@documenso/lib/universal/id';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { createDocumentAuditLogData, diffRecipientChanges } from '@documenso/lib/utils/document-audit-logs';
 import { createRecipientAuthOptions } from '@documenso/lib/utils/document-auth';
 import { prisma } from '@documenso/prisma';
@@ -85,7 +86,7 @@ export const setDocumentRecipients = async ({
   );
 
   // Check if user has permission to set the global action auth.
-  if (recipientsHaveActionAuth && !envelope.team.organisation.organisationClaim.flags.cfr21) {
+  if (recipientsHaveActionAuth && !isClaimFlagEnabled(envelope.team.organisation.organisationClaim.flags, 'cfr21')) {
     throw new AppError(AppErrorCode.UNAUTHORIZED, {
       message: 'You do not have permission to set the action auth',
     });

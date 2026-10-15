@@ -4,6 +4,7 @@ import { RECIPIENT_ROLES_DESCRIPTION } from '@documenso/lib/constants/recipient-
 import type { TDocument } from '@documenso/lib/types/document';
 import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';
 import type { TRecipientLite } from '@documenso/lib/types/recipient';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { formatSigningLink } from '@documenso/lib/utils/recipients';
 import { trpc } from '@documenso/trpc/react';
 import { DocumentSendEmailMessageHelper } from '@documenso/ui/components/document/document-send-email-message-helper';
@@ -192,7 +193,7 @@ export const AddSubjectFormPartial = ({
                     className="flex flex-col gap-y-4 rounded-lg border p-4"
                     disabled={form.formState.isSubmitting}
                   >
-                    {organisation.organisationClaim.flags.emailDomains && (
+                    {isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && (
                       <FormField
                         control={form.control}
                         name="meta.emailId"

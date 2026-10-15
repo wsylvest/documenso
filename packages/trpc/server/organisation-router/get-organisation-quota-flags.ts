@@ -1,3 +1,4 @@
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { computeQuotaFlags } from '@documenso/lib/server-only/rate-limit/compute-quota-flags';
 import { currentMonthlyPeriod } from '@documenso/lib/universal/monthly-period';
@@ -46,7 +47,7 @@ export const getOrganisationQuotaFlagsRoute = authenticatedProcedure
 
     return computeQuotaFlags({
       quotas: {
-        documentQuota: organisation.organisationClaim.documentQuota,
+        documentQuota: IS_BILLING_ENABLED() ? organisation.organisationClaim.documentQuota : null,
         emailQuota: organisation.organisationClaim.emailQuota,
         apiQuota: organisation.organisationClaim.apiQuota,
       },

@@ -8,6 +8,7 @@ import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-emai
 import type { TDocumentMetaDateFormat } from '@documenso/lib/types/document-meta';
 import type { TRecipientLite } from '@documenso/lib/types/recipient';
 import type { TTemplate } from '@documenso/lib/types/template';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 import { extractTeamSignatureSettings } from '@documenso/lib/utils/teams';
 import { trpc } from '@documenso/trpc/react';
@@ -424,7 +425,7 @@ export const AddTemplateSettingsFormPartial = ({
               )}
             />
 
-            {organisation.organisationClaim.flags.cfr21 && (
+            {isClaimFlagEnabled(organisation.organisationClaim.flags, 'cfr21') && (
               <FormField
                 control={form.control}
                 name="globalActionAuth"
@@ -460,7 +461,7 @@ export const AddTemplateSettingsFormPartial = ({
 
                   <AccordionContent className="-mx-1 px-1 pt-4 text-muted-foreground text-sm leading-relaxed [&>div]:pb-0">
                     <div className="flex flex-col space-y-6">
-                      {organisation.organisationClaim.flags.emailDomains && (
+                      {isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains') && (
                         <FormField
                           control={form.control}
                           name="meta.emailId"

@@ -1,3 +1,4 @@
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import type { TCachedLicense } from '@documenso/lib/types/license';
 import { cn } from '@documenso/ui/lib/utils';
 import { Button } from '@documenso/ui/primitives/button';
@@ -13,7 +14,7 @@ export type AdminLicenseStatusBannerProps = {
 export const AdminLicenseStatusBanner = ({ license }: AdminLicenseStatusBannerProps) => {
   const licenseStatus = license?.derivedStatus;
 
-  if (!license || licenseStatus === 'ACTIVE' || licenseStatus === 'NOT_FOUND') {
+  if (!IS_BILLING_ENABLED() || !license || licenseStatus === 'ACTIVE' || licenseStatus === 'NOT_FOUND') {
     return null;
   }
 

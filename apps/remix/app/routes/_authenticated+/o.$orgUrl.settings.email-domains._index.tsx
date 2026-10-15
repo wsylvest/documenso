@@ -1,5 +1,6 @@
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
-import { IS_BILLING_ENABLED, IS_DOCUMENSO_CLOUD } from '@documenso/lib/constants/app';
+import { IS_DOCUMENSO_CLOUD } from '@documenso/lib/constants/app';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { canExecuteOrganisationAction } from '@documenso/lib/utils/organisations';
 import { Alert, AlertDescription, AlertTitle } from '@documenso/ui/primitives/alert';
 import { Button } from '@documenso/ui/primitives/button';
@@ -22,11 +23,7 @@ export default function OrganisationSettingsEmailDomains() {
 
   const organisation = useCurrentOrganisation();
 
-  const isEmailDomainsEnabled = organisation.organisationClaim.flags.emailDomains;
-
-  if (!IS_BILLING_ENABLED()) {
-    return null;
-  }
+  const isEmailDomainsEnabled = isClaimFlagEnabled(organisation.organisationClaim.flags, 'emailDomains');
 
   return (
     <div>

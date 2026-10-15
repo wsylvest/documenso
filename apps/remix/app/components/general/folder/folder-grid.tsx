@@ -1,4 +1,5 @@
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { formatDocumentsPath, formatTemplatesPath } from '@documenso/lib/utils/teams';
 import { trpc } from '@documenso/trpc/react';
 import type { TFolderWithSubfolders } from '@documenso/trpc/server/folder-router/schema';
@@ -98,7 +99,9 @@ export const FolderGrid = ({ type, parentId }: FolderGridProps) => {
           <EnvelopeUploadButton type={type} folderId={parentId || undefined} />
 
           {/* If you delete this, delete the component as well. */}
-          {organisation.organisationClaim.flags.allowLegacyEnvelopes && <DocumentUploadButtonLegacy type={type} />}
+          {isClaimFlagEnabled(organisation.organisationClaim.flags, 'allowLegacyEnvelopes') && (
+            <DocumentUploadButtonLegacy type={type} />
+          )}
 
           <FolderCreateDialog type={type} />
         </div>

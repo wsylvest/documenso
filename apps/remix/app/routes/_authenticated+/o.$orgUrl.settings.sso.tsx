@@ -2,6 +2,7 @@ import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/org
 import { IS_DOCUMENSO_CLOUD } from '@documenso/lib/constants/app';
 import { ORGANISATION_MEMBER_ROLE_HIERARCHY } from '@documenso/lib/constants/organisations';
 import { ORGANISATION_MEMBER_ROLE_MAP } from '@documenso/lib/constants/organisations-translations';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import {
   formatOrganisationCallbackUrl,
   formatOrganisationLoginUrl,
@@ -65,7 +66,10 @@ export default function OrganisationSettingSSOLoginPage() {
   const { t } = useLingui();
   const organisation = useCurrentOrganisation();
 
-  const isAuthenticationPortalEnabled = organisation.organisationClaim.flags.authenticationPortal === true;
+  const isAuthenticationPortalEnabled = isClaimFlagEnabled(
+    organisation.organisationClaim.flags,
+    'authenticationPortal',
+  );
 
   const { data: authenticationPortal, isLoading: isLoadingAuthenticationPortal } =
     trpc.enterprise.organisation.authenticationPortal.get.useQuery(

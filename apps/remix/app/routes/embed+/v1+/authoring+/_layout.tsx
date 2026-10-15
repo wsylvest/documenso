@@ -4,6 +4,7 @@ import { verifyEmbeddingPresignToken } from '@documenso/lib/server-only/embeddin
 import { getOrganisationClaimByTeamId } from '@documenso/lib/server-only/organisation/get-organisation-claims';
 import { ZBaseEmbedAuthoringSchema } from '@documenso/lib/types/embed-authoring-base-schema';
 import { fireAndForget } from '@documenso/lib/universal/fire-and-forget';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { dynamicActivate } from '@documenso/lib/utils/i18n';
 import { prisma } from '@documenso/prisma';
 import { TrpcProvider } from '@documenso/trpc/react';
@@ -37,7 +38,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
       teamId: result.teamId,
     });
 
-    allowEmbedAuthoringWhiteLabel = organisationClaim.flags.embedAuthoringWhiteLabel ?? false;
+    allowEmbedAuthoringWhiteLabel = isClaimFlagEnabled(organisationClaim.flags, 'embedAuthoringWhiteLabel');
 
     // Derive the kind of authoring session from the child route path, e.g.
     // /embed/v1/authoring/document/create -> resource 'document', mode 'create'.

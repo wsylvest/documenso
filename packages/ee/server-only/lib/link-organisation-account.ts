@@ -1,5 +1,4 @@
 import { getOrganisationAuthenticationPortalOptions } from '@documenso/auth/server/lib/utils/organisation-portal';
-import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import {
   ORGANISATION_ACCOUNT_LINK_VERIFICATION_TOKEN_IDENTIFIER,
   ORGANISATION_USER_ACCOUNT_TYPE,
@@ -17,12 +16,6 @@ export interface LinkOrganisationAccountOptions {
 }
 
 export const linkOrganisationAccount = async ({ token, requestMeta }: LinkOrganisationAccountOptions) => {
-  if (!IS_BILLING_ENABLED()) {
-    throw new AppError(AppErrorCode.INVALID_REQUEST, {
-      message: 'Billing is not enabled',
-    });
-  }
-
   // Delete the token since it contains unnecessary sensitive data.
   const verificationToken = await prisma.verificationToken.delete({
     where: {

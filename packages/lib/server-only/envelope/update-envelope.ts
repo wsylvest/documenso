@@ -1,5 +1,6 @@
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import type { ApiRequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import type { CreateDocumentAuditLogDataResponse } from '@documenso/lib/utils/document-audit-logs';
 import { createDocumentAuditLogData } from '@documenso/lib/utils/document-audit-logs';
 import { prisma } from '@documenso/prisma';
@@ -127,7 +128,10 @@ export const updateEnvelope = async ({
   const newGlobalActionAuth = data?.globalActionAuth === undefined ? documentGlobalActionAuth : data.globalActionAuth;
 
   // Check if user has permission to set the global action auth.
-  if (newGlobalActionAuth.length > 0 && !envelope.team.organisation.organisationClaim.flags.cfr21) {
+  if (
+    newGlobalActionAuth.length > 0 &&
+    !isClaimFlagEnabled(envelope.team.organisation.organisationClaim.flags, 'cfr21')
+  ) {
     throw new AppError(AppErrorCode.UNAUTHORIZED, {
       message: 'You do not have permission to set the action auth',
     });

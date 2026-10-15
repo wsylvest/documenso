@@ -1,10 +1,11 @@
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+import { useSession } from '@documenso/lib/client-only/providers/session';
+import { IS_BILLING_ENABLED, NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { SUBSCRIPTION_STATUS_MAP } from '@documenso/lib/constants/billing';
 import { AppError } from '@documenso/lib/errors/app-error';
 import { LicenseClient } from '@documenso/lib/server-only/license/license-client';
 import type { TLicenseClaim } from '@documenso/lib/types/license';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
-import { getHighestOrganisationRoleInGroup } from '@documenso/lib/utils/organisations';
+import { canExecuteOrganisationAction, getHighestOrganisationRoleInGroup } from '@documenso/lib/utils/organisations';
 import { trpc } from '@documenso/trpc/react';
 import type { TGetAdminOrganisationResponse } from '@documenso/trpc/server/admin-router/get-admin-organisation.types';
 import { ZUpdateAdminOrganisationRequestSchema } from '@documenso/trpc/server/admin-router/update-admin-organisation.types';
@@ -68,6 +69,11 @@ export default function OrganisationGroupSettingsPage({ params, loaderData }: Ro
   const navigate = useNavigate();
 
   const organisationId = params.id;
+  const { organisations } = useSession();
+  const organisationSession = organisations.find((item) => item.id === organisationId);
+  const canManageSettings =
+    organisationSession &&
+    canExecuteOrganisationAction('MANAGE_ORGANISATION', organisationSession.currentOrganisationRole);
 
   const { data: organisation, isLoading: isLoadingOrganisation } = trpc.admin.organisation.get.useQuery(
     {
@@ -305,99 +311,132 @@ export default function OrganisationGroupSettingsPage({ params, loaderData }: Ro
             <AccordionContent>
               <div className="mt-4">
                 <AdminGlobalSettingsSection settings={organisation.organisationGlobalSettings} />
+                {canManageSettings && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Button asChild variant="outline">
+                      <Link to={`/o/${organisation.url}/settings/branding`}>
+                        <Trans>Edit branding</Trans>
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link to={`/o/${organisation.url}/settings/document`}>
+                        <Trans>Edit envelope defaults</Trans>
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                      <Link to={`/o/${organisation.url}/settings/email`}>
+                        <Trans>Edit email preferences</Trans>
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
 
+      {IS_BILLING_ENABLED() && (
+        <>
+          <SettingsHeader
+            hideDivider
+            title={t`Manage subscription`}
+            subtitle={t`Manage the ${organisation.name} organisation subscription`}
+            className="mt-16"
+          />
+
+          <Alert
+            className={cn(
+              'my-6 flex flex-col justify-between p-6 sm:flex-row sm:items-center',
+              organisation.subscription?.status === SubscriptionStatus.ACTIVE &&
+                'border border-green-600/20 bg-green-50 dark:border-green-500/20 dark:bg-green-500/10',
+              organisation.subscription?.status === SubscriptionStatus.INACTIVE && 'opacity-60',
+            )}
+            variant="neutral"
+          >
+            <div className="mb-4 sm:mb-0">
+              <AlertTitle>
+                <Trans>Subscription</Trans>
+              </AlertTitle>
+
+              <AlertDescription className="mr-2">
+                {organisation.subscription ? (
+                  <span className="flex items-center gap-2">
+                    {organisation.subscription.status === SubscriptionStatus.ACTIVE && (
+                      <span
+                        className="h-2 w-2 shrink-0 rounded-full bg-green-600 dark:bg-green-400"
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span>{i18n._(SUBSCRIPTION_STATUS_MAP[organisation.subscription.status])} subscription found</span>
+                  </span>
+                ) : (
+                  <span>
+                    <Trans>No subscription found</Trans>
+                  </span>
+                )}
+              </AlertDescription>
+            </div>
+
+            {!organisation.customerId && (
+              <div>
+                <Button
+                  variant="outline"
+                  className="bg-background"
+                  loading={isCreatingStripeCustomer}
+                  onClick={async () => createStripeCustomer({ organisationId })}
+                >
+                  <Trans>Create Stripe customer</Trans>
+                </Button>
+              </div>
+            )}
+
+            {organisation.customerId && !organisation.subscription && (
+              <div>
+                <Button variant="outline" className="bg-background" asChild>
+                  <Link
+                    target="_blank"
+                    to={`https://dashboard.stripe.com/customers/${organisation.customerId}?create=subscription&subscription_default_customer=${organisation.customerId}`}
+                  >
+                    <Trans>Create subscription</Trans>
+                    <ExternalLinkIcon className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            )}
+
+            {organisation.subscription && (
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <AdminOrganisationSyncSubscriptionDialog
+                  organisationId={organisationId}
+                  trigger={
+                    <Button variant="outline" className="bg-background">
+                      <Trans>Sync Stripe subscription</Trans>
+                    </Button>
+                  }
+                />
+
+                <Button variant="outline" className="bg-background" asChild>
+                  <Link
+                    target="_blank"
+                    to={`https://dashboard.stripe.com/subscriptions/${organisation.subscription.planId}`}
+                  >
+                    <Trans>Manage subscription</Trans>
+                    <ExternalLinkIcon className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </div>
+            )}
+          </Alert>
+        </>
+      )}
+
       <SettingsHeader
         hideDivider
-        title={t`Manage subscription`}
-        subtitle={t`Manage the ${organisation.name} organisation subscription`}
-        className="mt-16"
+        title={t`Features and limits`}
+        subtitle={t`Manage organisation capabilities and usage limits.`}
+        className="mt-8 mb-6"
       />
-
-      <Alert
-        className={cn(
-          'my-6 flex flex-col justify-between p-6 sm:flex-row sm:items-center',
-          organisation.subscription?.status === SubscriptionStatus.ACTIVE &&
-            'border border-green-600/20 bg-green-50 dark:border-green-500/20 dark:bg-green-500/10',
-          organisation.subscription?.status === SubscriptionStatus.INACTIVE && 'opacity-60',
-        )}
-        variant="neutral"
-      >
-        <div className="mb-4 sm:mb-0">
-          <AlertTitle>
-            <Trans>Subscription</Trans>
-          </AlertTitle>
-
-          <AlertDescription className="mr-2">
-            {organisation.subscription ? (
-              <span className="flex items-center gap-2">
-                {organisation.subscription.status === SubscriptionStatus.ACTIVE && (
-                  <span className="h-2 w-2 shrink-0 rounded-full bg-green-600 dark:bg-green-400" aria-hidden="true" />
-                )}
-                <span>{i18n._(SUBSCRIPTION_STATUS_MAP[organisation.subscription.status])} subscription found</span>
-              </span>
-            ) : (
-              <span>
-                <Trans>No subscription found</Trans>
-              </span>
-            )}
-          </AlertDescription>
-        </div>
-
-        {!organisation.customerId && (
-          <div>
-            <Button
-              variant="outline"
-              className="bg-background"
-              loading={isCreatingStripeCustomer}
-              onClick={async () => createStripeCustomer({ organisationId })}
-            >
-              <Trans>Create Stripe customer</Trans>
-            </Button>
-          </div>
-        )}
-
-        {organisation.customerId && !organisation.subscription && (
-          <div>
-            <Button variant="outline" className="bg-background" asChild>
-              <Link
-                target="_blank"
-                to={`https://dashboard.stripe.com/customers/${organisation.customerId}?create=subscription&subscription_default_customer=${organisation.customerId}`}
-              >
-                <Trans>Create subscription</Trans>
-                <ExternalLinkIcon className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        )}
-
-        {organisation.subscription && (
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <AdminOrganisationSyncSubscriptionDialog
-              organisationId={organisationId}
-              trigger={
-                <Button variant="outline" className="bg-background">
-                  <Trans>Sync Stripe subscription</Trans>
-                </Button>
-              }
-            />
-
-            <Button variant="outline" className="bg-background" asChild>
-              <Link
-                target="_blank"
-                to={`https://dashboard.stripe.com/subscriptions/${organisation.subscription.planId}`}
-              >
-                <Trans>Manage subscription</Trans>
-                <ExternalLinkIcon className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-        )}
-      </Alert>
 
       <OrganisationAdminForm organisation={organisation} licenseFlags={licenseFlags} />
 
@@ -583,7 +622,7 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
 
   const hasRestrictedEnterpriseFeatures = Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).some(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (flag) => flag.isEnterprise && !licenseFlags?.[flag.key as keyof TLicenseClaim],
+    (flag) => IS_BILLING_ENABLED() && flag.isEnterprise && !licenseFlags?.[flag.key as keyof TLicenseClaim],
   );
 
   const form = useForm<TUpdateOrganisationBillingFormSchema>({
@@ -698,31 +737,33 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="customerId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel required>
-                <Trans>Stripe Customer ID</Trans>
-              </FormLabel>
-              <FormControl>
-                <Input {...field} placeholder={t`No Stripe customer attached`} />
-              </FormControl>
-              {!form.formState.errors.customerId && field.value && (
-                <Link
-                  target="_blank"
-                  to={`https://dashboard.stripe.com/customers/${field.value}`}
-                  className="font-normal text-foreground/50 text-xs"
-                >
-                  {`https://dashboard.stripe.com/customers/${field.value}`}
-                </Link>
-              )}
+        {IS_BILLING_ENABLED() && (
+          <FormField
+            control={form.control}
+            name="customerId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel required>
+                  <Trans>Stripe Customer ID</Trans>
+                </FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder={t`No Stripe customer attached`} />
+                </FormControl>
+                {!form.formState.errors.customerId && field.value && (
+                  <Link
+                    target="_blank"
+                    to={`https://dashboard.stripe.com/customers/${field.value}`}
+                    className="font-normal text-foreground/50 text-xs"
+                  >
+                    {`https://dashboard.stripe.com/customers/${field.value}`}
+                  </Link>
+                )}
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField
@@ -827,12 +868,19 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
             <Trans>Feature Flags</Trans>
           </h3>
           <p className="mt-1 text-muted-foreground text-sm">
-            <Trans>Capabilities enabled for this organisation.</Trans>
+            {IS_BILLING_ENABLED() ? (
+              <Trans>Capabilities enabled for this organisation.</Trans>
+            ) : (
+              <Trans>
+                All features are enabled while billing is disabled. Email sending can still be disabled below.
+              </Trans>
+            )}
           </p>
 
           <div className="mt-3 space-y-2 rounded-md border p-4">
             {Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).map(({ key, label, isEnterprise }) => {
-              const isRestrictedFeature = isEnterprise && !licenseFlags?.[key as keyof TLicenseClaim]; // eslint-disable-line @typescript-eslint/consistent-type-assertions
+              const isRestrictedFeature =
+                IS_BILLING_ENABLED() && isEnterprise && !licenseFlags?.[key as keyof TLicenseClaim]; // eslint-disable-line @typescript-eslint/consistent-type-assertions
 
               return (
                 <FormField
@@ -845,9 +893,12 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
                         <div className="flex items-center">
                           <Checkbox
                             id={`flag-${key}`}
-                            checked={field.value}
+                            checked={(!IS_BILLING_ENABLED() && key !== 'disableEmails') || field.value}
                             onCheckedChange={field.onChange}
-                            disabled={isRestrictedFeature && !field.value} // Allow disabling of restricted features.
+                            disabled={
+                              (!IS_BILLING_ENABLED() && key !== 'disableEmails') ||
+                              (isRestrictedFeature && !field.value)
+                            } // Allow disabling of restricted features.
                           />
 
                           <label

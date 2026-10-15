@@ -1,4 +1,5 @@
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import { SUBSCRIPTION_STATUS_MAP } from '@documenso/lib/constants/billing';
 import { ZUrlSearchParamsSchema } from '@documenso/lib/types/search-params';
 import { trpc } from '@documenso/trpc/react';
@@ -123,6 +124,7 @@ export const AdminOrganisationsTable = ({
         },
       },
       {
+        id: 'subscription',
         header: t`Subscription`,
         cell: ({ row }) =>
           row.original.subscription ? (
@@ -165,15 +167,18 @@ export const AdminOrganisationsTable = ({
                 </Link>
               </DropdownMenuItem>
 
-              <DropdownMenuItem disabled={!row.original.customerId} asChild>
-                <Link to={`https://dashboard.stripe.com/customers/${row.original.customerId}`}>
-                  <CreditCardIcon className="mr-2 h-4 w-4" />
-                  <Trans>Stripe</Trans>
-                  {!row.original.customerId && <span>&nbsp;(N/A)</span>}
-                </Link>
-              </DropdownMenuItem>
+              {IS_BILLING_ENABLED() && (
+                <DropdownMenuItem disabled={!row.original.customerId} asChild>
+                  <Link to={`https://dashboard.stripe.com/customers/${row.original.customerId}`}>
+                    <CreditCardIcon className="mr-2 h-4 w-4" />
+                    <Trans>Stripe</Trans>
+                    {!row.original.customerId && <span>&nbsp;(N/A)</span>}
+                  </Link>
+                </DropdownMenuItem>
+              )}
 
-              {row.original.subscription &&
+              {IS_BILLING_ENABLED() &&
+                row.original.subscription &&
                 (row.original.subscription.status === 'ACTIVE' || row.original.subscription.status === 'PAST_DUE') && (
                   <DropdownMenuItem
                     onClick={() =>
@@ -205,6 +210,8 @@ export const AdminOrganisationsTable = ({
         totalPages={results.totalPages}
         onPaginationChange={onPaginationChange}
         columnVisibility={{
+          billingStatus: IS_BILLING_ENABLED(),
+          subscription: IS_BILLING_ENABLED(),
           owner: showOwnerColumn,
           role: memberUserId !== undefined,
         }}
@@ -244,7 +251,7 @@ export const AdminOrganisationsTable = ({
         }
       </DataTable>
 
-      {swapSource && (
+      {IS_BILLING_ENABLED() && swapSource && (
         <AdminSwapSubscriptionDialog
           sourceOrganisationId={swapSource.id}
           sourceOrganisationName={swapSource.name}

@@ -1,3 +1,4 @@
+import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import type { TLicenseClaim } from '@documenso/lib/types/license';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
 import { trpc } from '@documenso/trpc/react';
@@ -43,7 +44,7 @@ export const SubscriptionClaimForm = ({
 
   const hasRestrictedEnterpriseFeatures = Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).some(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (flag) => flag.isEnterprise && !licenseFlags?.[flag.key as keyof TLicenseClaim],
+    (flag) => IS_BILLING_ENABLED() && flag.isEnterprise && !licenseFlags?.[flag.key as keyof TLicenseClaim],
   );
 
   const form = useForm<SubscriptionClaimFormValues>({
@@ -192,7 +193,8 @@ export const SubscriptionClaimForm = ({
 
             <div className="mt-2 space-y-2 rounded-md border p-4">
               {Object.values(SUBSCRIPTION_CLAIM_FEATURE_FLAGS).map(({ key, label, isEnterprise }) => {
-                const isRestrictedFeature = isEnterprise && !licenseFlags?.[key as keyof TLicenseClaim]; // eslint-disable-line @typescript-eslint/consistent-type-assertions
+                const isRestrictedFeature =
+                  IS_BILLING_ENABLED() && isEnterprise && !licenseFlags?.[key as keyof TLicenseClaim]; // eslint-disable-line @typescript-eslint/consistent-type-assertions
 
                 return (
                   <FormField
@@ -205,9 +207,12 @@ export const SubscriptionClaimForm = ({
                           <div className="flex items-center">
                             <Checkbox
                               id={`flag-${key}`}
-                              checked={field.value}
+                              checked={(!IS_BILLING_ENABLED() && key !== 'disableEmails') || field.value}
                               onCheckedChange={field.onChange}
-                              disabled={isRestrictedFeature && !field.value} // Allow disabling of restricted features.
+                              disabled={
+                                (!IS_BILLING_ENABLED() && key !== 'disableEmails') ||
+                                (isRestrictedFeature && !field.value)
+                              } // Allow disabling of restricted features.
                             />
 
                             <label

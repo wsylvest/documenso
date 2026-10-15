@@ -5,6 +5,7 @@ import { getOrganisationClaimByTeamId } from '@documenso/lib/server-only/organis
 import { getRecipientByToken } from '@documenso/lib/server-only/recipient/get-recipient-by-token';
 import { ZSignDocumentEmbedDataSchema } from '@documenso/lib/types/embed-document-sign-schema';
 import { fireAndForget } from '@documenso/lib/universal/fire-and-forget';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import { prisma } from '@documenso/prisma';
 import { Trans } from '@lingui/react/macro';
 import { SigningStatus } from '@prisma/client';
@@ -64,8 +65,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const organisationClaim = await getOrganisationClaimByTeamId({ teamId: firstDocument.teamId });
 
-  const allowWhitelabelling = organisationClaim.flags.embedSigningWhiteLabel;
-  const hidePoweredBy = organisationClaim.flags.hidePoweredBy;
+  const allowWhitelabelling = isClaimFlagEnabled(organisationClaim.flags, 'embedSigningWhiteLabel');
+  const hidePoweredBy = isClaimFlagEnabled(organisationClaim.flags, 'hidePoweredBy');
 
   fireAndForget(async () => {
     const team = await prisma.team.findFirst({
