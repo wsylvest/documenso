@@ -608,6 +608,10 @@ msgstr "{user}님이 문서에 참조(CC)를 추가했습니다."
 msgid "{user} completed their task"
 msgstr "{user}님이 자신의 작업을 완료했습니다."
 
+#: packages/lib/utils/document-audit-logs.ts
+msgid "{user} consented to conduct this transaction electronically"
+msgstr ""
+
 #. placeholder {0}: data.envelopeItemTitle
 #: packages/lib/utils/document-audit-logs.ts
 msgid "{user} created an envelope item with title {0}"
@@ -1065,6 +1069,10 @@ msgstr "확인 이메일을 발송했으며, 곧 받은 편지함에서 확인�
 msgid "A device capable of accessing, opening, and reading documents"
 msgstr "문서에 접근하고 열람 및 읽을 수 있는 장치"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "A device with an up-to-date web browser and an internet connection"
+msgstr ""
+
 #: packages/lib/jobs/definitions/emails/send-signing-email.handler.ts
 msgid "A document was created by your direct template that requires you to {recipientActionVerb} it."
 msgstr "귀하의 다이렉트 템플릿에서 생성된 문서가 있으며, 이 문서에 {recipientActionVerb}해야 합니다."
@@ -1124,6 +1132,10 @@ msgstr "새 구성원이 조직 {organisationName}에 가입했습니다."
 #: apps/remix/app/routes/_unauthenticated+/check-email.tsx
 msgid "A password reset email has been sent, if you have an account you should see it in your inbox shortly."
 msgstr "비밀번호 재설정 이메일을 발송했습니다. 계정이 있으시다면 곧 받은 편지함에서 확인하실 수 있습니다."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "A PDF reader, and a printer or storage to keep a copy for your records"
+msgstr ""
 
 #: packages/lib/utils/document-audit-logs.ts
 msgctxt "Audit log format"
@@ -1226,6 +1238,10 @@ msgstr "액세스 비활성화됨"
 #: apps/remix/app/components/dialogs/team-inherit-member-enable-dialog.tsx
 msgid "Access enabled"
 msgstr "액세스 활성화됨"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Access to the email address this document was sent to"
+msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-auth-dialog.tsx
 #: apps/remix/app/components/general/org-menu-switcher.tsx
@@ -1655,6 +1671,10 @@ msgstr "전자 서명을 완료한 후에는, 기록용으로 문서를 열람�
 #: packages/lib/constants/template.ts
 msgid "After submission, a document will be automatically generated and added to your documents page. You will also receive a notification via email."
 msgstr "제출이 완료되면 문서가 자동으로 생성되어 문서 페이지에 추가됩니다. 또한 이메일로 알림을 받게 됩니다."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Agree and continue"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/document-preferences-reset-dialog.tsx
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
@@ -2494,6 +2514,11 @@ msgstr "기본 텍스트 색상입니다."
 msgid "Before you get started, please confirm your email address by clicking the button below:"
 msgstr "시작하기 전에 아래 버튼을 클릭하여 이메일 주소를 확인해 주세요."
 
+#. placeholder {0}: envelope.title
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Before you review and sign \"{0}\", please confirm that you agree to receive this document and related notices electronically and to sign it with an electronic signature."
+msgstr ""
+
 #: apps/remix/app/components/general/org-menu-switcher.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
@@ -3296,6 +3321,10 @@ msgstr "이메일 확인"
 #: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
 msgid "Confirmation email sent"
 msgstr "확인 이메일이 전송되었습니다"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Consent to do business electronically"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Consent to Electronic Transactions"
@@ -5862,6 +5891,8 @@ msgstr "봉투가 업데이트되었습니다"
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-date-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-date-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-dropdown-field.tsx
@@ -6747,6 +6778,14 @@ msgstr "저는 이 문서의 사본을 받아야 합니다."
 #: packages/lib/server-only/pdf/render-certificate.ts
 msgid "I am the owner of this document"
 msgstr "이 문서의 소유자입니다"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "I have read the disclosure above and I agree to receive this document electronically and to sign it using an electronic signature."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "I prefer a paper copy"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
 msgid "I understand that I am providing my credentials to a 3rd party service configured by this organisation"
@@ -8747,6 +8786,10 @@ msgctxt "Subscription status"
 msgid "Paid"
 msgstr "유료"
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "Paper Copy Requested"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 #: apps/remix/app/components/dialogs/envelopes-bulk-download-dialog.tsx
 msgctxt "Partially signed document (adjective)"
@@ -9448,6 +9491,10 @@ msgstr "문서를 읽고 Documenso 사용을 시작하세요."
 msgid "Read Status"
 msgstr "열람 상태"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Read the full <0>electronic signature disclosure</0>."
+msgstr ""
+
 #: apps/remix/app/components/general/document-signing/document-signing-disclosure.tsx
 msgid "Read the full <0>signature disclosure</0>."
 msgstr "전체 <0>전자 서명 고지</0>를 읽어 보세요."
@@ -9551,6 +9598,10 @@ msgstr "수신자가 문서의 참조(CC) 수신자가 되었습니다"
 #: packages/lib/utils/document-audit-logs.ts
 msgid "Recipient completed their task"
 msgstr "수신자가 자신의 작업을 완료했습니다"
+
+#: packages/lib/utils/document-audit-logs.ts
+msgid "Recipient consented to conduct this transaction electronically"
+msgstr ""
 
 #: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
@@ -12369,6 +12420,10 @@ msgstr "수신자가 문서를 완료하기 위해 서명해야 합니다."
 msgid "The recipient is required to view the document for it to be completed."
 msgstr "수신자가 문서를 완료하기 위해 열람해야 합니다."
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "The sender has been notified that you would like a paper copy and will contact you to arrange signing on paper."
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "The SES identity has been deleted and recreated with the same keys. DNS records remain unchanged."
 msgstr "SES ID가 삭제된 후 동일한 키로 다시 생성되었습니다. DNS 레코드는 변경되지 않았습니다."
@@ -14223,6 +14278,14 @@ msgstr "현재 이 패스키를 제거할 수 없습니다. 나중에 다시 시
 msgid "We are unable to update this passkey at the moment. Please try again later."
 msgstr "현재 이 패스키를 업데이트할 수 없습니다. 나중에 다시 시도해 주세요."
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "We could not record your consent. Please try again."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "We could not send your request for a paper copy. Please try again."
+msgstr ""
+
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "We couldn’t complete the search. Try again."
 msgstr ""
@@ -14717,6 +14780,10 @@ msgstr "이 문서를 편집하려던 것이었나요?"
 msgid "What you can do with teams:"
 msgstr "팀으로 할 수 있는 일:"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "What you need"
+msgstr ""
+
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-recipient-form.tsx
 #: packages/ui/primitives/document-flow/add-signers.tsx
@@ -14727,6 +14794,10 @@ msgstr "활성화하면, 미리 정의된 순서 대신 서명자가 다음 서�
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "When enabled, users signing in via SSO for the first time will also receive their own personal organisation."
 msgstr "활성화하면, 처음으로 SSO를 통해 로그인하는 사용자는 자신의 개인 조직도 함께 생성됩니다."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "When everyone has signed, the completed document will be emailed to you and remains available to download from your signing link at no charge."
+msgstr ""
 
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 msgid "When you click continue, you will be prompted to add the first available authenticator on your system."
@@ -15111,9 +15182,17 @@ msgstr "현재는 문서를 업로드할 수 없습니다."
 msgid "You CC'd the document"
 msgstr "문서의 참조(CC) 수신자가 되었습니다"
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "You chose not to sign this document electronically"
+msgstr ""
+
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You completed your task"
 msgstr "작업을 완료했습니다"
+
+#: packages/lib/utils/document-audit-logs.ts
+msgid "You consented to conduct this transaction electronically"
+msgstr ""
 
 #. placeholder {0}: data.envelopeItemTitle
 #: packages/lib/utils/document-audit-logs.ts
@@ -15342,6 +15421,14 @@ msgstr "팀 그룹을 업데이트했습니다."
 
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "You have verified your email address for <0>{teamName}</0>."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "You may choose to sign on paper instead. Selecting \"I prefer a paper copy\" notifies the sender so they can provide one."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "You may withdraw this consent at any time before you finish signing by closing this page and contacting the sender."
 msgstr ""
 
 #: packages/lib/utils/document-audit-logs.ts
@@ -15668,6 +15755,10 @@ msgstr "템플릿 \"{templateName}\"에 대한 대량 발송 작업이 완료되
 msgid "Your certificate preferences have been updated"
 msgstr ""
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Your copy and your rights"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 msgid "Your current {currentProductName} plan is past due. Please update your payment information."
 msgstr "현재 {currentProductName} 요금제 결제가 연체되었습니다. 결제 정보를 업데이트해 주세요."
@@ -15758,6 +15849,10 @@ msgstr "문서는 데이터를 보관하지 않는 AI 서비스를 사용해 안
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.document.tsx
 msgid "Your document preferences have been updated"
 msgstr "문서 기본 설정이 업데이트되었습니다."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Your electronic signature will carry the same legal effect as a handwritten signature under the U.S. Electronic Signatures in Global and National Commerce Act (ESIGN) and applicable state law."
+msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
 msgid "Your Email"

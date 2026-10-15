@@ -608,6 +608,10 @@ msgstr "Użytkownik {user} odebrał kopię dokumentu"
 msgid "{user} completed their task"
 msgstr "Użytkownik {user} zakończył swoje zadanie"
 
+#: packages/lib/utils/document-audit-logs.ts
+msgid "{user} consented to conduct this transaction electronically"
+msgstr ""
+
 #. placeholder {0}: data.envelopeItemTitle
 #: packages/lib/utils/document-audit-logs.ts
 msgid "{user} created an envelope item with title {0}"
@@ -1065,6 +1069,10 @@ msgstr "Wiadomość potwierdzająca została wysłana. Powinna niedługo dotrze�
 msgid "A device capable of accessing, opening, and reading documents"
 msgstr "Urządzenia zdolnego do otwierania i czytania dokumentów"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "A device with an up-to-date web browser and an internet connection"
+msgstr ""
+
 #: packages/lib/jobs/definitions/emails/send-signing-email.handler.ts
 msgid "A document was created by your direct template that requires you to {recipientActionVerb} it."
 msgstr "Sprawdź i {recipientActionVerb} dokument, który został utworzony przez bezpośredni szablon."
@@ -1124,6 +1132,10 @@ msgstr "Nowy użytkownik dołączył do organizacji {organisationName}"
 #: apps/remix/app/routes/_unauthenticated+/check-email.tsx
 msgid "A password reset email has been sent, if you have an account you should see it in your inbox shortly."
 msgstr "Jeśli masz konto, otrzymasz wiadomość z linkiem do resetowania hasła."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "A PDF reader, and a printer or storage to keep a copy for your records"
+msgstr ""
 
 #: packages/lib/utils/document-audit-logs.ts
 msgctxt "Audit log format"
@@ -1226,6 +1238,10 @@ msgstr "Dostęp został wyłączony"
 #: apps/remix/app/components/dialogs/team-inherit-member-enable-dialog.tsx
 msgid "Access enabled"
 msgstr "Dostęp został włączony"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Access to the email address this document was sent to"
+msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-auth-dialog.tsx
 #: apps/remix/app/components/general/org-menu-switcher.tsx
@@ -1655,6 +1671,10 @@ msgstr "Po podpisaniu dokumentu elektronicznie otrzymasz możliwość jego wyśw
 #: packages/lib/constants/template.ts
 msgid "After submission, a document will be automatically generated and added to your documents page. You will also receive a notification via email."
 msgstr "Przesłany dokument zostanie automatycznie dodany do Twojej strony dokumentów. Otrzymasz również powiadomienie."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Agree and continue"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/document-preferences-reset-dialog.tsx
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
@@ -2494,6 +2514,11 @@ msgstr "Kolor tekstu."
 msgid "Before you get started, please confirm your email address by clicking the button below:"
 msgstr "Zanim zaczniesz, potwierdź adres e-mail, klikając poniższy przycisk:"
 
+#. placeholder {0}: envelope.title
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Before you review and sign \"{0}\", please confirm that you agree to receive this document and related notices electronically and to sign it with an electronic signature."
+msgstr ""
+
 #: apps/remix/app/components/general/org-menu-switcher.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
@@ -3296,6 +3321,10 @@ msgstr "Potwierdź adres e-mail"
 #: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
 msgid "Confirmation email sent"
 msgstr "Wiadomość potwierdzająca została wysłana"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Consent to do business electronically"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Consent to Electronic Transactions"
@@ -5862,6 +5891,8 @@ msgstr "Koperta została zaktualizowana"
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-checkbox-field.tsx
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-date-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-date-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-dropdown-field.tsx
@@ -6747,6 +6778,14 @@ msgstr "Muszę otrzymać kopię dokumentu"
 #: packages/lib/server-only/pdf/render-certificate.ts
 msgid "I am the owner of this document"
 msgstr "Jestem właścicielem dokumentu"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "I have read the disclosure above and I agree to receive this document electronically and to sign it using an electronic signature."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "I prefer a paper copy"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
 msgid "I understand that I am providing my credentials to a 3rd party service configured by this organisation"
@@ -8747,6 +8786,10 @@ msgctxt "Subscription status"
 msgid "Paid"
 msgstr "Opłacona"
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "Paper Copy Requested"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/envelope-download-dialog.tsx
 #: apps/remix/app/components/dialogs/envelopes-bulk-download-dialog.tsx
 msgctxt "Partially signed document (adjective)"
@@ -9448,6 +9491,10 @@ msgstr "Przeczytaj naszą dokumentację, aby rozpocząć korzystanie z Documenso
 msgid "Read Status"
 msgstr "Status odczytu"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Read the full <0>electronic signature disclosure</0>."
+msgstr ""
+
 #: apps/remix/app/components/general/document-signing/document-signing-disclosure.tsx
 msgid "Read the full <0>signature disclosure</0>."
 msgstr "Przeczytaj <0>informacje o podpisie elektronicznym</0>."
@@ -9551,6 +9598,10 @@ msgstr "Odbiorca odebrał kopię dokumentu"
 #: packages/lib/utils/document-audit-logs.ts
 msgid "Recipient completed their task"
 msgstr "Odbiorca zakończył swoje zadanie"
+
+#: packages/lib/utils/document-audit-logs.ts
+msgid "Recipient consented to conduct this transaction electronically"
+msgstr ""
 
 #: apps/remix/app/components/forms/subscription-claim-form.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
@@ -12369,6 +12420,10 @@ msgstr "Odbiorca musi podpisać dokument."
 msgid "The recipient is required to view the document for it to be completed."
 msgstr "Odbiorca musi wyświetlić dokument."
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "The sender has been notified that you would like a paper copy and will contact you to arrange signing on paper."
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "The SES identity has been deleted and recreated with the same keys. DNS records remain unchanged."
 msgstr "Tożsamość SES została usunięta i ponownie utworzona przy użyciu tych samych kluczy. Rekordy DNS pozostają bez zmian."
@@ -14223,6 +14278,14 @@ msgstr "Nie mogliśmy usunąć klucza dostępu. Spróbuj ponownie później."
 msgid "We are unable to update this passkey at the moment. Please try again later."
 msgstr "Nie mogliśmy zaktualizować klucza dostępu. Spróbuj ponownie później."
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "We could not record your consent. Please try again."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "We could not send your request for a paper copy. Please try again."
+msgstr ""
+
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "We couldn’t complete the search. Try again."
 msgstr "Wyszukiwanie nie powiodło się. Spróbuj ponownie."
@@ -14717,6 +14780,10 @@ msgstr "Czy chcesz edytować dokument?"
 msgid "What you can do with teams:"
 msgstr "Dzięki zespołom możesz:"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "What you need"
+msgstr ""
+
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-recipient-form.tsx
 #: packages/ui/primitives/document-flow/add-signers.tsx
@@ -14727,6 +14794,10 @@ msgstr "Podpisujący mogą wybrać, kto powinien podpisać jako następny w kole
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "When enabled, users signing in via SSO for the first time will also receive their own personal organisation."
 msgstr "Po włączeniu tej opcji użytkownicy logujący się po raz pierwszy za pomocą SSO otrzymają również własną osobistą organizację."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "When everyone has signed, the completed document will be emailed to you and remains available to download from your signing link at no charge."
+msgstr ""
 
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 msgid "When you click continue, you will be prompted to add the first available authenticator on your system."
@@ -15111,9 +15182,17 @@ msgstr "Nie możesz przesyłać dokumentów w tej chwili."
 msgid "You CC'd the document"
 msgstr "Odebrałeś kopię dokumentu"
 
+#: apps/remix/app/routes/_recipient+/sign.$token+/rejected.tsx
+msgid "You chose not to sign this document electronically"
+msgstr ""
+
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You completed your task"
 msgstr "Zakończyłeś swoje zadanie"
+
+#: packages/lib/utils/document-audit-logs.ts
+msgid "You consented to conduct this transaction electronically"
+msgstr ""
 
 #. placeholder {0}: data.envelopeItemTitle
 #: packages/lib/utils/document-audit-logs.ts
@@ -15343,6 +15422,14 @@ msgstr "Grupa zespołu została zaktualizowana."
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "You have verified your email address for <0>{teamName}</0>."
 msgstr "Adres e-mail zespołu <0>{teamName}</0> został zweryfikowany."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "You may choose to sign on paper instead. Selecting \"I prefer a paper copy\" notifies the sender so they can provide one."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "You may withdraw this consent at any time before you finish signing by closing this page and contacting the sender."
+msgstr ""
 
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You moved the document to team"
@@ -15668,6 +15755,10 @@ msgstr "Zbiorcza wysyłka szablonu „{templateName}” została zakończona."
 msgid "Your certificate preferences have been updated"
 msgstr "Ustawienia certyfikatu zostały zaktualizowane"
 
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Your copy and your rights"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 msgid "Your current {currentProductName} plan is past due. Please update your payment information."
 msgstr "Twój plan {currentProductName} jest nieopłacony. Zaktualizuj informacje płatnicze."
@@ -15758,6 +15849,10 @@ msgstr "Dokument jest przetwarzany w bezpieczny sposób za pomocą usług AI, kt
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.document.tsx
 msgid "Your document preferences have been updated"
 msgstr "Ustawienia dokumentu zostały zaktualizowane"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Your electronic signature will carry the same legal effect as a handwritten signature under the U.S. Electronic Signatures in Global and National Commerce Act (ESIGN) and applicable state law."
+msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
 msgid "Your Email"
