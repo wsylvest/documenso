@@ -46,11 +46,21 @@ the request body wins when both are present:
 honoured for API token requests. If you call these endpoints directly from the signer's browser you can
 omit the signer details, because the connection already belongs to the signer.
 
+## Access authentication
+
+Every write endpoint enforces the recipient's access authentication exactly as the hosted signing
+page does:
+
+- **Two factor email**: `view` and `field/sign` are allowed before the code is entered, matching the
+  hosted page which shows the document first. `complete` and `reject` require
+  `accessAuthOptions: { type: "TWO_FACTOR_AUTH", method: "email", token: "123456" }`, obtained with
+  `POST /signing/access-code/request`.
+- **ACCOUNT** access or action authentication requires the recipient to be signed in to Documenso and
+  can never be satisfied through the API. Every endpoint returns `401` for such envelopes.
+- **PASSKEY** action authentication requires the Documenso origin and cannot be satisfied either.
+
 <Callout type="warn">
-  The Signing API cannot satisfy **ACCOUNT** access or action authentication, which requires the
-  recipient to be signed in to Documenso, nor **PASSKEY** action authentication, which requires the
-  Documenso origin. Use two factor email, password or no authentication on envelopes you intend to
-  sign natively.
+  Use two factor email, password or no authentication on envelopes you intend to sign natively.
 </Callout>
 
 ## Flow
@@ -86,7 +96,8 @@ omit the signer details, because the connection already belongs to the signer.
   </Step>
 </Steps>
 
-Use `POST /signing/reject` with a `reason` if the signer declines.
+Use `POST /signing/reject` with a `reason` if the signer declines. It takes the same `accessAuthOptions`
+as `complete`.
 
 ## Endpoints
 

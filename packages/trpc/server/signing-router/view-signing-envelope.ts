@@ -1,7 +1,7 @@
 import { viewedDocument } from '@documenso/lib/server-only/document/viewed-document';
-import { extractDocumentAuthMethods } from '@documenso/lib/utils/document-auth';
 
 import { authenticatedProcedure } from '../trpc';
+import { assertSigningAccessAuth } from './assert-signing-access-auth';
 import { getSigningRecipient } from './get-signing-recipient';
 import { resolveSignerRequestMetadata } from './signer-metadata';
 import {
@@ -27,12 +27,15 @@ export const viewSigningEnvelopeRoute = authenticatedProcedure
       },
     });
 
-    const requestMetadata = resolveSignerRequestMetadata({ ctx, signer });
-
-    const { derivedRecipientAccessAuth } = extractDocumentAuthMethods({
-      documentAuth: recipient.envelope.authOptions,
-      recipientAuth: recipient.authOptions,
+    // Mirrors the signing page: the view is recorded once the recipient can
+    // access the envelope, before any two factor code is entered.
+    const derivedRecipientAccessAuth = await assertSigningAccessAuth({
+      recipient,
+      envelopeAuthOptions: recipient.envelope.authOptions,
+      type: 'ACCESS',
     });
+
+    const requestMetadata = resolveSignerRequestMetadata({ ctx, signer });
 
     await viewedDocument({
       token,

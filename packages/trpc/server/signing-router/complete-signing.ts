@@ -4,6 +4,7 @@ import { completeDocumentWithToken } from '@documenso/lib/server-only/document/c
 import { isTspEnvelope } from '@documenso/lib/types/signature-level';
 
 import { authenticatedProcedure } from '../trpc';
+import { assertSigningAccessAuth } from './assert-signing-access-auth';
 import {
   completeSigningMeta,
   ZCompleteSigningRequestSchema,
@@ -27,6 +28,14 @@ export const completeSigningRoute = authenticatedProcedure
         envelopeId: recipient.envelopeId,
         recipientId: recipient.id,
       },
+    });
+
+    // Reject ACCOUNT-gated envelopes up front with a clear error. Two factor
+    // proof is verified by completeDocumentWithToken itself.
+    await assertSigningAccessAuth({
+      recipient,
+      envelopeAuthOptions: recipient.envelope.authOptions,
+      type: 'ACCESS',
     });
 
     const requestMetadata = resolveSignerRequestMetadata({ ctx, signer });

@@ -224,6 +224,66 @@ test.describe('API V2 native signing', () => {
     expect(rejectedLog.userAgent).toBe(SIGNER_USER_AGENT);
   });
 
+  test('enforces recipient access authentication', async ({ request }) => {
+    // Two factor access: viewing and field signing are allowed before the code is
+    // entered (mirroring the signing page), but rejecting requires the code.
+    const twoFactor = await apiSeedPendingDocument(request, {
+      recipients: [{ email: 'native-2fa@test.documenso.com', name: 'Native 2FA' }],
+      globalAccessAuth: ['TWO_FACTOR_AUTH'],
+    });
+
+    const [twoFactorRecipient] = twoFactor.distributeResult.recipients;
+
+    const viewResponse = await signingPost(request, twoFactor.token, 'view', { token: twoFactorRecipient.token });
+
+    expect(viewResponse.ok(), await viewResponse.text()).toBeTruthy();
+
+    const rejectWithoutCode = await signingPost(request, twoFactor.token, 'reject', {
+      token: twoFactorRecipient.token,
+      reason: 'No code supplied',
+    });
+
+    expect(rejectWithoutCode.status()).toBe(401);
+
+    const rejectWithBadCode = await signingPost(request, twoFactor.token, 'reject', {
+      token: twoFactorRecipient.token,
+      reason: 'Bad code supplied',
+      accessAuthOptions: { type: 'TWO_FACTOR_AUTH', token: '000000', method: 'email' },
+    });
+
+    expect(rejectWithBadCode.status()).toBe(401);
+
+    const completeWithoutCode = await signingPost(request, twoFactor.token, 'complete', {
+      token: twoFactorRecipient.token,
+    });
+
+    expect(completeWithoutCode.status()).toBe(401);
+
+    // ACCOUNT access: can never be satisfied through the API.
+    const account = await apiSeedPendingDocument(request, {
+      recipients: [{ email: 'native-account@test.documenso.com', name: 'Native Account' }],
+      globalAccessAuth: ['ACCOUNT'],
+    });
+
+    const [accountRecipient] = account.distributeResult.recipients;
+
+    for (const path of ['view', 'reject', 'complete']) {
+      const response = await signingPost(request, account.token, path, {
+        token: accountRecipient.token,
+        reason: 'Account gated',
+      });
+
+      expect(response.status(), `${path} should be unauthorised`).toBe(401);
+    }
+
+    const accountEnvelopeResponse = await request.get(
+      `${API_BASE_URL}/signing/envelope?token=${accountRecipient.token}`,
+      { headers: authHeader(account.token) },
+    );
+
+    expect(accountEnvelopeResponse.status()).toBe(401);
+  });
+
   test('refuses invalid forwarded IP addresses and tokens from other teams', async ({ request }) => {
     const { token: apiToken, distributeResult } = await apiSeedPendingDocument(request, {
       recipients: [{ email: 'native-scoped@test.documenso.com', name: 'Native Scoped' }],

@@ -1,6 +1,7 @@
 import { signEnvelopeField } from '@documenso/lib/server-only/envelope/sign-envelope-field';
 
 import { authenticatedProcedure } from '../trpc';
+import { assertSigningAccessAuth } from './assert-signing-access-auth';
 import { getSigningRecipient } from './get-signing-recipient';
 import {
   signSigningFieldMeta,
@@ -25,6 +26,12 @@ export const signSigningFieldRoute = authenticatedProcedure
         recipientId: recipient.id,
         fieldId,
       },
+    });
+
+    await assertSigningAccessAuth({
+      recipient,
+      envelopeAuthOptions: recipient.envelope.authOptions,
+      type: 'ACCESS',
     });
 
     const requestMetadata = resolveSignerRequestMetadata({ ctx, signer });
