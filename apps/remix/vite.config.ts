@@ -34,6 +34,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ['docs.dnsgroup.com'],
     port: parseInt(process.env.PORT || '3000', 10),
     strictPort: true,
   },
