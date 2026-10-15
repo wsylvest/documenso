@@ -1,0 +1,197 @@
+---
+title: Signing API
+description: Drive the recipient signing flow from your own UI without the Documenso signing page or an iframe.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+<Callout type="info">
+  The Signing API is specific to this Documenso fork. It is not part of the upstream Documenso API or
+  the official SDKs. The endpoints appear in this instance's OpenAPI document at
+  `/api/v2/openapi.json` under the **Signing** tag.
+</Callout>
+
+## Overview
+
+The embed SDKs and direct links render the Documenso signing page inside your site. The Signing API
+goes one level deeper: your application renders the PDF and fields itself and calls these endpoints to
+record what the signer does. Documenso still owns the audit trail, sealing, certificates and webhooks.
+
+All endpoints:
+
+- Live under `/api/v2/signing/*` and are authenticated with a team API token.
+- Are keyed by the recipient **signing token**, returned by `POST /envelope/distribute` or found in
+  the recipient's signing URL.
+- Only operate on envelopes that belong to the API token's team. A token from another team receives
+  `404`.
+- Only support version 2 envelopes.
+
+## Recording the signer, not your server
+
+Audit log entries record the IP address and user agent of whoever made the request. When your
+backend calls the Signing API on the signer's behalf, those would be your server's details, which
+weakens the evidentiary value of the signed document.
+
+Forward the signer's real connection details on every write call. Two mechanisms are supported, and
+the request body wins when both are present:
+
+| Mechanism | Field |
+| --- | --- |
+| Request body | `signer: { ipAddress, userAgent }` |
+| Headers | `X-Signer-IP-Address`, `X-Signer-User-Agent` |
+
+`ipAddress` must be a valid IPv4 or IPv6 address or the request fails with `400`. Forwarding is only
+honoured for API token requests. If you call these endpoints directly from the signer's browser you can
+omit the signer details, because the connection already belongs to the signer.
+
+<Callout type="warn">
+  The Signing API cannot satisfy **ACCOUNT** access or action authentication, which requires the
+  recipient to be signed in to Documenso, nor **PASSKEY** action authentication, which requires the
+  Documenso origin. Use two factor email, password or no authentication on envelopes you intend to
+  sign natively.
+</Callout>
+
+## Flow
+
+<Steps>
+  <Step>
+    **Load the signing envelope** with `GET /signing/envelope?token=...`. The response contains the
+    envelope, its items with `files[].url` download links, the signing recipient with their fields,
+    the other recipients, `isRecipientsTurn`, and the document's signing options such as date format,
+    timezone and which signature styles are allowed.
+  </Step>
+  <Step>
+    **Record the view** with `POST /signing/view` when you first display the document. This writes the
+    `DOCUMENT_VIEWED` and `DOCUMENT_OPENED` audit entries and fires the `DOCUMENT_OPENED` webhook.
+  </Step>
+  <Step>
+    **Request an access code** with `POST /signing/access-code/request` if the envelope requires two
+    factor access authentication. Documenso emails the code to the recipient.
+  </Step>
+  <Step>
+    **Sign each field** with `POST /signing/field/sign`. Send a `null` value to clear a field. For
+    signature fields send either a typed name or a `data:image/png;base64,...` URL of the drawn
+    signature. Fields protected by action authentication need `authOptions`.
+  </Step>
+  <Step>
+    **Complete** with `POST /signing/complete`. Every required field must be inserted. The response is
+    `SIGNED`, `ALREADY_SIGNED` for a retried request, or `REDIRECT` with a URL when the envelope uses an
+    AES or QES signature level and the signer must finish with the trust service provider.
+  </Step>
+  <Step>
+    **Poll** `GET /signing/status?token=...` or listen for the `DOCUMENT_COMPLETED` webhook. The status
+    moves from `PENDING` to `PROCESSING` while the document is sealed, then `COMPLETED`.
+  </Step>
+</Steps>
+
+Use `POST /signing/reject` with a `reason` if the signer declines.
+
+## Endpoints
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/signing/envelope` | Everything needed to render the signing experience |
+| `GET` | `/signing/status` | Overall envelope signing state |
+| `POST` | `/signing/view` | Record that the recipient opened the document |
+| `POST` | `/signing/access-code/request` | Email a two factor access code to the recipient |
+| `POST` | `/signing/field/sign` | Insert or clear a field value |
+| `POST` | `/signing/complete` | Finalise the recipient's signing |
+| `POST` | `/signing/reject` | Reject the document |
+
+## Example
+
+<Tabs items={['TypeScript', 'curl']}>
+<Tab value="TypeScript">
+```typescript
+const API_TOKEN = process.env.DOCUMENSO_API_TOKEN;
+const BASE_URL = 'https://your-instance.com/api/v2/signing';
+
+type SignerContext = { ipAddress: string; userAgent: string };
+
+const call = async (path: string, body: Record<string, unknown>) => {
+  const response = await fetch(`${BASE_URL}/${path}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${API_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    throw new Error(`${path} failed: ${await response.text()}`);
+  }
+
+  return await response.json();
+};
+
+export const signNatively = async (token: string, signer: SignerContext, typedSignature: string) => {
+  const envelope = await fetch(`${BASE_URL}/envelope?token=${token}`, {
+    headers: { Authorization: `Bearer ${API_TOKEN}` },
+  }).then(async (r) => r.json());
+
+  await call('view', { token, signer });
+
+  for (const field of envelope.recipient.fields) {
+    if (field.type === 'SIGNATURE') {
+      await call('field/sign', {
+        token,
+        fieldId: field.id,
+        fieldValue: { type: 'SIGNATURE', value: typedSignature },
+        signer,
+      });
+    }
+  }
+
+  return await call('complete', { token, signer });
+};
+```
+</Tab>
+<Tab value="curl">
+```bash
+# Load the envelope
+curl "https://your-instance.com/api/v2/signing/envelope?token=$SIGNING_TOKEN" \
+  -H "Authorization: Bearer $API_TOKEN"
+
+# Sign a field, forwarding the signer's details
+curl -X POST "https://your-instance.com/api/v2/signing/field/sign" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "'"$SIGNING_TOKEN"'",
+    "fieldId": 123,
+    "fieldValue": { "type": "SIGNATURE", "value": "Jane Doe" },
+    "signer": { "ipAddress": "203.0.113.42", "userAgent": "Mozilla/5.0 ..." }
+  }'
+
+# Complete
+curl -X POST "https://your-instance.com/api/v2/signing/complete" \
+  -H "Authorization: Bearer $API_TOKEN" \
+  -H "X-Signer-IP-Address: 203.0.113.42" \
+  -H "X-Signer-User-Agent: Mozilla/5.0 ..." \
+  -H "Content-Type: application/json" \
+  -d '{ "token": "'"$SIGNING_TOKEN"'" }'
+```
+</Tab>
+</Tabs>
+
+## Field values
+
+| Field type | `fieldValue.value` |
+| --- | --- |
+| `SIGNATURE` | Typed name string, or `data:image/...;base64,...` for a drawn or uploaded image. `null` clears. |
+| `TEXT`, `NAME`, `EMAIL`, `INITIALS`, `NUMBER`, `DROPDOWN` | String, or `null` to clear. |
+| `DATE` | `true` to insert the current date in the document's format and timezone, `false` to clear. |
+| `CHECKBOX` | Array of selected option indices. |
+| `RADIO` | Selected option index, or `null`. |
+
+Validation rules configured on the field, such as required, min and max length, number ranges and
+character limits, are enforced server side and return `400` with a message.
+
+## See also
+
+- [Envelopes](/docs/developers/api/documents) for creating and distributing documents
+- [Webhooks](/docs/developers/webhooks) for completion notifications
+- [Embedding](/docs/developers/embedding) if you prefer the hosted signing experience

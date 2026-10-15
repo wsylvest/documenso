@@ -5,6 +5,7 @@
     "recipients",
     "fields",
     "templates",
+    "signing",
     "teams",
     "rate-limits",
     "versioning",

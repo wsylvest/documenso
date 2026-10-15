@@ -1,6 +1,4 @@
-import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
-import { prisma } from '@documenso/prisma';
-import { DocumentStatus, EnvelopeType, RecipientRole, SigningStatus } from '@prisma/client';
+import { getEnvelopeSigningStatus } from '@documenso/lib/server-only/envelope/get-envelope-signing-status';
 
 import { maybeAuthenticatedProcedure } from '../trpc';
 import {
@@ -21,60 +19,9 @@ export const signingStatusEnvelopeRoute = maybeAuthenticatedProcedure
       },
     });
 
-    const envelope = await prisma.envelope.findFirst({
-      where: {
-        type: EnvelopeType.DOCUMENT,
-        recipients: {
-          some: {
-            token,
-          },
-        },
-      },
-      include: {
-        recipients: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            signingStatus: true,
-            role: true,
-          },
-        },
-      },
-    });
-
-    if (!envelope) {
-      throw new AppError(AppErrorCode.NOT_FOUND, {
-        message: 'Envelope not found',
-      });
-    }
-
-    // Check if envelope is rejected
-    if (envelope.status === DocumentStatus.REJECTED) {
-      return {
-        status: 'REJECTED',
-      };
-    }
-
-    if (envelope.status === DocumentStatus.COMPLETED) {
-      return {
-        status: 'COMPLETED',
-      };
-    }
-
-    const isComplete =
-      envelope.recipients.some((recipient) => recipient.signingStatus === SigningStatus.REJECTED) ||
-      envelope.recipients.every(
-        (recipient) => recipient.role === RecipientRole.CC || recipient.signingStatus === SigningStatus.SIGNED,
-      );
-
-    if (isComplete) {
-      return {
-        status: 'PROCESSING',
-      };
-    }
+    const status = await getEnvelopeSigningStatus({ token });
 
     return {
-      status: 'PENDING',
+      status,
     };
   });
