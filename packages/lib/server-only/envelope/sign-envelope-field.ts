@@ -1,6 +1,7 @@
 import { isBase64Image } from '@documenso/lib/constants/signatures';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { validateFieldAuth } from '@documenso/lib/server-only/document/validate-field-auth';
+import { assertRecipientHasElectronicConsent } from '@documenso/lib/server-only/envelope/consent-to-electronic-signing';
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import type { TRecipientActionAuth } from '@documenso/lib/types/document-auth';
 import type { RequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
@@ -59,6 +60,9 @@ export const signEnvelopeField = async ({
   if (!recipient) {
     throw new AppError(AppErrorCode.NOT_FOUND);
   }
+
+  // ESIGN consumer consent must be on record before any field is touched.
+  assertRecipientHasElectronicConsent(recipient);
 
   const field = await prisma.field.findFirst({
     where: {

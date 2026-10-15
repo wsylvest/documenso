@@ -26,3 +26,27 @@ export const signDirectSignaturePad = async (page: Page) => {
   await page.getByRole('tab', { name: 'Type' }).click();
   await page.getByTestId('signature-pad-type-input').fill('Signature');
 };
+
+/**
+ * Accept the ESIGN consumer consent dialog shown when a V2 signing page is
+ * opened for a recipient who has not yet consented. No-op when the dialog is
+ * not present (direct templates, already consented recipients).
+ */
+export const acceptElectronicConsent = async (page: Page) => {
+  const checkbox = page.getByTestId('electronic-consent-checkbox');
+
+  // The dialog renders after hydration, so wait briefly for it rather than
+  // checking visibility synchronously.
+  const appeared = await checkbox
+    .waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!appeared) {
+    return;
+  }
+
+  await checkbox.click();
+  await page.getByTestId('electronic-consent-continue').click();
+  await checkbox.waitFor({ state: 'hidden' });
+};

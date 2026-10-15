@@ -99,6 +99,8 @@ test.describe('[ASSISTANT_SIGNING_AUTH]: cross-envelope field access', () => {
   test('envelope.field.sign (V2) rejects fieldId from another envelope', async ({ request }) => {
     const { assistantToken, otherEnvelopeFieldId } = await seedTwoPendingEnvelopes(request);
 
+    await trpcMutation(request, 'envelope.consentToElectronicSigning', { token: assistantToken });
+
     const res = await trpcMutation(request, 'envelope.field.sign', {
       token: assistantToken,
       fieldId: otherEnvelopeFieldId,

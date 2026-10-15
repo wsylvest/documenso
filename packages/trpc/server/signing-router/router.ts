@@ -1,5 +1,6 @@
 import { router } from '../trpc';
 import { completeSigningRoute } from './complete-signing';
+import { consentSigningRoute } from './consent-signing';
 import { getSigningEnvelopeRoute } from './get-signing-envelope';
 import { getSigningStatusRoute } from './get-signing-status';
 import { rejectSigningRoute } from './reject-signing';
@@ -20,6 +21,7 @@ export const signingRouter = router({
   getEnvelope: getSigningEnvelopeRoute,
   getStatus: getSigningStatusRoute,
   view: viewSigningEnvelopeRoute,
+  consent: consentSigningRoute,
   signField: signSigningFieldRoute,
   complete: completeSigningRoute,
   reject: rejectSigningRoute,

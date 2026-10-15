@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 import { FieldType } from '@prisma/client';
 
 import { apiSignin, apiSignout } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 test.describe.configure({ mode: 'parallel', timeout: 60000 });
 
@@ -121,6 +121,8 @@ test.skip('[DOCUMENT_AUTH]: should deny signing document when required for globa
   const { token } = recipient;
 
   await page.goto(`/sign/${token}`);
+
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Complete' }).click();
@@ -149,6 +151,8 @@ test('[DOCUMENT_AUTH]: should deny signing fields when required for global auth'
     const { token, fields } = recipient;
 
     await page.goto(`/sign/${token}`);
+
+    await acceptElectronicConsent(page);
     await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 
     for (const field of fields) {

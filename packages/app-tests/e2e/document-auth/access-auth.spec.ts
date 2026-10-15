@@ -5,6 +5,7 @@ import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, test } from '@playwright/test';
 
 import { apiSignin } from '../fixtures/authentication';
+import { acceptElectronicConsent } from '../fixtures/signature';
 
 test('[DOCUMENT_AUTH]: should grant access when not required', async ({ page }) => {
   const { user, team } = await seedUser();
@@ -26,6 +27,7 @@ test('[DOCUMENT_AUTH]: should grant access when not required', async ({ page }) 
 
   for (const token of tokens) {
     await page.goto(`/sign/${token}`);
+    await acceptElectronicConsent(page);
     await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
   }
 });
@@ -60,6 +62,8 @@ test('[DOCUMENT_AUTH]: should allow or deny access when required', async ({ page
     const { email, token } = recipient;
 
     await page.goto(`/sign/${token}`);
+
+    await acceptElectronicConsent(page);
     await expect(page.getByRole('heading', { name: 'Authentication required' })).toBeVisible();
     await expect(page.getByRole('paragraph')).toContainText(email);
   }
@@ -74,6 +78,8 @@ test('[DOCUMENT_AUTH]: should allow or deny access when required', async ({ page
     const { email, token } = recipient;
 
     await page.goto(`/sign/${token}`);
+
+    await acceptElectronicConsent(page);
 
     // Recipient should be granted access.
     if (recipient.email === recipientWithAccount.email) {

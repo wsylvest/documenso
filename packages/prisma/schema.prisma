@@ -641,6 +641,8 @@ model Recipient {
   expirationNotifiedAt DateTime?
   sentAt               DateTime?
   signedAt             DateTime?
+  /// When the recipient affirmatively consented to conduct this transaction electronically (ESIGN consumer consent).
+  electronicConsentAt  DateTime?
   lastReminderSentAt   DateTime?
   nextReminderAt       DateTime?
   reminderCount        Int           @default(0)

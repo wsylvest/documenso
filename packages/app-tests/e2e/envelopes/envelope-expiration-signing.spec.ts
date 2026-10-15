@@ -7,7 +7,7 @@ import { type APIRequestContext, expect, test } from '@playwright/test';
 
 import { apiSeedPendingDocument } from '../fixtures/api-seeds';
 import { apiSignin } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 test.describe.configure({ mode: 'parallel' });
 
@@ -29,6 +29,8 @@ test('[ENVELOPE_EXPIRATION]: expired recipient is redirected to expired page', a
   });
 
   await page.goto(`/sign/${recipient.token}`);
+
+  await acceptElectronicConsent(page);
   await page.waitForURL(`/sign/${recipient.token}/expired`);
 
   await expect(page.getByText('Signing Deadline Expired')).toBeVisible();
@@ -54,6 +56,8 @@ test('[ENVELOPE_EXPIRATION]: non-expired recipient can access signing page', asy
 
   await page.goto(`/sign/${recipient.token}`);
 
+  await acceptElectronicConsent(page);
+
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 });
 
@@ -76,6 +80,8 @@ test('[ENVELOPE_EXPIRATION]: recipient with null expiresAt can sign normally', a
   expect(dbRecipient.expiresAt).toBeNull();
 
   await page.goto(`/sign/${recipient.token}`);
+
+  await acceptElectronicConsent(page);
 
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 });
@@ -174,6 +180,8 @@ test('[ENVELOPE_EXPIRATION]: expired recipient cannot sign a field via the V2 AP
   if (!textField) {
     throw new Error('TEXT field not found on the seeded envelope');
   }
+
+  await trpcMutation(request, 'envelope.consentToElectronicSigning', { token: recipient.token });
 
   // Sanity check: the recipient can sign while the signing window is open.
   const beforeExpiry = await trpcMutation(request, 'envelope.field.sign', {

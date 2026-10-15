@@ -6,6 +6,7 @@ import { DocumentStatus, FieldType } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { apiSeedPendingDocument } from '../fixtures/api-seeds';
+import { acceptElectronicConsent } from '../fixtures/signature';
 
 const PDF_PAGE_SELECTOR = 'img[data-page-number]';
 
@@ -26,6 +27,8 @@ test.describe('V2 envelope field insertion during signing', () => {
     const { token } = distributeResult.recipients[0];
 
     await page.goto(`/sign/${token}`);
+
+    await acceptElectronicConsent(page);
 
     // wait for PDF to be visible
     await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
@@ -135,6 +138,8 @@ test.describe('V2 envelope field insertion during signing', () => {
     const fields = envelope.fields;
 
     await page.goto(`/sign/${token}`);
+
+    await acceptElectronicConsent(page);
 
     // wait for PDF to be visible
     await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });

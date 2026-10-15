@@ -85,7 +85,42 @@ test.describe('API V2 native signing', () => {
     expect(fileResponse.status()).toBe(200);
     expect(fileResponse.headers()['content-type']).toContain('application/pdf');
 
-    // 2. Record the view with forwarded signer metadata via headers.
+    // 2. Field signing is refused until the recipient has consented to sign electronically.
+    const signBeforeConsent = await signingPost(request, apiToken, 'field/sign', {
+      token: signingToken,
+      fieldId: textField.id,
+      fieldValue: { type: FieldType.TEXT, value: 'too early' },
+    });
+
+    expect(signBeforeConsent.status()).toBe(403);
+    expect(await signBeforeConsent.text()).toContain('ELECTRONIC_CONSENT_REQUIRED');
+
+    const consentResponse = await signingPost(
+      request,
+      apiToken,
+      'consent',
+      { token: signingToken },
+      {
+        'x-signer-ip-address': SIGNER_IP,
+        'x-signer-user-agent': SIGNER_USER_AGENT,
+      },
+    );
+
+    expect(consentResponse.ok(), await consentResponse.text()).toBeTruthy();
+
+    const consentedRecipient = await prisma.recipient.findUniqueOrThrow({ where: { id: recipient.id } });
+
+    expect(consentedRecipient.electronicConsentAt).not.toBeNull();
+
+    // Consent is idempotent.
+    const repeatConsent = await signingPost(request, apiToken, 'consent', { token: signingToken });
+
+    expect(repeatConsent.ok()).toBeTruthy();
+    expect(new Date((await repeatConsent.json()).electronicConsentAt).getTime()).toBe(
+      consentedRecipient.electronicConsentAt?.getTime(),
+    );
+
+    // 3. Record the view with forwarded signer metadata via headers.
     const viewResponse = await signingPost(
       request,
       apiToken,
@@ -176,7 +211,7 @@ test.describe('API V2 native signing', () => {
       },
     });
 
-    expect(auditLogs.length).toBeGreaterThanOrEqual(4);
+    expect(auditLogs.length).toBeGreaterThanOrEqual(5);
 
     for (const auditLog of auditLogs) {
       expect(auditLog.ipAddress).toBe(SIGNER_IP);
@@ -195,6 +230,8 @@ test.describe('API V2 native signing', () => {
 
     const [recipient] = distributeResult.recipients;
 
+    // Rejection does not require consent: a signer who never agreed to sign
+    // electronically must still be able to decline.
     const rejectResponse = await signingPost(request, apiToken, 'reject', {
       token: recipient.token,
       reason: 'The totals are wrong',
@@ -237,6 +274,13 @@ test.describe('API V2 native signing', () => {
     const viewResponse = await signingPost(request, twoFactor.token, 'view', { token: twoFactorRecipient.token });
 
     expect(viewResponse.ok(), await viewResponse.text()).toBeTruthy();
+
+    // Consent is allowed before the code is entered, like viewing.
+    const consentResponse = await signingPost(request, twoFactor.token, 'consent', {
+      token: twoFactorRecipient.token,
+    });
+
+    expect(consentResponse.ok(), await consentResponse.text()).toBeTruthy();
 
     const rejectWithoutCode = await signingPost(request, twoFactor.token, 'reject', {
       token: twoFactorRecipient.token,

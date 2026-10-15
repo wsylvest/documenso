@@ -22,6 +22,8 @@ import type { Route } from './+types/rejected';
 export async function loader({ params, request }: Route.LoaderArgs) {
   const { user } = await getOptionalSession(request);
 
+  const requestedPaperCopy = new URL(request.url).searchParams.get('paper') === '1';
+
   const { token } = params;
 
   if (!token) {
@@ -66,6 +68,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
       recipientReference,
       truncatedTitle,
       branding,
+      requestedPaperCopy,
     };
   }
 
@@ -74,6 +77,7 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     isDocumentAccessValid: false,
     recipientReference,
     branding,
+    requestedPaperCopy,
   };
 }
 
@@ -82,7 +86,7 @@ export default function RejectedSigningPage({ loaderData }: Route.ComponentProps
   const user = sessionData?.user;
   const cspNonce = useCspNonce();
 
-  const { isDocumentAccessValid, recipientReference, truncatedTitle, branding } = loaderData;
+  const { isDocumentAccessValid, recipientReference, truncatedTitle, branding, requestedPaperCopy } = loaderData;
 
   if (!isDocumentAccessValid) {
     return (
@@ -106,19 +110,30 @@ export default function RejectedSigningPage({ loaderData }: Route.ComponentProps
             <XCircle className="h-10 w-10 text-destructive" />
 
             <h2 className="max-w-[35ch] text-center font-semibold text-2xl leading-normal md:text-3xl lg:text-4xl">
-              <Trans>Document Rejected</Trans>
+              {requestedPaperCopy ? <Trans>Paper Copy Requested</Trans> : <Trans>Document Rejected</Trans>}
             </h2>
           </div>
 
           <div className="mt-4 flex items-center text-center text-destructive text-sm">
-            <Trans>You have rejected this document</Trans>
+            {requestedPaperCopy ? (
+              <Trans>You chose not to sign this document electronically</Trans>
+            ) : (
+              <Trans>You have rejected this document</Trans>
+            )}
           </div>
 
           <p className="mt-6 max-w-[60ch] text-center text-muted-foreground text-sm">
-            <Trans>
-              The document owner has been notified of your decision. They may contact you with further instructions if
-              necessary.
-            </Trans>
+            {requestedPaperCopy ? (
+              <Trans>
+                The sender has been notified that you would like a paper copy and will contact you to arrange signing on
+                paper.
+              </Trans>
+            ) : (
+              <Trans>
+                The document owner has been notified of your decision. They may contact you with further instructions if
+                necessary.
+              </Trans>
+            )}
           </p>
 
           <p className="mt-2 max-w-[60ch] text-center text-muted-foreground text-sm">

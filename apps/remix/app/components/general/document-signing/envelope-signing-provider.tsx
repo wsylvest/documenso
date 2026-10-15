@@ -48,6 +48,14 @@ export type EnvelopeSigningContextValue = {
     _value: TSignEnvelopeFieldValue,
     authOptions?: TRecipientActionAuth,
   ) => Promise<Pick<Field, 'id' | 'inserted'>>;
+
+  /**
+   * Whether the recipient still needs to consent to conduct the transaction
+   * electronically before any field can be signed. Always false for direct
+   * templates, which have no persisted recipient until completion.
+   */
+  requiresElectronicConsent: boolean;
+  markElectronicConsent: (_consentedAt: Date) => void;
 };
 
 const EnvelopeSigningContext = createContext<EnvelopeSigningContextValue | null>(null);
@@ -137,6 +145,18 @@ export const EnvelopeSigningProvider = ({
   const [showPendingFieldTooltip, setShowPendingFieldTooltip] = useState(false);
 
   const isDirectTemplate = envelope.type === EnvelopeType.TEMPLATE;
+
+  const requiresElectronicConsent = !isDirectTemplate && !recipient.electronicConsentAt;
+
+  const markElectronicConsent = (consentedAt: Date) => {
+    setEnvelopeData((prev) => ({
+      ...prev,
+      recipient: {
+        ...prev.recipient,
+        electronicConsentAt: consentedAt,
+      },
+    }));
+  };
 
   const { mutateAsync: signEnvelopeField } = trpc.envelope.field.sign.useMutation({
     ...DO_NOT_INVALIDATE_QUERY_ON_MUTATION,
@@ -426,6 +446,9 @@ export const EnvelopeSigningProvider = ({
         selectedAssistantRecipientFields,
 
         signField,
+
+        requiresElectronicConsent,
+        markElectronicConsent,
       }}
     >
       {children}

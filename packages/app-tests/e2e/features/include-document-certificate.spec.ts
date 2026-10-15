@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 import { DocumentStatus, FieldType } from '@prisma/client';
 
 import { apiSignin } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 test.describe('Signing Certificate Tests', () => {
   test('individual document should always include signing certificate', async ({ page }) => {
@@ -46,6 +46,7 @@ test.describe('Signing Certificate Tests', () => {
 
     // Sign the document
     await page.goto(`/sign/${recipient.token}`);
+    await acceptElectronicConsent(page);
 
     await signSignaturePad(page);
 
@@ -154,6 +155,7 @@ test.describe('Signing Certificate Tests', () => {
 
     // Sign the document
     await page.goto(`/sign/${recipient.token}`);
+    await acceptElectronicConsent(page);
 
     await signSignaturePad(page);
 
@@ -257,6 +259,7 @@ test.describe('Signing Certificate Tests', () => {
 
     // Sign the document
     await page.goto(`/sign/${recipient.token}`);
+    await acceptElectronicConsent(page);
 
     await signSignaturePad(page);
 

@@ -6,7 +6,7 @@ import { expect, type Page, test } from '@playwright/test';
 import type { Document, Team } from '@prisma/client';
 
 import { apiSignin } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 /**
  * Test helper to complete the document creation flow with duplicate recipients
@@ -194,6 +194,7 @@ test.describe('[DOCUMENT_FLOW]: Duplicate Recipients', () => {
       await page.goto(`/sign/${recipient.token}`, {
         waitUntil: 'networkidle',
       });
+      await acceptElectronicConsent(page);
 
       await page.waitForSelector(PDF_VIEWER_PAGE_SELECTOR);
 

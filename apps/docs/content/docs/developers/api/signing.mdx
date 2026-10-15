@@ -73,6 +73,15 @@ page does:
     timezone and which signature styles are allowed.
   </Step>
   <Step>
+    **Obtain and record consent** with `POST /signing/consent`. Show the consumer disclosure first
+    (what hardware and software the signer needs, that documents and notices arrive electronically,
+    how to withdraw consent, and how to get a paper copy) and only call this after the signer actively
+    agrees, for example by ticking a checkbox. Field signing and completion return `403
+    ELECTRONIC_CONSENT_REQUIRED` until consent is on record. The event is written to the audit log as
+    `DOCUMENT_RECIPIENT_CONSENTED` with the disclosure version. If the signer declines, call
+    `POST /signing/reject` with the reason they prefer a paper copy.
+  </Step>
+  <Step>
     **Record the view** with `POST /signing/view` when you first display the document. This writes the
     `DOCUMENT_VIEWED` and `DOCUMENT_OPENED` audit entries and fires the `DOCUMENT_OPENED` webhook.
   </Step>
@@ -105,6 +114,7 @@ as `complete`.
 | --- | --- | --- |
 | `GET` | `/signing/envelope` | Everything needed to render the signing experience |
 | `GET` | `/signing/status` | Overall envelope signing state |
+| `POST` | `/signing/consent` | Record the signer's consent to conduct business electronically |
 | `POST` | `/signing/view` | Record that the recipient opened the document |
 | `POST` | `/signing/access-code/request` | Email a two factor access code to the recipient |
 | `POST` | `/signing/field/sign` | Insert or clear a field value |
@@ -143,6 +153,7 @@ export const signNatively = async (token: string, signer: SignerContext, typedSi
     headers: { Authorization: `Bearer ${API_TOKEN}` },
   }).then(async (r) => r.json());
 
+  await call('consent', { token, signer });
   await call('view', { token, signer });
 
   for (const field of envelope.recipient.fields) {

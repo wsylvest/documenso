@@ -15,7 +15,7 @@ import {
 import { DateTime } from 'luxon';
 
 import { apiSignin } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 // Can't use the function in server-only/document due to it indirectly using
 // require imports.
@@ -444,6 +444,8 @@ test('[DOCUMENT_FLOW]: should be able to create, send with redirect url, sign a 
   });
 
   await page.goto(`/sign/${token}`);
+
+  await acceptElectronicConsent(page);
   await page.waitForURL(`/sign/${token}`);
 
   // Check if document has been viewed
@@ -482,6 +484,8 @@ test('[DOCUMENT_FLOW]: should be able to sign a document with custom date', asyn
   const [recipientField] = fields;
 
   await page.goto(`/sign/${token}`);
+
+  await acceptElectronicConsent(page);
   await page.waitForURL(`/sign/${token}`);
 
   await page.locator(`#field-${recipientField.id}`).getByRole('button').click();
@@ -612,6 +616,8 @@ test('[DOCUMENT_FLOW]: should be able to create and sign a document with 3 recip
     }
 
     await page.goto(`/sign/${recipient?.token}`);
+
+    await acceptElectronicConsent(page);
     await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
     await signSignaturePad(page);
 
@@ -664,11 +670,15 @@ test('[DOCUMENT_FLOW]: should prevent out-of-order signing in sequential mode', 
 
   await page.goto(`/sign/${pendingRecipient?.token}`);
 
+  await acceptElectronicConsent(page);
+
   await expect(page).toHaveURL(`/sign/${pendingRecipient?.token}/waiting`);
 
   const activeRecipient = recipients.find((r) => r.signingOrder === 1);
 
   await page.goto(`/sign/${activeRecipient?.token}`);
+
+  await acceptElectronicConsent(page);
 
   await expect(page).not.toHaveURL(`/sign/${activeRecipient?.token}/waiting`);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
@@ -717,10 +727,12 @@ test('[DOCUMENT_FLOW]: should skip CC recipients in sequential signing order', a
 
   // Sequential order is enforced: the last signer must wait while the first signer is pending.
   await page.goto(`/sign/${lastSigner?.token}`);
+  await acceptElectronicConsent(page);
   await expect(page).toHaveURL(`/sign/${lastSigner?.token}/waiting`);
 
   // Sign as the first signer.
   await page.goto(`/sign/${firstSigner?.token}`);
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
   await signSignaturePad(page);
 
@@ -736,6 +748,7 @@ test('[DOCUMENT_FLOW]: should skip CC recipients in sequential signing order', a
 
   // The CC recipient at order 2 must not block the last signer at order 3.
   await page.goto(`/sign/${lastSigner?.token}`);
+  await acceptElectronicConsent(page);
   await expect(page).not.toHaveURL(`/sign/${lastSigner?.token}/waiting`);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 
@@ -808,6 +821,7 @@ test('[DOCUMENT_FLOW]: should skip unsigned CC recipients in sequential signing 
 
   // Sign as the first signer.
   await page.goto(`/sign/${firstSigner?.token}`);
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
   await signSignaturePad(page);
 
@@ -823,6 +837,7 @@ test('[DOCUMENT_FLOW]: should skip unsigned CC recipients in sequential signing 
 
   // The unsigned CC recipient at order 2 must not block the last signer at order 3.
   await page.goto(`/sign/${lastSigner?.token}`);
+  await acceptElectronicConsent(page);
   await expect(page).not.toHaveURL(`/sign/${lastSigner?.token}/waiting`);
   await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 

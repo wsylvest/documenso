@@ -37,6 +37,7 @@ import { DocumentSigningAttachmentsPopover } from '../document-signing/document-
 import { EnvelopeItemSelector } from '../envelope-editor/envelope-file-selector';
 import EnvelopeSignerForm from '../envelope-signing/envelope-signer-form';
 import { EnvelopeSignerHeader } from '../envelope-signing/envelope-signer-header';
+import { DocumentSigningConsentDialog } from './document-signing-consent-dialog';
 import { DocumentSigningMobileWidget } from './document-signing-mobile-widget';
 import { DocumentSigningRejectDialog } from './document-signing-reject-dialog';
 import { useRequiredEnvelopeSigningContext } from './envelope-signing-provider';
@@ -89,6 +90,8 @@ export const DocumentSigningPageViewV2 = () => {
       <SignFieldDropdownDialog.Root />
       <SignFieldSignatureDialog.Root />
       <SignFieldCheckboxDialog.Root />
+
+      <DocumentSigningConsentDialog />
 
       <EnvelopeSignerHeader />
 

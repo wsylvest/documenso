@@ -26,6 +26,7 @@ import { extractDocumentAuthMethods } from '../../utils/document-auth';
 import type { EnvelopeIdOptions } from '../../utils/envelope';
 import { mapSecondaryIdToDocumentId, unsafeBuildEnvelopeIdQuery } from '../../utils/envelope';
 import { assertRecipientNotExpired } from '../../utils/recipients';
+import { assertRecipientHasElectronicConsent } from '../envelope/consent-to-electronic-signing';
 import { getIsRecipientsTurnToSign } from '../recipient/get-is-recipient-turn';
 import { triggerWebhook } from '../webhooks/trigger/trigger-webhook';
 import { isRecipientAuthorized } from './is-recipient-authorized';
@@ -127,6 +128,12 @@ export const completeDocumentWithToken = async ({
   }
 
   assertRecipientNotExpired(recipient);
+
+  // ESIGN consumer consent is enforced for envelope-editor (V2) documents. Legacy
+  // V1 documents predate the consent step and keep their original behaviour.
+  if (envelope.internalVersion === 2) {
+    assertRecipientHasElectronicConsent(recipient);
+  }
 
   if (recipient.signingStatus === SigningStatus.REJECTED) {
     throw new AppError(AppErrorCode.UNKNOWN_ERROR, {

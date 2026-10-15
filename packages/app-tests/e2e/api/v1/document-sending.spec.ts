@@ -15,7 +15,7 @@ import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, test } from '@playwright/test';
 import { nanoid } from 'nanoid';
 
-import { signSignaturePad } from '../../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../../fixtures/signature';
 
 test.describe('Document API', () => {
   test('sendDocument: should respect sendCompletionEmails setting', async ({ request }) => {
@@ -594,16 +594,19 @@ test.describe('Document API', () => {
 
     // The CC recipient at order 1 must not block signer A at order 2.
     await page.goto(`/sign/${signerA.token}`);
+    await acceptElectronicConsent(page);
     await expect(page).not.toHaveURL(`/sign/${signerA.token}/waiting`);
     await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
 
     // Signer B at order 3 must still wait for signer A.
     await page.goto(`/sign/${signerB.token}`);
+    await acceptElectronicConsent(page);
     await expect(page).toHaveURL(`/sign/${signerB.token}/waiting`);
 
     // Sign as signer A then signer B.
     for (const signer of [signerA, signerB]) {
       await page.goto(`/sign/${signer.token}`);
+      await acceptElectronicConsent(page);
       await expect(page.getByRole('heading', { name: 'Sign Document' })).toBeVisible();
       await signSignaturePad(page);
 

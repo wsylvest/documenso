@@ -7,6 +7,7 @@ import { bulkCancelEnvelopesRoute } from './bulk-cancel-envelopes';
 import { bulkDeleteEnvelopesRoute } from './bulk-delete-envelopes';
 import { bulkMoveEnvelopesRoute } from './bulk-move-envelopes';
 import { cancelEnvelopeRoute } from './cancel-envelope';
+import { consentToElectronicSigningRoute } from './consent-to-electronic-signing';
 import { createEnvelopeRoute } from './create-envelope';
 import { createEnvelopeItemsRoute } from './create-envelope-items';
 import { deleteEnvelopeRoute } from './delete-envelope';
@@ -112,4 +113,5 @@ export const envelopeRouter = router({
   distribute: distributeEnvelopeRoute,
   redistribute: redistributeEnvelopeRoute,
   signingStatus: signingStatusEnvelopeRoute,
+  consentToElectronicSigning: consentToElectronicSigningRoute,
 });

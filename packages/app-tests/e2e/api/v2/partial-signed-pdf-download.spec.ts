@@ -42,6 +42,8 @@ const signAndCompleteRecipient = async ({
   documentId: number;
   fieldId: number;
 }) => {
+  await trpcMutation(request, 'envelope.consentToElectronicSigning', { token });
+
   await trpcMutation(request, 'envelope.field.sign', {
     token,
     fieldId,

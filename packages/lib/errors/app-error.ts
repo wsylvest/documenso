@@ -65,6 +65,12 @@ export enum AppErrorCode {
   RECIPIENT_OUT_OF_TURN = 'RECIPIENT_OUT_OF_TURN',
 
   /**
+   * A signing action was attempted before the recipient affirmatively
+   * consented to conduct the transaction electronically.
+   */
+  ELECTRONIC_CONSENT_REQUIRED = 'ELECTRONIC_CONSENT_REQUIRED',
+
+  /**
    * A signer recipient does not have a signature field assigned. Thrown when
    * distributing an envelope or using a direct template where at least one
    * signer has no signature field.
@@ -122,6 +128,7 @@ export const genericErrorCodeToTrpcErrorCodeMap: Record<string, { code: string; 
   [AppErrorCode.MISSING_SIGNATURE_FIELD]: { code: 'BAD_REQUEST', status: 400 },
   [AppErrorCode.RECIPIENT_HAS_UNSIGNED_FIELDS]: { code: 'BAD_REQUEST', status: 400 },
   [AppErrorCode.RECIPIENT_OUT_OF_TURN]: { code: 'BAD_REQUEST', status: 400 },
+  [AppErrorCode.ELECTRONIC_CONSENT_REQUIRED]: { code: 'FORBIDDEN', status: 403 },
   [AppErrorCode.CSC_INSTANCE_MODE_MISMATCH]: { code: 'BAD_REQUEST', status: 400 },
   [AppErrorCode.CSC_UNLICENSED]: { code: 'FORBIDDEN', status: 403 },
   [AppErrorCode.CSC_PROVIDER_INFO_FAILED]: { code: 'INTERNAL_SERVER_ERROR', status: 500 },

@@ -8,6 +8,7 @@ import { seedDirectTemplate } from '@documenso/prisma/seed/templates';
 import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, type Page, test } from '@playwright/test';
 import { DocumentDataType, FieldType } from '@prisma/client';
+import { acceptElectronicConsent } from './fixtures/signature';
 
 const BRANDING_URL = 'https://brand.example/signing?source=documenso';
 const PDF_PAGE_SELECTOR = 'img[data-page-number]';
@@ -71,6 +72,8 @@ test('[SIGNING_BRANDING]: V1 normal signing renders custom logo as a plain image
 
   await page.goto(`/sign/${recipients[0].token}`);
 
+  await acceptElectronicConsent(page);
+
   await expectPlainBrandingLogo(page, `${team.name}'s Logo`);
 });
 
@@ -97,6 +100,8 @@ test('[SIGNING_BRANDING]: V2 signing renders custom logo as a plain image', asyn
   });
 
   await page.goto(`/sign/${recipients[0].token}`);
+
+  await acceptElectronicConsent(page);
   await expectPlainBrandingLogo(page, `${team.name}'s Logo`);
 
   await page.goto(formatDirectTemplatePath(directTemplate.directLink?.token || ''));
@@ -115,6 +120,8 @@ test('[SIGNING_BRANDING]: V2 signing keeps internal link for the Documenso fallb
   });
 
   await page.goto(`/sign/${recipients[0].token}`);
+
+  await acceptElectronicConsent(page);
 
   const fallbackLogoLink = page.locator('a[href="/"]').first();
 
@@ -162,6 +169,7 @@ test('[SIGNING_BRANDING]: custom logo renders when branding is enabled and is hi
 
   // Branding enabled → the custom logo is rendered on the signing page.
   await page.goto(`/sign/${recipients[0].token}`);
+  await acceptElectronicConsent(page);
   await expectPlainBrandingLogo(page, `${team.name}'s Logo`);
 
   // Disable branding while keeping the stored logo (the team inherits this).
@@ -173,6 +181,7 @@ test('[SIGNING_BRANDING]: custom logo renders when branding is enabled and is hi
   // Branding disabled → the custom logo is gone and the Documenso fallback
   // (an internal link to "/") is shown instead.
   await page.goto(`/sign/${recipients[0].token}`);
+  await acceptElectronicConsent(page);
 
   await expect(page.getByRole('img', { name: `${team.name}'s Logo` })).toHaveCount(0);
   await expect(page.locator('a[href="/"]').first()).toBeVisible();

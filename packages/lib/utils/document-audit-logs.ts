@@ -569,6 +569,11 @@ export const formatDocumentAuditLogAction = (i18n: I18n, auditLog: TDocumentAudi
         user: msg`${user} sent an email to ${data.recipientEmail}`,
       };
     })
+    .with({ type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED }, () => ({
+      anonymous: msg`Recipient consented to conduct this transaction electronically`,
+      you: msg`You consented to conduct this transaction electronically`,
+      user: msg`${user} consented to conduct this transaction electronically`,
+    }))
     .with({ type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED }, () => ({
       anonymous: msg({ message: `Document completed`, context: `Audit log format` }),
       you: msg({ message: `Document completed`, context: `Audit log format` }),

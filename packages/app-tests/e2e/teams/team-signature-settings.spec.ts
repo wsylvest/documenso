@@ -5,6 +5,7 @@ import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, test } from '@playwright/test';
 
 import { apiSignin } from '../fixtures/authentication';
+import { acceptElectronicConsent } from '../fixtures/signature';
 
 test('[TEAMS]: check that default team signature settings are all enabled', async ({ page }) => {
   const { user, team } = await seedUser();
@@ -28,6 +29,7 @@ test('[TEAMS]: check that default team signature settings are all enabled', asyn
 
   // Go to document and check that the signatured tabs are correct.
   await page.goto(`/sign/${document.recipients[0].token}`);
+  await acceptElectronicConsent(page);
   await page.getByTestId('signature-pad-dialog-button').click();
 
   // Check the tab values
@@ -84,6 +86,7 @@ test('[TEAMS]: check signature modes can be disabled', async ({ page }) => {
 
     // Go to document and check that the signature tabs are correct.
     await page.goto(`/sign/${document.recipients[0].token}`);
+    await acceptElectronicConsent(page);
     await page.getByTestId('signature-pad-dialog-button').click();
 
     // Wait for signature dialog to fully load

@@ -17,6 +17,7 @@ import { expect, test } from '@playwright/test';
 import { FieldType } from '@prisma/client';
 
 import { apiSignin } from '../fixtures/authentication';
+import { acceptElectronicConsent } from '../fixtures/signature';
 
 export const PDF_PAGE_SELECTOR = 'img[data-page-number]';
 
@@ -124,9 +125,13 @@ test.describe('PDF Viewer Rendering', () => {
       await addSecondEnvelopeItem(documentV2.id);
 
       await page.goto(`/sign/${recipientsV1[0].token}`);
+
+      await acceptElectronicConsent(page);
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
 
       await page.goto(`/sign/${recipientsV2[0].token}`);
+
+      await acceptElectronicConsent(page);
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
       await page.getByRole('button', { name: /Page 2/ }).click();
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });

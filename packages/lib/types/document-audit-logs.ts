@@ -44,6 +44,7 @@ export const ZDocumentAuditLogTypeSchema = z.enum([
   'DOCUMENT_VIEWED', // When the document is viewed by a recipient.
   'DOCUMENT_RECIPIENT_REJECTED', // When a recipient rejects the document.
   'DOCUMENT_RECIPIENT_COMPLETED', // When a recipient completes all their required tasks for the document.
+  'DOCUMENT_RECIPIENT_CONSENTED', // When a recipient affirmatively consents to conduct the transaction electronically.
   'DOCUMENT_RECIPIENT_EXPIRED', // When a recipient's signing window expires.
   'DOCUMENT_SENT', // When the document transitions from DRAFT to PENDING.
   'DOCUMENT_TITLE_UPDATED', // When the document title is updated.
@@ -560,6 +561,19 @@ export const ZDocumentAuditLogEventDocumentRecipientCompleteSchema = z.object({
 });
 
 /**
+ * Event: Document recipient consented to conduct the transaction electronically.
+ */
+export const ZDocumentAuditLogEventDocumentRecipientConsentedSchema = z.object({
+  type: z.literal(DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED),
+  data: ZBaseRecipientDataSchema.extend({
+    /**
+     * Version identifier of the disclosure text the recipient agreed to.
+     */
+    disclosureVersion: z.string(),
+  }),
+});
+
+/**
  * Event: Document recipient rejected the document.
  */
 export const ZDocumentAuditLogEventDocumentRecipientRejectedSchema = z.object({
@@ -852,6 +866,7 @@ export const ZDocumentAuditLogSchema = ZDocumentAuditLogBaseSchema.and(
     ZDocumentAuditLogEventDocumentOpenedSchema,
     ZDocumentAuditLogEventDocumentViewedSchema,
     ZDocumentAuditLogEventDocumentRecipientCompleteSchema,
+    ZDocumentAuditLogEventDocumentRecipientConsentedSchema,
     ZDocumentAuditLogEventDocumentRecipientRejectedSchema,
     ZDocumentAuditLogEventDocumentRecipientRequested2FAEmailSchema,
     ZDocumentAuditLogEventDocumentRecipientValidated2FAEmailSchema,
