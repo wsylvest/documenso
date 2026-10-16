@@ -34,7 +34,7 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['docs.dnsgroup.com'],
+    allowedHosts: ['docs.dnsgroup.com', 'sign.smartroofing.ai', 'staging.sign.smartroofing.ai'],
     port: parseInt(process.env.PORT || '3000', 10),
     strictPort: true,
   },

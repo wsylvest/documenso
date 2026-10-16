@@ -1,0 +1,26 @@
+{
+	email {$ACME_EMAIL}
+}
+
+{$SIGN_HOST} {
+	encode zstd gzip
+
+	# Signed PDFs and audit logs are private documents: never let an
+	# intermediary cache them.
+	@files path /api/files/* /api/v2/envelope/item/* /api/download/*
+	header @files Cache-Control "no-store, private"
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Keep the signer's real address so the audit trail records them rather
+	# than the proxy. Documenso reads X-Forwarded-For.
+	reverse_proxy documenso:3000 {
+		header_up X-Forwarded-Proto {scheme}
+		header_up X-Forwarded-Host {host}
+	}
+}
