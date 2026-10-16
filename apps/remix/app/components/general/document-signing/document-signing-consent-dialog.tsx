@@ -35,7 +35,8 @@ export const DocumentSigningConsentDialog = () => {
   const { toast } = useToast();
   const analytics = useAnalytics();
 
-  const { envelope, recipient, requiresElectronicConsent, markElectronicConsent } = useRequiredEnvelopeSigningContext();
+  const { envelope, recipient, isDirectTemplate, requiresElectronicConsent, markElectronicConsent } =
+    useRequiredEnvelopeSigningContext();
 
   const { isEmbed = false, onDocumentRejected } = useEmbedSigningContext() || {};
 
@@ -45,11 +46,19 @@ export const DocumentSigningConsentDialog = () => {
   const { mutateAsync: consentToElectronicSigning } = trpc.envelope.consentToElectronicSigning.useMutation();
   const { mutateAsync: rejectDocumentWithToken } = trpc.recipient.rejectDocumentWithToken.useMutation();
 
-  // Only valid for documents; direct templates never open this dialog, so
-  // resolve lazily to avoid throwing on `template_*` IDs during render.
+  // Only valid for documents; direct templates never reject through this
+  // dialog, so resolve lazily to avoid throwing on `template_*` IDs.
   const getDocumentId = () => mapSecondaryIdToDocumentId(envelope.secondaryId);
 
   const onContinue = async () => {
+    // Direct templates create the recipient at completion; the consent travels
+    // with that request and is recorded server-side then.
+    if (isDirectTemplate) {
+      markElectronicConsent(new Date());
+
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -224,15 +233,21 @@ export const DocumentSigningConsentDialog = () => {
         </div>
 
         <DialogFooter className="gap-2 sm:justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            data-testid="electronic-consent-paper-copy"
-            disabled={isSubmitting}
-            onClick={onRequestPaperCopy}
-          >
-            <Trans>I prefer a paper copy</Trans>
-          </Button>
+          {isDirectTemplate ? (
+            <p className="self-center text-muted-foreground text-xs">
+              <Trans>Prefer paper? Close this page and contact the sender for a printed copy.</Trans>
+            </p>
+          ) : (
+            <Button
+              type="button"
+              variant="ghost"
+              data-testid="electronic-consent-paper-copy"
+              disabled={isSubmitting}
+              onClick={onRequestPaperCopy}
+            >
+              <Trans>I prefer a paper copy</Trans>
+            </Button>
+          )}
 
           <Button
             type="button"

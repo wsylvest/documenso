@@ -13,13 +13,14 @@ export const signingStatusEnvelopeRoute = maybeAuthenticatedProcedure
   .query(async ({ input, ctx }) => {
     const { token } = input;
 
+    const status = await getEnvelopeSigningStatus({ token });
+
+    // The signing token is a bearer credential and must not be logged.
     ctx.logger.info({
       input: {
-        token,
+        status,
       },
     });
-
-    const status = await getEnvelopeSigningStatus({ token });
 
     return {
       status,

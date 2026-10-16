@@ -77,6 +77,10 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
         (log) => log.type === 'DOCUMENT_OPENED' && log.data.recipientId === recipientId,
       );
 
+      const documentRecipientConsented: TDocumentAuditLogBaseSchema | undefined = auditLogs[
+        'DOCUMENT_RECIPIENT_CONSENTED'
+      ].find((log) => log.type === 'DOCUMENT_RECIPIENT_CONSENTED' && log.data.recipientId === recipientId);
+
       const documentRecipientCompleted: TDocumentAuditLogBaseSchema | undefined = auditLogs[
         'DOCUMENT_RECIPIENT_COMPLETED'
       ].find((log) => log.type === 'DOCUMENT_RECIPIENT_COMPLETED' && log.data.recipientId === recipientId);
@@ -131,6 +135,7 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
           emailed: emailSent ?? null,
           sent: documentSent ?? null,
           opened: documentOpened ?? null,
+          consented: documentRecipientConsented ?? null,
           completed: documentRecipientCompleted ?? null,
           rejected: documentRecipientRejected ?? null,
         },

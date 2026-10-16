@@ -28,6 +28,7 @@ export const EnvelopeSignerCompleteDialog = () => {
   const [searchParams] = useSearchParams();
 
   const {
+    requiresElectronicConsent,
     isDirectTemplate,
     envelope,
     setShowPendingFieldTooltip,
@@ -178,6 +179,8 @@ export const EnvelopeSignerCompleteDialog = () => {
       }
 
       const { token } = await createDocumentFromDirectTemplate({
+        // The consent gate must have been passed for this dialog to be reachable.
+        electronicConsent: !requiresElectronicConsent,
         directTemplateToken: recipient.directToken, // The direct template token is inserted into the recipient token for ease of use.
         directTemplateExternalId,
         directRecipientName: recipientDetails?.name || fullName,

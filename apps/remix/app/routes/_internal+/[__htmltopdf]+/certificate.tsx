@@ -181,6 +181,12 @@ export default function SigningCertificate({ loaderData }: Route.ComponentProps)
       [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED]: auditLogs[DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED].filter(
         (log) => log.type === DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED && log.data.recipientId === recipientId,
       ),
+      [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED]: auditLogs[
+        DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED
+      ].filter(
+        (log) =>
+          log.type === DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED && log.data.recipientId === recipientId,
+      ),
       [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED]: auditLogs[
         DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED
       ].filter(
@@ -315,6 +321,17 @@ export default function SigningCertificate({ loaderData }: Route.ComponentProps)
                                   .setLocale(APP_I18N_OPTIONS.defaultLocale)
                                   .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)')
                               : _(msg`Unknown`)}
+                          </span>
+                        </p>
+
+                        <p className="text-muted-foreground text-sm print:text-xs">
+                          <span className="font-medium">{_(msg`Consented`)}:</span>{' '}
+                          <span className="inline-block">
+                            {logs.DOCUMENT_RECIPIENT_CONSENTED[0]
+                              ? DateTime.fromJSDate(logs.DOCUMENT_RECIPIENT_CONSENTED[0].createdAt)
+                                  .setLocale(APP_I18N_OPTIONS.defaultLocale)
+                                  .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)')
+                              : _(msg`Not recorded`)}
                           </span>
                         </p>
 

@@ -41,6 +41,7 @@ export type CertificateRecipient = {
     emailed: BaseAuditLog | null;
     sent: BaseAuditLog | null;
     opened: BaseAuditLog | null;
+    consented: BaseAuditLog | null;
     completed: BaseAuditLog | null;
     rejected: BaseAuditLog | null;
   };
@@ -440,6 +441,14 @@ const renderColumnThree = (options: RenderColumnOptions) => {
             .setLocale(APP_I18N_OPTIONS.defaultLocale)
             .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)')
         : i18n._(msg`Unknown`),
+    },
+    {
+      label: i18n._(msg`Consented`),
+      value: recipient.logs.consented
+        ? DateTime.fromJSDate(recipient.logs.consented.createdAt)
+            .setLocale(APP_I18N_OPTIONS.defaultLocale)
+            .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)')
+        : i18n._(msg`Not recorded`),
     },
   ];
 

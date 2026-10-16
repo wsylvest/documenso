@@ -12,7 +12,7 @@ import { DocumentSigningOrder, FieldType, RecipientRole } from '@prisma/client';
 import { customAlphabet } from 'nanoid';
 
 import { apiSignin } from '../fixtures/authentication';
-import { signSignaturePad } from '../fixtures/signature';
+import { acceptElectronicConsent, signSignaturePad } from '../fixtures/signature';
 
 // Duped from `packages/lib/utils/teams.ts` due to errors when importing that file.
 const formatDocumentsPath = (teamUrl: string) => `/t/${teamUrl}/documents`;
@@ -117,6 +117,7 @@ test('[DIRECT_TEMPLATES]: toggle direct template link', async ({ page }) => {
 
   // Check that the direct template link is accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
 
   // Navigate to template settings and disable access.
@@ -129,6 +130,7 @@ test('[DIRECT_TEMPLATES]: toggle direct template link', async ({ page }) => {
 
   // Check that the direct template link is no longer accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || '123'));
+  await acceptElectronicConsent(page);
   await expect(page.getByText('404 not found')).toBeVisible();
 });
 
@@ -151,6 +153,7 @@ test('[DIRECT_TEMPLATES]: delete direct template link', async ({ page }) => {
 
   // Check that the direct template link is accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
 
   // Navigate to template settings and delete the access.
@@ -163,6 +166,7 @@ test('[DIRECT_TEMPLATES]: delete direct template link', async ({ page }) => {
 
   // Check that the direct template link is no longer accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByText('404 not found')).toBeVisible();
 });
 
@@ -185,6 +189,8 @@ test('[DIRECT_TEMPLATES]: V1 direct template link auth access', async ({ page })
 
   await page.goto(directTemplatePath);
 
+  await acceptElectronicConsent(page);
+
   await expect(page.getByText('Authentication required')).toBeVisible();
 
   await apiSignin({
@@ -193,6 +199,8 @@ test('[DIRECT_TEMPLATES]: V1 direct template link auth access', async ({ page })
   });
 
   await page.goto(directTemplatePath);
+
+  await acceptElectronicConsent(page);
 
   await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
   await expect(page.getByLabel('Email')).toBeDisabled();
@@ -236,6 +244,8 @@ test('[DIRECT_TEMPLATES]: V2 direct template link auth access', async ({ page })
 
   await page.goto(directTemplatePath);
 
+  await acceptElectronicConsent(page);
+
   await expect(page.getByText('Authentication required')).toBeVisible();
 
   await apiSignin({
@@ -244,6 +254,8 @@ test('[DIRECT_TEMPLATES]: V2 direct template link auth access', async ({ page })
   });
 
   await page.goto(directTemplatePath);
+
+  await acceptElectronicConsent(page);
 
   await expect(page.getByRole('heading', { name: 'Personal direct template link' })).toBeVisible();
 
@@ -299,6 +311,7 @@ test('[DIRECT_TEMPLATES]: use direct template link with 1 recipient', async ({ p
 
   // Check that the direct template link is accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
 
   await page.waitForTimeout(100);
@@ -381,6 +394,7 @@ test('[DIRECT_TEMPLATES]: V1 use direct template link with 2 recipients with nex
 
   // Check that the direct template link is accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'General' })).toBeVisible();
 
   await page.waitForTimeout(100);
@@ -489,6 +503,7 @@ test('[DIRECT_TEMPLATES]: V2 use direct template link with 2 recipients with nex
 
   // Check that the direct template link is accessible.
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+  await acceptElectronicConsent(page);
   await expect(page.getByRole('heading', { name: 'Team direct template link 1' })).toBeVisible();
 
   // Wait for the PDF and the Konva canvas overlay to be ready.
@@ -576,6 +591,8 @@ test('[DIRECT_TEMPLATES]: V1 direct template without signature fields shows inva
 
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
 
+  await acceptElectronicConsent(page);
+
   await expect(page.getByRole('heading', { name: 'Invalid direct link template' })).toBeVisible();
   await expect(page.getByText('This direct link template cannot be used because one or more signers')).toBeVisible();
 
@@ -598,6 +615,8 @@ test('[DIRECT_TEMPLATES]: V2 direct template without signature fields shows inva
   });
 
   await page.goto(formatDirectTemplatePath(template.directLink?.token || ''));
+
+  await acceptElectronicConsent(page);
 
   await expect(page.getByRole('heading', { name: 'Invalid direct link template' })).toBeVisible();
   await expect(page.getByText('This direct link template cannot be used because one or more signers')).toBeVisible();

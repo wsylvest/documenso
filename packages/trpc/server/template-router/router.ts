@@ -628,6 +628,7 @@ export const templateRouter = router({
         signedFieldValues,
         templateUpdatedAt,
         nextSigner,
+        electronicConsent,
       } = input;
 
       ctx.logger.info({
@@ -643,6 +644,7 @@ export const templateRouter = router({
         directTemplateExternalId,
         signedFieldValues,
         templateUpdatedAt,
+        electronicConsent,
         user: ctx.user
           ? {
               id: ctx.user.id,

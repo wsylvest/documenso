@@ -18,6 +18,7 @@ import { DateTime } from 'luxon';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
 
+import { ELECTRONIC_CONSENT_DISCLOSURE_VERSION } from '../../constants/electronic-consent';
 import { AppError, AppErrorCode } from '../../errors/app-error';
 import { jobs } from '../../jobs/client';
 import { DOCUMENT_AUDIT_LOG_TYPE, RECIPIENT_DIFF_TYPE } from '../../types/document-audit-logs';
@@ -66,6 +67,12 @@ export type CreateDocumentFromDirectTemplateOptions = {
     email: string;
     name: string;
   };
+
+  /**
+   * Whether the signer affirmatively consented to conduct the transaction
+   * electronically. Enforced for V2 direct templates.
+   */
+  electronicConsent?: boolean;
 };
 
 type CreatedDirectRecipientField = {
@@ -92,6 +99,7 @@ export const createDocumentFromDirectTemplate = async ({
   nextSigner,
   requestMetadata,
   user,
+  electronicConsent,
 }: CreateDocumentFromDirectTemplateOptions): Promise<TCreateDocumentFromDirectTemplateResponse> => {
   const directTemplateEnvelope = await prisma.envelope.findFirst({
     where: {
@@ -233,6 +241,15 @@ export const createDocumentFromDirectTemplate = async ({
     throw new AppError('RECIPIENT_LIMIT_EXCEEDED', {
       message: `You cannot send a document with more than ${maximumRecipientCount} recipients`,
       statusCode: 400,
+    });
+  }
+
+  // ESIGN consumer consent is enforced for envelope-editor (V2) templates. Legacy
+  // V1 templates predate the consent step and keep their original behaviour.
+  if (directTemplateEnvelope.internalVersion === 2 && !electronicConsent) {
+    throw new AppError(AppErrorCode.ELECTRONIC_CONSENT_REQUIRED, {
+      message: 'The signer has not consented to conduct this transaction electronically',
+      userMessage: 'Please agree to sign electronically before continuing.',
     });
   }
 
@@ -482,6 +499,7 @@ export const createDocumentFromDirectTemplate = async ({
         signingStatus: SigningStatus.SIGNED,
         sendStatus: SendStatus.SENT,
         signedAt: initialRequestTime,
+        electronicConsentAt: electronicConsent ? initialRequestTime : null,
         signingOrder: directTemplateRecipient.signingOrder,
         fields: {
           createMany: {
@@ -590,6 +608,27 @@ export const createDocumentFromDirectTemplate = async ({
           },
         },
       }),
+      ...(electronicConsent
+        ? [
+            createDocumentAuditLogData({
+              type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED,
+              envelopeId: createdEnvelope.id,
+              user: {
+                id: user?.id,
+                name: user?.name,
+                email: directRecipientEmail,
+              },
+              metadata: requestMetadata,
+              data: {
+                recipientEmail: createdDirectRecipient.email,
+                recipientId: createdDirectRecipient.id,
+                recipientName: createdDirectRecipient.name,
+                recipientRole: createdDirectRecipient.role,
+                disclosureVersion: ELECTRONIC_CONSENT_DISCLOSURE_VERSION,
+              },
+            }),
+          ]
+        : []),
       createDocumentAuditLogData({
         type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED,
         envelopeId: createdEnvelope.id,

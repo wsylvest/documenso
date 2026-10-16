@@ -14,6 +14,7 @@ export const getDocumentCertificateAuditLogs = async ({ envelopeId }: GetDocumen
       type: {
         in: [
           DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED,
+          DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED,
           DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_REJECTED,
           DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_FIELD_INSERTED,
           DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_OPENED,
@@ -29,6 +30,9 @@ export const getDocumentCertificateAuditLogs = async ({ envelopeId }: GetDocumen
   const groupedAuditLogs = {
     [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED]: auditLogs.filter(
       (log) => log.type === DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_COMPLETED,
+    ),
+    [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED]: auditLogs.filter(
+      (log) => log.type === DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_CONSENTED,
     ),
     [DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_REJECTED]: auditLogs.filter(
       (log) => log.type === DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_REJECTED,

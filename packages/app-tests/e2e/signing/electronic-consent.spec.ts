@@ -2,9 +2,9 @@ import { PAPER_COPY_REQUESTED_REJECTION_REASON } from '@documenso/lib/constants/
 import { DOCUMENT_AUDIT_LOG_TYPE } from '@documenso/lib/types/document-audit-logs';
 import { prisma } from '@documenso/prisma';
 import { expect, test } from '@playwright/test';
-import { SigningStatus } from '@prisma/client';
+import { FieldType, SigningStatus } from '@prisma/client';
 
-import { apiSeedPendingDocument } from '../fixtures/api-seeds';
+import { apiSeedDirectTemplate, apiSeedPendingDocument } from '../fixtures/api-seeds';
 
 test.describe('[ELECTRONIC_CONSENT]: ESIGN consumer consent gate', () => {
   test('blocks signing until the recipient agrees, then records consent once', async ({ page, request }) => {
@@ -92,5 +92,45 @@ test.describe('[ELECTRONIC_CONSENT]: ESIGN consumer consent gate', () => {
     });
 
     expect((rejectedLog.data as { reason: string }).reason).toBe(PAPER_COPY_REQUESTED_REJECTION_REASON);
+  });
+
+  test('gates direct templates and records consent when the document is created', async ({ page, request }) => {
+    const { envelope, directLink } = await apiSeedDirectTemplate(request, {
+      recipients: [{ email: 'direct-placeholder@test.documenso.com', name: 'Direct Signer' }],
+      fieldsPerRecipient: [[{ type: FieldType.SIGNATURE, page: 1, positionX: 5, positionY: 5, width: 15, height: 5 }]],
+    });
+
+    await page.goto(`/d/${directLink.token}`);
+
+    const dialog = page.getByTestId('electronic-consent-dialog');
+
+    await expect(dialog).toBeVisible();
+    // Direct templates have no document to reject yet, so no paper-copy action.
+    await expect(page.getByTestId('electronic-consent-paper-copy')).toHaveCount(0);
+
+    await page.getByTestId('electronic-consent-checkbox').click();
+    await page.getByTestId('electronic-consent-continue').click();
+    await expect(dialog).toBeHidden();
+
+    // The server refuses creation without the consent flag for V2 templates.
+    const res = await request.post(
+      `${process.env.NEXT_PUBLIC_WEBAPP_URL}/api/trpc/template.createDocumentFromDirectTemplate`,
+      {
+        headers: { 'content-type': 'application/json' },
+        data: JSON.stringify({
+          json: {
+            directTemplateToken: directLink.token,
+            directRecipientEmail: 'homeowner@test.documenso.com',
+            directRecipientName: 'Home Owner',
+            signedFieldValues: [],
+            templateUpdatedAt: envelope.updatedAt,
+          },
+          meta: { values: { templateUpdatedAt: ['Date'] } },
+        }),
+      },
+    );
+
+    expect(res.status()).toBe(403);
+    expect(await res.text()).toContain('ELECTRONIC_CONSENT_REQUIRED');
   });
 });

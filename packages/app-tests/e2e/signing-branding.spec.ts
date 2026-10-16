@@ -105,6 +105,8 @@ test('[SIGNING_BRANDING]: V2 signing renders custom logo as a plain image', asyn
   await expectPlainBrandingLogo(page, `${team.name}'s Logo`);
 
   await page.goto(formatDirectTemplatePath(directTemplate.directLink?.token || ''));
+
+  await acceptElectronicConsent(page);
   await expectPlainBrandingLogo(page, `${team.name}'s Logo`);
 });
 

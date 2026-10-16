@@ -51,8 +51,8 @@ export type EnvelopeSigningContextValue = {
 
   /**
    * Whether the recipient still needs to consent to conduct the transaction
-   * electronically before any field can be signed. Always false for direct
-   * templates, which have no persisted recipient until completion.
+   * electronically before any field can be signed. For direct templates the
+   * consent is held locally until the document is created at completion.
    */
   requiresElectronicConsent: boolean;
   markElectronicConsent: (_consentedAt: Date) => void;
@@ -146,9 +146,21 @@ export const EnvelopeSigningProvider = ({
 
   const isDirectTemplate = envelope.type === EnvelopeType.TEMPLATE;
 
-  const requiresElectronicConsent = !isDirectTemplate && !recipient.electronicConsentAt;
+  // Direct templates have no persisted recipient until completion, so consent
+  // is held locally and submitted with the create request instead.
+  const [directTemplateConsentedAt, setDirectTemplateConsentedAt] = useState<Date | null>(null);
+
+  const requiresElectronicConsent = isDirectTemplate
+    ? directTemplateConsentedAt === null
+    : !recipient.electronicConsentAt;
 
   const markElectronicConsent = (consentedAt: Date) => {
+    if (isDirectTemplate) {
+      setDirectTemplateConsentedAt(consentedAt);
+
+      return;
+    }
+
     setEnvelopeData((prev) => ({
       ...prev,
       recipient: {

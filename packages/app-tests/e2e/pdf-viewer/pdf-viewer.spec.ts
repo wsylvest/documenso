@@ -157,9 +157,13 @@ test.describe('PDF Viewer Rendering', () => {
       await addSecondEnvelopeItem(templateV2.id);
 
       await page.goto(formatDirectTemplatePath(templateV1.directLink?.token || ''));
+
+      await acceptElectronicConsent(page);
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
 
       await page.goto(formatDirectTemplatePath(templateV2.directLink?.token || ''));
+
+      await acceptElectronicConsent(page);
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
       await page.getByRole('button', { name: /Page 2/ }).click();
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
@@ -255,6 +259,7 @@ test.describe('PDF Viewer Rendering', () => {
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
 
       await page.goto(`/embed/direct/${templateV2.directLink?.token || ''}`);
+      await acceptElectronicConsent(page);
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });
       await page.getByRole('button', { name: /Page 2/ }).click();
       await expect(page.locator(PDF_PAGE_SELECTOR).first()).toBeVisible({ timeout: 30_000 });

@@ -83,6 +83,12 @@ export const ZCreateDocumentFromDirectTemplateRequestSchema = z.object({
       name: z.string().min(1).max(255),
     })
     .optional(),
+  electronicConsent: z
+    .boolean()
+    .optional()
+    .describe(
+      'Whether the signer affirmatively consented to conduct this transaction electronically. Required for V2 direct templates.',
+    ),
 });
 
 export const ZCreateDocumentFromTemplateRequestSchema = z.object({
