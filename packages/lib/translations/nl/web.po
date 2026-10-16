@@ -3330,6 +3330,11 @@ msgstr ""
 msgid "Consent to Electronic Transactions"
 msgstr "Toestemming voor elektronische transacties"
 
+#: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Consented"
+msgstr ""
+
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Contact Information"
 msgstr "Contactgegevens"
@@ -8349,6 +8354,11 @@ msgstr "Niet gevonden"
 msgid "Not Found"
 msgstr "Niet gevonden"
 
+#: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Not recorded"
+msgstr ""
+
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Not set"
 msgstr "Niet ingesteld"
@@ -9303,6 +9313,10 @@ msgstr "Mogelijk gemaakt door"
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "Pre-formatted CSV template with example data."
 msgstr "Vooraf opgemaakte CSV-sjabloon met voorbeeldgegevens."
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Prefer paper? Close this page and contact the sender for a printed copy."
+msgstr ""
 
 #: apps/remix/app/components/general/unified-settings-sidebar-mobile.tsx
 #: packages/lib/utils/settings-nav.ts

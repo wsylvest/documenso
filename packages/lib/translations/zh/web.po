@@ -3330,6 +3330,11 @@ msgstr ""
 msgid "Consent to Electronic Transactions"
 msgstr "同意以电子方式进行交易"
 
+#: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Consented"
+msgstr ""
+
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Contact Information"
 msgstr "联系信息"
@@ -8349,6 +8354,11 @@ msgstr "未找到"
 msgid "Not Found"
 msgstr "未找到"
 
+#: apps/remix/app/routes/_internal+/[__htmltopdf]+/certificate.tsx
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Not recorded"
+msgstr ""
+
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 msgid "Not set"
 msgstr "未设置"
@@ -9303,6 +9313,10 @@ msgstr "技术支持："
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "Pre-formatted CSV template with example data."
 msgstr "带示例数据的预格式化 CSV 模板。"
+
+#: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
+msgid "Prefer paper? Close this page and contact the sender for a printed copy."
+msgstr ""
 
 #: apps/remix/app/components/general/unified-settings-sidebar-mobile.tsx
 #: packages/lib/utils/settings-nav.ts
