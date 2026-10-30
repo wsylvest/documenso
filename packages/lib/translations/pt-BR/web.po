@@ -3478,6 +3478,7 @@ msgstr "Campo copiado para a área de transferência"
 #: apps/remix/app/components/general/template/template-direct-link-badge.tsx
 #: apps/remix/app/components/general/webhook-logs-sheet.tsx
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
@@ -3492,6 +3493,10 @@ msgstr "Copiado para a área de transferência"
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Copy"
 msgstr "Copiar"
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "Copy invite link"
+msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
 msgid "Copy license key"
@@ -3567,7 +3572,7 @@ msgid "Create a new organisation with {planName} plan. Keep your current organis
 msgstr "Crie uma nova organização com o plano {planName}. Mantenha sua organização atual em seu plano atual"
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
-msgid "Create a new user. A welcome email will be sent with a link to set their password."
+msgid "Create a new user. Leave the password blank to send a welcome email with a link to set one, or set a password here to hand over directly."
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
@@ -6457,6 +6462,10 @@ msgstr "Geral"
 msgid "General settings"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "Generate"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
 msgid "Generate DKIM Records"
 msgstr "Gerar Registros DKIM"
@@ -8845,6 +8854,7 @@ msgstr "Passkeys permitem que você faça login e se autentique usando biometria
 msgid "Passkeys are not supported on this browser"
 msgstr "Passkeys não são suportadas neste navegador"
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/forms/email-transport-form.tsx
 #: apps/remix/app/components/forms/reset-password.tsx
 #: apps/remix/app/components/forms/signin.tsx
@@ -11079,10 +11089,6 @@ msgstr "ID da Assinatura"
 msgid "Signature is too small"
 msgstr "A assinatura é muito pequena"
 
-#: apps/remix/app/components/forms/profile.tsx
-msgid "Signature Pad cannot be empty."
-msgstr "O painel de assinatura não pode estar vazio."
-
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Signature Settings"
 msgstr "Configurações de Assinatura"
@@ -12327,6 +12333,10 @@ msgstr ""
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
 msgid "The image must be smaller than 5MB."
+msgstr ""
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "The invite link has been copied to your clipboard."
 msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
@@ -13890,6 +13900,10 @@ msgstr "Agente de Usuário"
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 msgid "User created and welcome email sent"
+msgstr ""
+
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "User created. The email and password have been copied to your clipboard."
 msgstr ""
 
 #: apps/remix/app/components/forms/password.tsx

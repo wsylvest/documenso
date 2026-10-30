@@ -8,16 +8,25 @@ export const createUserRoute = adminProcedure
   .input(ZCreateUserRequestSchema)
   .output(ZCreateUserResponseSchema)
   .mutation(async ({ input, ctx }) => {
-    const { email, name } = input;
+    const { email, name, password } = input;
 
     const user = await createAdminUser({
       name,
       email,
+      password,
     });
 
     ctx.logger.info({
       createdUserId: user.id,
+      passwordProvided: Boolean(password),
     });
+
+    // An admin-supplied password is handed over out of band, so skip the welcome email.
+    if (password) {
+      return {
+        userId: user.id,
+      };
+    }
 
     await jobsClient.triggerJob({
       name: 'send.admin.user.created.email',

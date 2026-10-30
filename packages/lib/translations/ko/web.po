@@ -3483,6 +3483,7 @@ msgstr "필드를 클립보드에 복사했습니다."
 #: apps/remix/app/components/general/template/template-direct-link-badge.tsx
 #: apps/remix/app/components/general/webhook-logs-sheet.tsx
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
@@ -3497,6 +3498,10 @@ msgstr "클립보드에 복사되었습니다"
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Copy"
 msgstr "복사"
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "Copy invite link"
+msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
 msgid "Copy license key"
@@ -3572,8 +3577,8 @@ msgid "Create a new organisation with {planName} plan. Keep your current organis
 msgstr "새 조직을 {planName} 요금제로 생성하고, 현재 조직은 기존 요금제로 유지합니다."
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
-msgid "Create a new user. A welcome email will be sent with a link to set their password."
-msgstr "새 사용자를 생성합니다. 사용자가 비밀번호를 설정할 수 있는 링크가 포함된 환영 이메일이 전송됩니다."
+msgid "Create a new user. Leave the password blank to send a welcome email with a link to set one, or set a password here to hand over directly."
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
 msgid "Create a support ticket"
@@ -6462,6 +6467,10 @@ msgstr "일반"
 msgid "General settings"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "Generate"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
 msgid "Generate DKIM Records"
 msgstr "DKIM 레코드 생성"
@@ -8850,6 +8859,7 @@ msgstr "패스키를 사용하면 생체 인증, 비밀번호 관리자 등을 �
 msgid "Passkeys are not supported on this browser"
 msgstr "이 브라우저에서는 패스키가 지원되지 않습니다"
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/forms/email-transport-form.tsx
 #: apps/remix/app/components/forms/reset-password.tsx
 #: apps/remix/app/components/forms/signin.tsx
@@ -11084,10 +11094,6 @@ msgstr "서명 ID"
 msgid "Signature is too small"
 msgstr "서명이 너무 작습니다."
 
-#: apps/remix/app/components/forms/profile.tsx
-msgid "Signature Pad cannot be empty."
-msgstr "서명 패드는 비워 둘 수 없습니다."
-
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Signature Settings"
 msgstr "서명 설정"
@@ -12332,6 +12338,10 @@ msgstr ""
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
 msgid "The image must be smaller than 5MB."
+msgstr ""
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "The invite link has been copied to your clipboard."
 msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
@@ -13896,6 +13906,10 @@ msgstr "User Agent"
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 msgid "User created and welcome email sent"
 msgstr "사용자가 생성되었으며 환영 이메일이 전송되었습니다"
+
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "User created. The email and password have been copied to your clipboard."
+msgstr ""
 
 #: apps/remix/app/components/forms/password.tsx
 msgid "User has no password."

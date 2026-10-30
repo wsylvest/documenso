@@ -3483,6 +3483,7 @@ msgstr "フィールドをクリップボードにコピーしました"
 #: apps/remix/app/components/general/template/template-direct-link-badge.tsx
 #: apps/remix/app/components/general/webhook-logs-sheet.tsx
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/teams.$id.tsx
@@ -3497,6 +3498,10 @@ msgstr "クリップボードにコピーしました"
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Copy"
 msgstr "コピー"
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "Copy invite link"
+msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
 msgid "Copy license key"
@@ -3572,8 +3577,8 @@ msgid "Create a new organisation with {planName} plan. Keep your current organis
 msgstr "{planName} プランの新しい組織を作成します。現在の組織はそのままのプランを維持します。"
 
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
-msgid "Create a new user. A welcome email will be sent with a link to set their password."
-msgstr "新しいユーザーを作成します。パスワードを設定するためのリンクが記載された歓迎メールが送信されます。"
+msgid "Create a new user. Leave the password blank to send a welcome email with a link to set one, or set a password here to hand over directly."
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
 msgid "Create a support ticket"
@@ -6462,6 +6467,10 @@ msgstr "一般"
 msgid "General settings"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "Generate"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
 msgid "Generate DKIM Records"
 msgstr "DKIM レコードを生成"
@@ -8850,6 +8859,7 @@ msgstr "パスキーを使うことで、生体認証やパスワードマネー
 msgid "Passkeys are not supported on this browser"
 msgstr "このブラウザではパスキーがサポートされていません"
 
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 #: apps/remix/app/components/forms/email-transport-form.tsx
 #: apps/remix/app/components/forms/reset-password.tsx
 #: apps/remix/app/components/forms/signin.tsx
@@ -11084,10 +11094,6 @@ msgstr "署名 ID"
 msgid "Signature is too small"
 msgstr "署名が小さすぎます"
 
-#: apps/remix/app/components/forms/profile.tsx
-msgid "Signature Pad cannot be empty."
-msgstr "署名パッドを空のままにはできません。"
-
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Signature Settings"
 msgstr "署名の設定"
@@ -12332,6 +12338,10 @@ msgstr ""
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
 msgid "The image must be smaller than 5MB."
+msgstr ""
+
+#: apps/remix/app/components/tables/organisation-member-invites-table.tsx
+msgid "The invite link has been copied to your clipboard."
 msgstr ""
 
 #: apps/remix/app/components/general/admin-license-card.tsx
@@ -13896,6 +13906,10 @@ msgstr "ユーザーエージェント"
 #: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
 msgid "User created and welcome email sent"
 msgstr "ユーザーが作成され、ウェルカムメールが送信されました"
+
+#: apps/remix/app/components/dialogs/admin-user-create-dialog.tsx
+msgid "User created. The email and password have been copied to your clipboard."
+msgstr ""
 
 #: apps/remix/app/components/forms/password.tsx
 msgid "User has no password."

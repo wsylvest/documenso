@@ -26,6 +26,7 @@ export const ZFindOrganisationMemberInvitesResponseSchema = ZFindResultResponse.
     createdAt: true,
     organisationRole: true,
     status: true,
+    token: true,
   }).array(),
 });
 

@@ -85,8 +85,10 @@ export const findOrganisationMemberInvites = async ({
       orderBy: {
         createdAt: 'desc',
       },
-      // Exclude token attribute.
+      // The token is included so organisation managers can copy the invite link
+      // when email delivery is unavailable; the route already requires MANAGE_ORGANISATION.
       select: {
+        token: true,
         id: true,
         organisationId: true,
         email: true,

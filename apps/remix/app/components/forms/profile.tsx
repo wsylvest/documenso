@@ -17,7 +17,8 @@ import { z } from 'zod';
 
 export const ZProfileFormSchema = z.object({
   name: ZNameSchema,
-  signature: z.string().min(1, { message: msg`Signature Pad cannot be empty.`.id }),
+  // Optional: a signature can be drawn later when signing a document.
+  signature: z.string(),
 });
 
 export const ZTwoFactorAuthTokenSchema = z.object({

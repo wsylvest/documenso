@@ -1,5 +1,7 @@
+import { useCopyToClipboard } from '@documenso/lib/client-only/hooks/use-copy-to-clipboard';
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import { useCurrentOrganisation } from '@documenso/lib/client-only/providers/organisation';
+import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { ORGANISATION_MEMBER_ROLE_MAP } from '@documenso/lib/constants/organisations-translations';
 import { ZUrlSearchParamsSchema } from '@documenso/lib/types/search-params';
 import { isOrganisationRoleWithinUserHierarchy } from '@documenso/lib/utils/organisations';
@@ -22,7 +24,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { OrganisationMemberInviteStatus } from '@prisma/client';
-import { History, MoreHorizontal, Trash2 } from 'lucide-react';
+import { History, LinkIcon, MoreHorizontal, Trash2 } from 'lucide-react';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
@@ -33,6 +35,7 @@ export const OrganisationMemberInvitesTable = () => {
 
   const { _, i18n } = useLingui();
   const { toast } = useToast();
+  const [, copy] = useCopyToClipboard();
 
   const parsedSearchParams = ZUrlSearchParamsSchema.parse(Object.fromEntries(searchParams ?? []));
 
@@ -131,6 +134,20 @@ export const OrganisationMemberInvitesTable = () => {
               <DropdownMenuLabel>
                 <Trans>Actions</Trans>
               </DropdownMenuLabel>
+
+              <DropdownMenuItem
+                onClick={async () => {
+                  await copy(`${NEXT_PUBLIC_WEBAPP_URL()}/organisation/invite/${row.original.token}`);
+
+                  toast({
+                    title: _(msg`Copied to clipboard`),
+                    description: _(msg`The invite link has been copied to your clipboard.`),
+                  });
+                }}
+              >
+                <LinkIcon className="mr-2 h-4 w-4" />
+                <Trans>Copy invite link</Trans>
+              </DropdownMenuItem>
 
               <DropdownMenuItem
                 onClick={async () =>

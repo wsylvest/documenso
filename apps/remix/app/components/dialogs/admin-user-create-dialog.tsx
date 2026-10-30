@@ -1,6 +1,8 @@
+import { useCopyToClipboard } from '@documenso/lib/client-only/hooks/use-copy-to-clipboard';
 import { AppError } from '@documenso/lib/errors/app-error';
 import { trpc } from '@documenso/trpc/react';
 import { ZCreateUserRequestSchema } from '@documenso/trpc/server/admin-router/create-user.types';
+import { ZPasswordSchema } from '@documenso/trpc/server/auth-router/schema';
 import { Button } from '@documenso/ui/primitives/button';
 import {
   Dialog,
@@ -13,6 +15,7 @@ import {
 } from '@documenso/ui/primitives/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@documenso/ui/primitives/form/form';
 import { Input } from '@documenso/ui/primitives/input';
+import { PasswordInput } from '@documenso/ui/primitives/password-input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -20,13 +23,16 @@ import type * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import type { z } from 'zod';
+import { z } from 'zod';
 
 export type AdminUserCreateDialogProps = {
   trigger?: React.ReactNode;
 } & Omit<DialogPrimitive.DialogProps, 'children'>;
 
-const ZFormSchema = ZCreateUserRequestSchema;
+// An empty password means "send a welcome email" rather than a validation error.
+const ZFormSchema = ZCreateUserRequestSchema.extend({
+  password: z.union([z.literal(''), ZPasswordSchema]).optional(),
+});
 
 type TFormSchema = z.infer<typeof ZFormSchema>;
 
@@ -35,6 +41,7 @@ export const AdminUserCreateDialog = ({ trigger, ...props }: AdminUserCreateDial
   const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
+  const [, copy] = useCopyToClipboard();
 
   const navigate = useNavigate();
 
@@ -43,14 +50,30 @@ export const AdminUserCreateDialog = ({ trigger, ...props }: AdminUserCreateDial
     defaultValues: {
       email: '',
       name: '',
+      password: '',
     },
   });
 
   const { mutateAsync: createUser } = trpc.admin.user.create.useMutation();
 
+  const generatePassword = () => {
+    // 20 characters from a set that satisfies the password rules and avoids look-alikes.
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
+    const bytes = crypto.getRandomValues(new Uint8Array(20));
+    const password = Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join('');
+
+    form.setValue('password', password, { shouldDirty: true, shouldValidate: true });
+  };
+
   const onFormSubmit = async (data: TFormSchema) => {
+    const password = data.password?.trim() || undefined;
+
     try {
-      const result = await createUser(data);
+      const result = await createUser({ ...data, password });
+
+      if (password) {
+        await copy(`${data.email}\n${password}`);
+      }
 
       await navigate(`/admin/users/${result.userId}`);
 
@@ -58,7 +81,9 @@ export const AdminUserCreateDialog = ({ trigger, ...props }: AdminUserCreateDial
 
       toast({
         title: t`Success`,
-        description: t`User created and welcome email sent`,
+        description: password
+          ? t`User created. The email and password have been copied to your clipboard.`
+          : t`User created and welcome email sent`,
         duration: 5000,
       });
     } catch (err) {
@@ -95,7 +120,10 @@ export const AdminUserCreateDialog = ({ trigger, ...props }: AdminUserCreateDial
           </DialogTitle>
 
           <DialogDescription>
-            <Trans>Create a new user. A welcome email will be sent with a link to set their password.</Trans>
+            <Trans>
+              Create a new user. Leave the password blank to send a welcome email with a link to set one, or set a
+              password here to hand over directly.
+            </Trans>
           </DialogDescription>
         </DialogHeader>
 
@@ -128,6 +156,27 @@ export const AdminUserCreateDialog = ({ trigger, ...props }: AdminUserCreateDial
                     </FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <Trans>Password</Trans>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="flex gap-2">
+                        <PasswordInput {...field} value={field.value ?? ''} autoComplete="new-password" />
+                        <Button type="button" variant="secondary" onClick={generatePassword}>
+                          <Trans>Generate</Trans>
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
