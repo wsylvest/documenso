@@ -5483,6 +5483,10 @@ msgstr "邮件偏好已更新"
 msgid "Email provider account"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
+msgid "Email provider not configured"
+msgstr ""
+
 #: packages/ui/components/document/document-email-checkboxes.tsx
 msgid "Email recipients when a pending document is deleted"
 msgstr "在待处理文档被删除时向收件人发送电子邮件通知"

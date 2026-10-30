@@ -5483,6 +5483,10 @@ msgstr "Préférences de messagerie mises à jour"
 msgid "Email provider account"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
+msgid "Email provider not configured"
+msgstr ""
+
 #: packages/ui/components/document/document-email-checkboxes.tsx
 msgid "Email recipients when a pending document is deleted"
 msgstr "Envoyer un e-mail aux destinataires lorsqu’un document en attente est supprimé"

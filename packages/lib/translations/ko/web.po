@@ -5483,6 +5483,10 @@ msgstr "이메일 기본 설정이 업데이트되었습니다."
 msgid "Email provider account"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
+msgid "Email provider not configured"
+msgstr ""
+
 #: packages/ui/components/document/document-email-checkboxes.tsx
 msgid "Email recipients when a pending document is deleted"
 msgstr "보류 중인 문서가 삭제되면 수신자에게 이메일 보내기"

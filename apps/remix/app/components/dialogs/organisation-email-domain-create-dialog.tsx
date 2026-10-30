@@ -99,6 +99,13 @@ export const OrganisationEmailDomainCreateDialog = ({ trigger, ...props }: Organ
           variant: 'destructive',
           duration: 10000,
         });
+      } else if (error.code === AppErrorCode.NOT_SETUP) {
+        toast({
+          title: t`Email provider not configured`,
+          description: error.userMessage ?? error.message,
+          variant: 'destructive',
+          duration: 10000,
+        });
       } else {
         toast({
           title: t`An unknown error occurred`,

@@ -17,8 +17,10 @@ export const getSesClient = () => {
   const region = env('NEXT_PRIVATE_SES_REGION');
 
   if (!accessKeyId || !secretAccessKey || !region) {
-    throw new AppError(AppErrorCode.UNKNOWN_ERROR, {
+    throw new AppError(AppErrorCode.NOT_SETUP, {
       message: 'Missing AWS SES credentials',
+      userMessage:
+        'Custom email domains need an email provider that manages domains. Configure the Resend transport (NEXT_PRIVATE_SMTP_TRANSPORT=resend with NEXT_PRIVATE_RESEND_API_KEY) or AWS SES credentials on this instance.',
     });
   }
 
