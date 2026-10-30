@@ -1,0 +1,288 @@
+---
+title: Agent Communication Protocol (ACP)
+description: Discover and invoke Documenso as an agent from other agents and orchestrators.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+## Overview
+
+Documenso exposes its signing workflows as agents over the
+[Agent Communication Protocol](https://agentcommunicationprotocol.dev) (ACP) REST surface, with an
+[Agent2Agent](https://a2a-protocol.org) (A2A) Agent Card and JSON-RPC task methods served from the same
+core. An orchestrator discovers the agents, starts a run with a typed message, streams the run's events,
+and resumes it when a human has to approve or confirm something.
+
+The server is mounted at `/api/acp` and is disabled by default. Set `NEXT_PUBLIC_ACP_ENABLED=true` to
+enable it.
+
+<Callout type="info">
+  ACP merged into A2A under the Linux Foundation in August 2025. This server implements the final ACP
+  OpenAPI surface completely and A2A 1.0 discovery plus `SendMessage`, `GetTask` and `CancelTask`, so
+  clients of either protocol can use it.
+</Callout>
+
+## Agents
+
+| Agent | What it does | Pauses for a human |
+| --- | --- | --- |
+| `envelope-sender` | Create a document from a template or an inline PDF, set recipients and fields, prefill, distribute. | Optional `approval` before sending (`requireApproval: true`). |
+| `signing-status` | Report envelope and recipient status, list pending recipients, resend reminders. | No |
+| `document-retrieval` | Return the sealed PDF, certificate and audit log as download URLs or inline base64. | No |
+| `recipient-signer` | Drive the native signing flow for a recipient token: view, ESIGN consent, sign fields, complete or reject. | `consent` when consent is missing; `confirmation` before completing (unless `autoComplete: true`). |
+
+Each agent's manifest carries a JSON Schema of its input in `metadata.annotations.input_schema`.
+
+## Discovery
+
+Discovery is unauthenticated and returns only static manifests.
+
+```bash
+curl https://sign.example.com/api/acp/agents
+curl https://sign.example.com/api/acp/agents/envelope-sender
+curl https://sign.example.com/.well-known/agent-card.json   # A2A Agent Card
+```
+
+## Authentication
+
+Every run endpoint requires a Documenso API token, exactly like API V2:
+
+```
+Authorization: Bearer api_xxxxxxxxxxxx
+```
+
+Runs are attributed to the token's user and team. Everything an agent does goes through the same
+permission checks, limits and audit logging as the REST API. A run ID belonging to another team returns
+`404`.
+
+## Running an agent
+
+Send one or more `user` messages whose parts contain the agent's JSON input.
+
+```bash
+curl -X POST https://sign.example.com/api/acp/runs \
+  -H "Authorization: Bearer api_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "signing-status",
+    "mode": "sync",
+    "input": [{
+      "role": "user",
+      "parts": [{
+        "content_type": "application/json",
+        "content": "{\"envelopeId\": \"env_abc123\", \"remind\": true}"
+      }]
+    }]
+  }'
+```
+
+The response is the ACP `Run`:
+
+```json
+{
+  "agent_name": "signing-status",
+  "run_id": "8f1c7e2a-4b7d-4c7a-9d0e-1a2b3c4d5e6f",
+  "status": "completed",
+  "output": [{
+    "role": "agent/signing-status",
+    "parts": [
+      { "name": "summary", "content_type": "text/plain", "content": "\"Roof contract\" is PENDING; waiting on jane@example.com." },
+      { "name": "result", "content_type": "application/json", "content": "{\"envelopeId\":\"env_abc123\", ...}" }
+    ]
+  }],
+  "created_at": "2026-10-30T10:00:00.000Z",
+  "finished_at": "2026-10-30T10:00:00.412Z"
+}
+```
+
+### Modes
+
+- `sync` (default) waits for the run to pause or finish (up to `NEXT_PRIVATE_ACP_SYNC_TIMEOUT_MS`, 60 s
+  by default) and returns the run.
+- `async` returns `202` with the run immediately; poll `GET /runs/{run_id}`.
+- `stream` returns `text/event-stream` (see below).
+
+Every `POST /runs` response carries the run ID in the `X-Run-Id` header.
+
+### Idempotency
+
+Send an `Idempotency-Key` header (unique per team) to make creation safe to retry. A replay returns the
+original run with `Idempotent-Replayed: true`.
+
+### Run lifecycle
+
+`created` → `in-progress` → `completed` | `failed`, with `awaiting` when the agent needs input and
+`cancelling` → `cancelled` after `POST /runs/{run_id}/cancel`. `GET /runs/{run_id}/events` returns the
+durable event log.
+
+## Sending a document with approval
+
+```bash
+curl -X POST https://sign.example.com/api/acp/runs \
+  -H "Authorization: Bearer api_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "envelope-sender",
+    "input": [{
+      "role": "user",
+      "parts": [{
+        "content_type": "application/json",
+        "content": "{\"templateId\": \"env_tpl_123\", \"recipients\": [{\"email\": \"jane@example.com\", \"name\": \"Jane\"}], \"prefillFields\": [{\"id\": 12, \"type\": \"text\", \"value\": \"$14,250\"}], \"requireApproval\": true}"
+      }]
+    }]
+  }'
+```
+
+The run returns with `status: "awaiting"` and an `await_request` of type `approval` describing what
+will be sent. Resume it once a person has decided:
+
+```bash
+curl -X POST https://sign.example.com/api/acp/runs/8f1c7e2a-4b7d-4c7a-9d0e-1a2b3c4d5e6f \
+  -H "Authorization: Bearer api_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{ "await_resume": { "type": "approval", "approved": true }, "mode": "sync" }'
+```
+
+To send from an inline PDF instead of a template, add an `application/pdf` part with
+`content_encoding: "base64"` (or a `pdf: { name, base64 }` field) and place fields on each recipient:
+
+```json
+{
+  "title": "Change order",
+  "recipients": [{
+    "email": "jane@example.com",
+    "name": "Jane",
+    "fields": [{ "type": "SIGNATURE", "page": 1, "positionX": 10, "positionY": 80, "width": 30, "height": 8 }]
+  }]
+}
+```
+
+## Signing as a recipient
+
+`recipient-signer` wraps the [native Signing API](/docs/developers/api/signing) for a signing token and
+adds the human-in-the-loop pauses. Actions: `status`, `view`, `consent`, `sign` (default), `complete`,
+`reject`.
+
+```json
+{
+  "token": "<recipient token>",
+  "action": "sign",
+  "fields": [
+    { "fieldId": 101, "fieldValue": { "type": "SIGNATURE", "value": "Jane Doe" } },
+    { "fieldId": 102, "fieldValue": { "type": "TEXT", "value": "Approved" } }
+  ],
+  "signer": { "ipAddress": "203.0.113.42", "userAgent": "Mozilla/5.0 ..." }
+}
+```
+
+The `sign` action records the view, inserts the fields and then pauses:
+
+- **Consent.** Field signing and completion are refused with `ELECTRONIC_CONSENT_REQUIRED` until the
+  signer has consented to conduct the transaction electronically (ESIGN). When that happens the run
+  enters `awaiting` with `await_request.type = "consent"`. Show the consumer disclosure and resume with
+  `{ "type": "consent", "consented": true }` to record consent and continue signing, or
+  `{ "consented": false }` to reject the document with the paper-copy reason. Pass `"consent": true` in
+  the input to record consent up front when the signer has already agreed, or run `action: "consent"`
+  on its own.
+- **Confirmation.** After the fields are inserted the run pauses with `await_request.type =
+  "confirmation"` listing the remaining fields. Resume with `{ "type": "confirmation", "decision":
+  "complete" }` or `{ "decision": "reject", "reason": "..." }`. Set `autoComplete: true` to skip this
+  pause when no required field remains.
+
+Completion returns `completion.status` of `SIGNED`, `ALREADY_SIGNED` or `REDIRECT` (AES/QES
+envelopes that must finish with the trust service provider), and every result carries the envelope's
+`signingStatus` (`PENDING`, `PROCESSING`, `COMPLETED`, `REJECTED`). Two factor access authentication
+is supplied with `accessAuthOptions` exactly as in the Signing API.
+
+Audit entries record the human signer rather than your server when you forward the signer's
+connection details, either as `signer: { ipAddress, userAgent }` in the input (or the resume payload)
+or as the `X-Signer-IP-Address` and `X-Signer-User-Agent` headers on the run or resume request. The
+body wins when both are present; an invalid IP address fails the run with `INVALID_REQUEST`.
+
+## Streaming
+
+Request `mode: "stream"` to receive Server-Sent Events. Each frame is an ACP `Event` with the event type
+in the `event` field and a per-run sequence number in `id`:
+
+```bash
+curl -N -X POST https://sign.example.com/api/acp/runs \
+  -H "Authorization: Bearer api_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{ "agent_name": "signing-status", "mode": "stream", "input": [{ "role": "user", "parts": [{ "content": "{\"envelopeId\": \"env_abc123\"}" }] }] }'
+```
+
+```
+id: 1
+event: run.created
+data: {"type":"run.created","run":{...}}
+
+id: 2
+event: run.in-progress
+data: {"type":"run.in-progress","run":{...}}
+
+id: 3
+event: message.created
+data: {"type":"message.created","message":{...}}
+
+...
+
+id: 7
+event: run.completed
+data: {"type":"run.completed","run":{...}}
+```
+
+The stream closes after `run.awaiting`, `run.completed`, `run.failed` or `run.cancelled`. Resuming with
+`mode: "stream"` continues from the next sequence number. Agents also emit `generic` progress events,
+for example `{"type":"generic","generic":{"message":"Envelope created","envelopeId":"..."}}`.
+
+## Retrieving documents
+
+```json
+{ "envelopeId": "env_abc123", "artifacts": ["document", "certificate", "audit-log"], "inline": false }
+```
+
+Returns one part per artefact with a `content_url` pointing at the authenticated API V2 download
+endpoints (send the same `Authorization` header), or `inline: true` for base64 `application/pdf` parts.
+
+## A2A clients
+
+The Agent Card at `/.well-known/agent-card.json` lists each agent as a skill and points at the JSON-RPC
+endpoint `/api/acp/a2a`. Name the skill in `message.metadata.skill`:
+
+```bash
+curl -X POST https://sign.example.com/api/acp/a2a \
+  -H "Authorization: Bearer api_xxxxxxxxxxxx" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0", "id": 1, "method": "SendMessage",
+    "params": { "message": {
+      "messageId": "m1", "role": "ROLE_USER",
+      "parts": [{ "data": { "envelopeId": "env_abc123" } }],
+      "metadata": { "skill": "signing-status" }
+    } }
+  }'
+```
+
+`SendMessage` returns a `Task`; `GetTask` and `CancelTask` take `{ "id": "<task id>" }`. A task in
+`TASK_STATE_INPUT_REQUIRED` is resumed by sending another message with `taskId` set and a data part
+holding the resume payload. The 0.x method names `message/send`, `tasks/get` and `tasks/cancel` are
+accepted as aliases.
+
+## Errors
+
+Errors use the ACP `Error` shape with the Documenso error code in `data.code`:
+
+```json
+{ "code": "invalid_input", "message": "Run is not awaiting input", "data": { "code": "INVALID_REQUEST" } }
+```
+
+| HTTP | `code` | When |
+| --- | --- | --- |
+| 400 | `invalid_input` | Validation failure (`data.issues` lists the problems). |
+| 401 / 403 | `invalid_input` | Missing, invalid or expired token; disabled account. |
+| 404 | `not_found` | Unknown agent, run or session (including another team's). |
+| 409 | `invalid_input` | Resume on a run that is not awaiting, cancel on a finished run, idempotency conflict. |
+| 429 | `invalid_input` | Rate limited (300 requests per minute per IP, plus organisation API limits). |
+| 500 | `server_error` | Unexpected failure. |
+
+An agent failure does not fail the HTTP request: the run ends in `status: "failed"` with `run.error` set.

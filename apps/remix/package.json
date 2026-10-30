@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.5.3",
+    "@documenso/acp": "*",
     "@documenso/api": "*",
     "@documenso/assets": "*",
     "@documenso/auth": "*",

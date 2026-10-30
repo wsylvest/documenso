@@ -158,5 +158,11 @@ declare namespace NodeJS {
      */
     DOCUMENSO_URL?: string;
     DOCUMENSO_API_TOKEN?: string;
+
+    /**
+     * Agent Communication Protocol (ACP) server at /api/acp
+     */
+    NEXT_PUBLIC_ACP_ENABLED?: string;
+    NEXT_PRIVATE_ACP_SYNC_TIMEOUT_MS?: string;
   }
 }

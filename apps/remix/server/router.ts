@@ -1,3 +1,4 @@
+import { acp, agentCardHandler, isAcpEnabled, markOrphanedAcpRuns } from '@documenso/acp';
 import { tsRestHonoApp } from '@documenso/api/hono';
 import { auth } from '@documenso/auth/server';
 import { csc } from '@documenso/ee/server-only/signing/csc/hono';
@@ -6,6 +7,7 @@ import { LicenseClient } from '@documenso/lib/server-only/license/license-client
 import { createRateLimitMiddleware } from '@documenso/lib/server-only/rate-limit/rate-limit-middleware';
 import {
   aiRateLimit,
+  apiAcpRateLimit,
   apiTrpcRateLimit,
   apiV1RateLimit,
   apiV2RateLimit,
@@ -61,6 +63,7 @@ const aiRateLimitMiddleware = createRateLimitMiddleware(aiRateLimit);
 const trpcRateLimitMiddleware = createRateLimitMiddleware(apiTrpcRateLimit);
 const fileRateLimitMiddleware = createRateLimitMiddleware(fileUploadRateLimit);
 const mcpRateLimitMiddleware = createRateLimitMiddleware(mcpRateLimit);
+const acpRateLimitMiddleware = createRateLimitMiddleware(apiAcpRateLimit);
 
 /**
  * Attach session and context to requests.
@@ -142,6 +145,24 @@ app.use(`/api/v2/*`, async (c) =>
     isBeta: false,
   }),
 );
+
+// Agent Communication Protocol server (@documenso/acp). Feature flagged via
+// NEXT_PUBLIC_ACP_ENABLED. The A2A Agent Card is also served from the domain
+// root well-known location as the A2A specification requires.
+if (isAcpEnabled()) {
+  app.use('/api/acp/*', cors());
+  app.use('/api/acp/*', acpRateLimitMiddleware);
+  app.route('/api/acp', acp);
+
+  app.get('/.well-known/agent-card.json', agentCardHandler);
+  app.get('/.well-known/agent.json', agentCardHandler);
+
+  // Runs execute in-process, so anything still running from a previous
+  // process can never finish. Mark them failed so clients stop waiting.
+  void markOrphanedAcpRuns().catch((err) => {
+    logger.error({ msg: 'Failed to mark orphaned ACP runs', err });
+  });
+}
 
 // Unstable API server routes. Order matters for these two.
 app.get(`/api/v2-beta/openapi.json`, (c) => c.json(openApiDocument));

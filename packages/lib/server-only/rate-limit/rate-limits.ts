@@ -106,6 +106,16 @@ export const apiV2RateLimit = createRateLimit({
   window: '1m',
 });
 
+/**
+ * Agent Communication Protocol server at /api/acp. Lower than API V2 since a
+ * single run fans out into several API-equivalent operations.
+ */
+export const apiAcpRateLimit = createRateLimit({
+  action: 'api.acp',
+  max: 300,
+  window: '1m',
+});
+
 export const apiTrpcRateLimit = createRateLimit({
   action: 'api.trpc',
   max: 100,

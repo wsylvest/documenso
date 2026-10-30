@@ -11,6 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"],
+      "@documenso/acp": ["../../packages/acp"],
       "@documenso/api": ["../../packages/api"],
       "@documenso/assets": ["../../packages/assets"],
       "@documenso/auth": ["../../packages/auth"],
