@@ -589,7 +589,7 @@ const renderBranding = async ({ qrToken, i18n }: { qrToken: string | null; i18n:
     height: brandingHeight,
   });
 
-  const logoPath = path.join(process.cwd(), 'public/static/logo.png');
+  const logoPath = path.join(process.cwd(), 'public/static/documenso-logo.png');
   const logo = fs.readFileSync(logoPath);
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

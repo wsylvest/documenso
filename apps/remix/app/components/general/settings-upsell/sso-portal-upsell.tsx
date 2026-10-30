@@ -158,7 +158,7 @@ const RedirectScene = () => {
           animate={{ rotate: 360 }}
           transition={{ duration: 0.95, repeat: Number.POSITIVE_INFINITY, ease: 'linear' }}
           className="absolute inset-0 rounded-full border-2"
-          style={{ borderTopColor: '#A2E771' }}
+          style={{ borderTopColor: '#E30516' }}
         />
 
         <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-muted">
@@ -202,7 +202,7 @@ const SuccessScene = () => {
           animate={{ scale: 2.1, opacity: 0 }}
           transition={{ duration: 1.1, ease: 'easeOut' }}
           className="absolute inset-0 rounded-full border-2"
-          style={{ borderColor: '#A2E771' }}
+          style={{ borderColor: '#E30516' }}
         />
 
         <motion.div

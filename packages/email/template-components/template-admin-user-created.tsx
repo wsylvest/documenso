@@ -15,11 +15,11 @@ export const TemplateAdminUserCreated = ({ resetPasswordLink, assetBaseUrl }: Te
 
       <Section className="flex-row items-center justify-center">
         <Text className="mx-auto mb-0 max-w-[80%] text-center font-semibold text-foreground text-lg">
-          <Trans>Welcome to Documenso!</Trans>
+          <Trans>Welcome to SmartRoofing AI!</Trans>
         </Text>
 
         <Text className="my-1 text-center text-base text-muted-foreground">
-          <Trans>An administrator has created a Documenso account for you.</Trans>
+          <Trans>An administrator has created a SmartRoofing AI account for you.</Trans>
         </Text>
 
         <Text className="my-1 text-center text-base text-muted-foreground">

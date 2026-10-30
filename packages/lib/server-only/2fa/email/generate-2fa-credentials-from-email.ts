@@ -4,7 +4,7 @@ import { sha256 } from '@noble/hashes/sha256';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../../constants/crypto';
 
-const ISSUER = 'Documenso Email 2FA';
+const ISSUER = 'SmartRoofing AI Email 2FA';
 
 export type GenerateTwoFactorCredentialsFromEmailOptions = {
   envelopeId: string;

@@ -795,8 +795,8 @@ msgid "<0>{organisationName}</0> has requested to create an account on your beha
 msgstr "<0>{organisationName}</0> hat angefragt, ein Konto in Ihrem Namen zu erstellen."
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "<0>{organisationName}</0> has requested to link your current Documenso account to their organisation."
-msgstr "<0>{organisationName}</0> hat angefragt, Ihr bestehendes Documenso-Konto mit ihrer Organisation zu verknüpfen."
+msgid "<0>{organisationName}</0> has requested to link your current SmartRoofing AI account to their organisation."
+msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v1.tsx
 msgid "<0>{senderName} {senderEmail}</0> has invited you to approve this document"
@@ -835,8 +835,8 @@ msgid "<0>{senderName} {senderEmail}</0> on behalf of \"{0}\" has invited you to
 msgstr "<0>{senderName} {senderEmail}</0> im Namen von \"{0}\" hat Sie eingeladen, dieses Dokument anzusehen"
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "<0>{teamName}</0> has requested to use your email address for their team on Documenso."
-msgstr "<0>{teamName}</0> hat angefragt, Ihre E-Mail-Adresse für ihr Team bei Documenso zu verwenden."
+msgid "<0>{teamName}</0> has requested to use your email address for their team on SmartRoofing AI."
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "<0>{teamName}</0> would like to use <1>{email}</1> as their team email."
@@ -1101,8 +1101,8 @@ msgid "A means to print or download documents for your records"
 msgstr "Ein Mittel, um Dokumente für Ihre Unterlagen zu drucken oder herunterzuladen"
 
 #: packages/email/templates/organisation-join.tsx
-msgid "A member has joined your organisation on Documenso"
-msgstr "Ein Mitglied ist Ihrer Organisation bei Documenso beigetreten"
+msgid "A member has joined your organisation on SmartRoofing AI"
+msgstr ""
 
 #: packages/lib/jobs/definitions/emails/send-organisation-member-left-email.handler.ts
 msgid "A member has left your organisation"
@@ -1113,8 +1113,8 @@ msgid "A member has left your organisation {organisationName}"
 msgstr "Ein Mitglied hat Ihre Organisation {organisationName} verlassen"
 
 #: packages/email/templates/organisation-leave.tsx
-msgid "A member has left your organisation on Documenso"
-msgstr "Ein Mitglied hat Ihre Organisation auf Documenso verlassen"
+msgid "A member has left your organisation on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/token-create-dialog.tsx
 msgid "A name to help you identify this token later."
@@ -1157,13 +1157,13 @@ msgid "A request has been made to create an account for you"
 msgstr "Es wurde eine Anfrage gestellt, ein Konto für Sie zu erstellen."
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "A request has been made to link your Documenso account"
-msgstr "Es wurde eine Anfrage gestellt, Ihr Documenso-Konto zu verknüpfen."
+msgid "A request has been made to link your SmartRoofing AI account"
+msgstr ""
 
 #. placeholder {0}: team.name
 #: packages/lib/server-only/team/create-team-email-verification.ts
-msgid "A request to use your email has been initiated by {0} on Documenso"
-msgstr "Eine Anfrage zur Verwendung Ihrer E-Mail wurde von {0} auf Documenso initiiert"
+msgid "A request to use your email has been initiated by {0} on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-edit-dialog.tsx
@@ -1220,12 +1220,12 @@ msgid "Accept & Link Account"
 msgstr "Akzeptieren & Konto verknüpfen"
 
 #: packages/email/templates/organisation-invite.tsx
-msgid "Accept invitation to join an organisation on Documenso"
-msgstr "Einladung annehmen, um einer Organisation auf Documenso beizutreten"
+msgid "Accept invitation to join an organisation on SmartRoofing AI"
+msgstr ""
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "Accept team email request for {teamName} on Documenso"
-msgstr "Akzeptiere die Team-E-Mail-Anfrage für {teamName} bei Documenso"
+msgid "Accept team email request for {teamName} on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Acceptance and Consent"
@@ -1827,8 +1827,8 @@ msgid "An admin has deleted your document \"{documentName}\"."
 msgstr "Ein Administrator hat dein Dokument \"{documentName}\" gelöscht."
 
 #: packages/email/template-components/template-admin-user-created.tsx
-msgid "An administrator has created a Documenso account for you."
-msgstr "Ein Administrator hat ein Documenso-Konto für Sie erstellt."
+msgid "An administrator has created a SmartRoofing AI account for you."
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "An electronic signature provided by you on our platform, achieved through clicking through to a document and entering your name, or any other electronic signing method we provide, is legally binding. It carries the same weight and enforceability as a manual signature written with ink on paper."
@@ -7158,8 +7158,8 @@ msgid "Japanese"
 msgstr "Japanisch"
 
 #: packages/email/templates/organisation-invite.tsx
-msgid "Join {organisationName} on Documenso"
-msgstr "Tritt {organisationName} auf Documenso bei"
+msgid "Join {organisationName} on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
 msgid "Join our community on <0>Discord</0> for community support and discussion."
@@ -7400,8 +7400,8 @@ msgid "Link template"
 msgstr "Vorlage verknüpfen"
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "Link your Documenso account"
-msgstr "Verknüpfen Sie Ihr Documenso-Konto"
+msgid "Link your SmartRoofing AI account"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.linked-accounts.tsx
@@ -10851,8 +10851,8 @@ msgid "Set up your template properties and recipient information"
 msgstr "Richten Sie Ihre Vorlageneigenschaften und Empfängerinformationen ein"
 
 #: packages/email/templates/admin-user-created.tsx
-msgid "Set your password for Documenso"
-msgstr "Lege dein Passwort für Documenso fest"
+msgid "Set your password for SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx
@@ -10987,8 +10987,8 @@ msgid "Sign Document"
 msgstr "Dokument signieren"
 
 #: apps/remix/app/routes/_recipient+/_layout.tsx
-msgid "Sign Document - Documenso"
-msgstr "Dokument unterzeichnen - Documenso"
+msgid "Sign Document - SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/components/embed/multisign/multi-sign-document-list.tsx
 msgid "Sign Documents"
@@ -11720,8 +11720,8 @@ msgstr "Team"
 
 #. placeholder {0}: team.name
 #: packages/lib/server-only/team/delete-team.ts
-msgid "Team \"{0}\" has been deleted on Documenso"
-msgstr "Team \"{0}\" wurde auf Documenso gelöscht"
+msgid "Team \"{0}\" has been deleted on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.analytics._index.tsx
 msgid "Team activity"
@@ -11776,8 +11776,8 @@ msgid "Team email removed"
 msgstr "Team-E-Mail entfernt"
 
 #: packages/email/templates/team-email-removed.tsx
-msgid "Team email removed for {teamName} on Documenso"
-msgstr "Team-E-Mail für {teamName} auf Documenso entfernt"
+msgid "Team email removed for {teamName} on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "Team email verified!"
@@ -12753,8 +12753,8 @@ msgid "This document has too many recipients. Please remove some recipients or c
 msgstr "Dieses Dokument hat zu viele Empfänger. Bitte entfernen Sie einige Empfänger oder kontaktieren Sie den Support, wenn Sie mehr benötigen."
 
 #: apps/remix/app/components/general/document/document-certificate-qr-view.tsx
-msgid "This document is available in your Documenso account. You can view more details, recipients, and audit logs there."
-msgstr "Dieses Dokument ist in Ihrem Documenso-Konto verfügbar. Dort können Sie weitere Details, Empfänger und Protokolle einsehen."
+msgid "This document is available in your SmartRoofing AI account. You can view more details, recipients, and audit logs there."
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id._index.tsx
 msgid "This document is currently a draft and has not been sent"
@@ -14256,8 +14256,8 @@ msgstr "Warten auf deine Reihe"
 
 #: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
-msgid "Want to send slick signing links like this one? <0>Check out Documenso</0>."
-msgstr "Möchtest du schicke Signatur-Links wie diesen versenden? <0>Sieh dir Documenso an</0>."
+msgid "Want to send slick signing links like this one? <0>Check out SmartRoofing AI</0>."
+msgstr ""
 
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Want your own public profile?"
@@ -14779,8 +14779,8 @@ msgstr "Willkommen bei Documenso"
 
 #: packages/email/template-components/template-admin-user-created.tsx
 #: packages/email/template-components/template-confirmation-email.tsx
-msgid "Welcome to Documenso!"
-msgstr "Willkommen bei Documenso!"
+msgid "Welcome to SmartRoofing AI!"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Well-known URL is required"
@@ -14830,8 +14830,8 @@ msgid "Whether to enable the SSO portal for your organisation"
 msgstr "Ob das SSO-Portal für Ihre Organisation aktiviert werden soll"
 
 #: apps/remix/app/routes/_profile+/p.$url.tsx
-msgid "While waiting for them to do so you can create your own Documenso account and get started with document signing right away."
-msgstr "Während Sie darauf warten, können Sie Ihr eigenes Documenso-Konto erstellen und sofort mit der Dokumentenunterzeichnung beginnen."
+msgid "While waiting for them to do so you can create your own SmartRoofing AI account and get started with document signing right away."
+msgstr ""
 
 #: apps/remix/app/components/dialogs/organisation-create-dialog.tsx
 msgid "Whitelabeling, unlimited members and more"
@@ -15122,8 +15122,8 @@ msgid "You can only detect fields in draft envelopes"
 msgstr "Sie können Felder nur in Entwürfen von Umschlägen erkennen."
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "You can revoke access at any time in your team settings on Documenso <0>here</0>."
-msgstr "Sie können den Zugriff jederzeit in Ihren Teameinstellungen auf Documenso <0>hier</0> widerrufen."
+msgid "You can revoke access at any time in your team settings on SmartRoofing AI <0>here</0>."
+msgstr ""
 
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "You can update the profile URL by updating the team URL in the general settings page."
@@ -15283,11 +15283,11 @@ msgstr ""
 
 #. placeholder {0}: organisation.name
 #: packages/lib/server-only/organisation/create-organisation-member-invites.ts
-msgid "You have been invited to join {0} on Documenso"
-msgstr "Du wurdest eingeladen, {0} auf Documenso beizutreten"
+msgid "You have been invited to join {0} on SmartRoofing AI"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/organisation.invite.$token.tsx
-msgid "You have been invited to join <0>{organisationName}</0> on Documenso."
+msgid "You have been invited to join <0>{organisationName}</0> on SmartRoofing AI."
 msgstr ""
 
 #: packages/email/templates/organisation-invite.tsx
@@ -15873,12 +15873,12 @@ msgid "Your Email"
 msgstr "Ihre E-Mail"
 
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
-msgid "Your email has already been confirmed. You can now use all features of Documenso."
-msgstr "Ihre E-Mail wurde bereits bestätigt. Sie können jetzt alle Funktionen von Documenso nutzen."
+msgid "Your email has already been confirmed. You can now use all features of SmartRoofing AI."
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
-msgid "Your email has been successfully confirmed! You can now use all features of Documenso."
-msgstr "Ihre E-Mail wurde erfolgreich bestätigt! Sie können jetzt alle Funktionen von Documenso nutzen."
+msgid "Your email has been successfully confirmed! You can now use all features of SmartRoofing AI."
+msgstr ""
 
 #. placeholder {0}: teamEmail.team.name
 #. placeholder {1}: teamEmail.team.url

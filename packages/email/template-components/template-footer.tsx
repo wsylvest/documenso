@@ -64,9 +64,11 @@ export const TemplateFooter = ({ isDocument = true, reportUrl }: TemplateFooterP
 
       {!branding.brandingEnabled && (
         <Text className="my-8 text-muted-foreground text-sm">
-          Documenso, Inc.
+          SmartRoofing AI
           <br />
-          2261 Market Street, #5211, San Francisco, CA 94114, USA
+          <Link href="https://smartroofing.ai" target="_blank">
+            smartroofing.ai
+          </Link>
         </Text>
       )}
     </Section>

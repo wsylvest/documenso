@@ -21,32 +21,32 @@ import type { TCssVarsSchema } from '../types/css-vars';
  */
 export const DEFAULT_BRAND_COLORS = {
   background: '#ffffff', //              0 0% 100%
-  foreground: '#0f172a', //              222.2 47.4% 11.2%
-  muted: '#f1f5f9', //                   210 40% 96.1%
-  mutedForeground: '#64748b', //         215.4 16.3% 46.9%
+  foreground: '#17171a', //              240 6.1% 9.6%
+  muted: '#f6f3ee', //                   37.5 30.8% 94.9%
+  mutedForeground: '#6b7080', //         225.7 8.9% 46.1%
   popover: '#ffffff', //                 0 0% 100%
-  popoverForeground: '#0f172a', //       222.2 47.4% 11.2%
+  popoverForeground: '#17171a', //       240 6.1% 9.6%
   card: '#ffffff', //                    0 0% 100%
-  cardBorder: '#e2e8f0', //              214.3 31.8% 91.4%
-  cardForeground: '#0f172a', //          222.2 47.4% 11.2%
-  fieldCard: '#e2f8d3', //               95 74% 90%
-  fieldCardBorder: '#a2e771', //         95.08 71.08% 67.45%
-  fieldCardForeground: '#0f172a', //     222.2 47.4% 11.2%
+  cardBorder: '#e8e4e2', //              30 10% 90%
+  cardForeground: '#17171a', //          240 6.1% 9.6%
+  fieldCard: '#fde7e9', //               355 90% 95%
+  fieldCardBorder: '#f4919a', //         355 85% 72%
+  fieldCardForeground: '#17171a', //     240 6.1% 9.6%
   widget: '#f7f7f7', //                  0 0% 97%
   widgetForeground: '#f2f2f2', //        0 0% 95%
-  border: '#e2e8f0', //                  214.3 31.8% 91.4%
-  input: '#e2e8f0', //                   214.3 31.8% 91.4%
-  primary: '#a2e771', //                 95.08 71.08% 67.45%
-  primaryForeground: '#162c07', //       95.08 71.08% 10%
-  secondary: '#f1f5f9', //               210 40% 96.1%
-  secondaryForeground: '#0f172a', //     222.2 47.4% 11.2%
-  accent: '#f1f5f9', //                  210 40% 96.1%
-  accentForeground: '#0f172a', //        222.2 47.4% 11.2%
-  destructive: '#ff0000', //             0 100% 50%
-  destructiveForeground: '#f8fafc', //   210 40% 98%
-  ring: '#a2e771', //                    95.08 71.08% 67.45%
+  border: '#e8e4e2', //                  30 10% 90%
+  input: '#e8e4e2', //                   30 10% 90%
+  primary: '#e30516', //                 355.4 95.7% 45.5%
+  primaryForeground: '#ffffff', //       0 0% 100%
+  secondary: '#f6f3ee', //               37.5 30.8% 94.9%
+  secondaryForeground: '#17171a', //     240 6.1% 9.6%
+  accent: '#f6f3ee', //                  37.5 30.8% 94.9%
+  accentForeground: '#17171a', //        240 6.1% 9.6%
+  destructive: '#dc2828', //             0 72% 51%
+  destructiveForeground: '#ffffff', //   0 0% 100%
+  ring: '#e30516', //                    355.4 95.7% 45.5%
   warning: '#e1cb05', //                 54 96% 45%
-  envelopeEditorBackground: '#f8fafc', //210 40% 98.04%
+  envelopeEditorBackground: '#f8f5f1', //34.3 33.3% 95.9%
   // `cardBorderTint` is intentionally excluded from the colour-picker UI:
   // unlike the rest of these tokens it is consumed via `rgb(var(--token))`
   // (not `hsl(...)`) and stored as raw RGB triplets in `theme.css`. It does

@@ -50,15 +50,9 @@ export default function PublicProfileLayout() {
               to="/"
               className="rounded-md ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:inline"
             >
-              <BrandingLogo className="hidden h-6 w-auto sm:block" />
+              <BrandingLogo className="hidden h-10 w-auto sm:block" />
 
-              <img
-                src={LogoIcon}
-                alt="Documenso Logo"
-                width={48}
-                height={48}
-                className="h-10 w-auto sm:hidden dark:invert"
-              />
+              <img src={LogoIcon} alt="SmartRoofing AI" width={48} height={48} className="h-10 w-auto sm:hidden" />
             </Link>
 
             <div className="flex flex-row items-center justify-center">

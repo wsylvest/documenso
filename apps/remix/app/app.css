@@ -1,6 +1,47 @@
 @import "@documenso/ui/styles/theme.css";
 
-/* Inter Variable Fonts */
+/* Geist (SmartRoofing AI brand font, SIL OFL) */
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Inter Variable Fonts (kept for PDF rendering and as fallback) */
 @font-face {
   font-family: "Inter";
   src: url("/fonts/inter-variablefont_opsz,wght.ttf") format("truetype-variations");
@@ -64,7 +105,7 @@
 
 @layer base {
   :root {
-    --font-sans: "Inter";
+    --font-sans: "Geist", "Inter";
     --font-signature: "Caveat";
     --font-noto: "Noto Sans", "Noto Sans Korean", "Noto Sans Japanese", "Noto Sans Chinese";
   }

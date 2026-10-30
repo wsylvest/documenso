@@ -42,6 +42,24 @@ Contract templates:
 - A `{{signature, r1}}` placeholder or a placed signature field for every signer.
 - State-mandated language such as the three-day right-to-cancel notice inside the PDF.
 
+## Branding
+
+The application theme and assets are branded as SmartRoofing AI in the source tree (not through the per-organisation branding preferences, which stay editable in the UI). Values come from the live site (`https://smartroofing.ai/styles.css`: brand red `#e30516`, hover `#c40412`, slate `#6b7080`, Geist font) and its published assets (`/assets/logo.png`, `/favicon.png`).
+
+| What | Where |
+| --- | --- |
+| Light/dark theme tokens (`--primary`, `--ring`, field cards, neutrals, `--new-primary-*` scale) | `packages/ui/styles/theme.css`, mirrored as hex in `packages/lib/constants/theme.ts` (also the default email palette) |
+| `documenso-*` Tailwind colour scale (brand red) | `packages/tailwind-config/index.cjs` |
+| Fonts (Geist, with Inter kept for PDF rendering) | `apps/remix/public/fonts/geist-*.ttf`, `apps/remix/app/app.css` |
+| App logo and square mark | `apps/remix/app/components/general/branding-logo.tsx`, `branding-logo-icon.tsx` (render `packages/assets/logo.png` / `logo_icon.png`) |
+| Documenso attribution mark ("Powered by", certificate "provided by") | `apps/remix/app/components/general/documenso-logo.tsx`, `apps/remix/public/static/documenso-logo.png` (used by the Konva certificate/audit-log renderers) |
+| Favicons, PWA icons, manifest, Open Graph image, share frame | `apps/remix/public/` (`favicon*.png`, `favicon.ico`, `apple-touch-icon.png`, `android-chrome-*.png`, `site.webmanifest`, `opengraph-image.jpg`, `static/og-share-frame2.png`), duplicated in `packages/assets/` |
+| Email logo | `apps/remix/public/static/logo.png` (served to mail clients) |
+| Page titles and meta tags | `apps/remix/app/utils/meta.ts` (`APP_NAME`) |
+| Product name in emails, invites, 2FA issuer, passkey relying party, sender-name default, support email fallback | `packages/email/templates/*`, `packages/lib/constants/{app,email}.ts`, `packages/lib/server-only/2fa/*`, `packages/lib/utils/authenticator.ts` |
+
+The source logo is only published as a PNG (`573x423`); there is no vector version on the site, so the icon sizes are resampled from the site's own `favicon.png` and the 512px icon and Open Graph image are composed from `logo.png`. Replace `packages/assets/logo.png` and `apps/remix/public/static/logo.png` with an SVG-derived export when one is available.
+
 ## Updating
 
 ```bash

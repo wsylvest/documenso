@@ -12,7 +12,7 @@ import { SigningStatus } from '@prisma/client';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useRevalidator } from 'react-router';
 
-import { BrandingLogo } from '~/components/general/branding-logo';
+import { DocumensoLogo } from '~/components/general/documenso-logo';
 import { DocumentSigningAuthProvider } from '~/components/general/document-signing/document-signing-auth-provider';
 import { DocumentSigningProvider } from '~/components/general/document-signing/document-signing-provider';
 import { DocumentSigningRecipientProvider } from '~/components/general/document-signing/document-signing-recipient-provider';
@@ -300,7 +300,7 @@ export default function MultisignPage() {
             <span>
               <Trans>Powered by</Trans>
             </span>
-            <BrandingLogo className="ml-2 inline-block h-[14px]" />
+            <DocumensoLogo className="ml-2 inline-block h-[14px]" />
           </div>
         )}
       </div>
@@ -317,7 +317,7 @@ export default function MultisignPage() {
           <span>
             <Trans>Powered by</Trans>
           </span>
-          <BrandingLogo className="ml-2 inline-block h-[14px]" />
+          <DocumensoLogo className="ml-2 inline-block h-[14px]" />
         </div>
       )}
     </div>
