@@ -175,6 +175,26 @@ The assistant calls `list_templates` with the query, `get_template` to find the 
 then `create_document_from_template` with `distribute: true` and reports the envelope ID and signing
 link. The `send_contract_to_homeowner` prompt packages exactly these steps.
 
+## Enabling and disabling
+
+Access to the MCP server is controlled in three layers. All three must allow a request before any tool
+runs.
+
+1. **Deployment flag.** `NEXT_PUBLIC_MCP_ENABLED=true` mounts `/api/mcp` and the protected resource
+   metadata. Without it both answer `404 { "error": "mcp_disabled" }`. Changing it requires a restart.
+2. **Instance switch.** A super-admin can turn the mounted server off at **Admin → Site Settings → Agent
+   Protocols** (`/admin/site-settings`) without a restart. While off, `/api/mcp` and the well-known
+   metadata answer `503 { "error": "MCP_DISABLED", "message": "..." }` (the body also carries
+   `error_description` for OAuth-style clients). The setting is cached in process for 30 seconds, so a
+   change reaches every instance within that window. When the setting has never been saved the server is
+   on.
+3. **Organisation access flag.** Each organisation must be granted the **MCP server access** claim flag
+   by a super-admin at **Admin → Organisations → (organisation) → Claims** (`/admin/organisations/:id`),
+   or through a subscription claim at `/admin/claims`. The flag is opt-in even on instances
+   without billing. A valid token whose organisation lacks it receives
+   `403 { "error": "mcp_access_denied", "error_description": "..." }`, with no `WWW-Authenticate`
+   challenge because the credentials themselves were accepted.
+
 ## Operating the server
 
 | Variable | Purpose |
