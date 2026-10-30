@@ -110,8 +110,9 @@ packages/mcp/
   the registry refuses (404) a session id presented with a different API token. `GET` opens the
   standalone SSE stream, `DELETE` closes the session. Sessions are process-local; multi-instance
   deployments must use stateless mode or sticky routing (documented).
-- `enableJsonResponse: false`: the transport streams SSE when the client accepts it and falls back to
-  JSON otherwise, per spec.
+- `enableJsonResponse: true`: POST responses are plain JSON (allowed by the spec; the server emits no
+  server-initiated messages that would need an SSE stream). In session mode `GET` still opens the
+  standalone SSE stream.
 - Request body limit: SDK default 4 MiB raised to 16 MiB for `/api/mcp` so a base64 PDF (up to the
   `APP_DOCUMENT_UPLOAD_SIZE_LIMIT`) fits in `create_envelope`.
 - No HTTP+SSE legacy endpoints.
@@ -299,8 +300,12 @@ All resource reads are team scoped via the authenticated context.
 ## 8. Error model
 
 - Tool errors are returned as `{ isError: true, content: [{ type: 'text', text: 'CODE: message' }],
-  structuredContent: { code, message, status } }`; `code` is the `AppErrorCode` when the cause is an
-  `AppError` (unwrapped from `TRPCError.cause`), otherwise the tRPC error code. Zod input validation is
+  _meta: { error: { code, message, status } } }`; `code` is the `AppErrorCode` when the cause is an
+  `AppError` (unwrapped from `TRPCError.cause`), otherwise the tRPC error code. `structuredContent` is
+  omitted on errors because SDK clients validate it against the output schema even for error results.
+- Output schemas must convert to satisfiable JSON schemas: Zod intersections become `allOf` of closed
+  objects, which nothing matches, so the audit log output uses a relaxed `passthrough` schema and the
+  unit tests assert that no output schema contains `allOf`. Zod input validation is
   performed by the SDK before the handler runs (JSON-RPC `-32602`).
 - Transport-level failures (auth, origin, disabled feature, rate limit) are HTTP responses, not JSON-RPC
   results: 401 (`invalid_token`), 403 (`invalid_origin`), 404 (`mcp_disabled`), 429 (rate limit with
