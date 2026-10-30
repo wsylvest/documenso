@@ -35,6 +35,7 @@ const config = {
         '@documenso/api/*',
         '@documenso/auth/*',
         '@documenso/lib/*',
+        '@documenso/mcp/*',
         '@documenso/trpc/*',
         '@documenso/email/*',
       ],

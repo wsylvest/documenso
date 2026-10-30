@@ -10,12 +10,14 @@ import {
   apiV1RateLimit,
   apiV2RateLimit,
   fileUploadRateLimit,
+  mcpRateLimit,
 } from '@documenso/lib/server-only/rate-limit/rate-limits';
 import { TelemetryClient } from '@documenso/lib/server-only/telemetry/telemetry-client';
 import { migrateDeletedAccountServiceAccount } from '@documenso/lib/server-only/user/service-accounts/deleted-account';
 import { migrateLegacyServiceAccount } from '@documenso/lib/server-only/user/service-accounts/legacy-service-account';
 import { env } from '@documenso/lib/utils/env';
 import { logger } from '@documenso/lib/utils/logger';
+import { MCP_PATH, MCP_PROTECTED_RESOURCE_METADATA_PATH, mcpRoute, mcpWellKnownRoute } from '@documenso/mcp';
 import { openApiDocument } from '@documenso/trpc/server/open-api';
 import { Hono } from 'hono';
 import { contextStorage } from 'hono/context-storage';
@@ -58,6 +60,7 @@ const apiV2RateLimitMiddleware = createRateLimitMiddleware(apiV2RateLimit);
 const aiRateLimitMiddleware = createRateLimitMiddleware(aiRateLimit);
 const trpcRateLimitMiddleware = createRateLimitMiddleware(apiTrpcRateLimit);
 const fileRateLimitMiddleware = createRateLimitMiddleware(fileUploadRateLimit);
+const mcpRateLimitMiddleware = createRateLimitMiddleware(mcpRateLimit);
 
 /**
  * Attach session and context to requests.
@@ -115,6 +118,13 @@ app.route('/api/ai', aiRoute);
 
 // CSC OAuth routes (mounted from @documenso/ee).
 app.route('/api/csc', csc);
+
+// MCP (Model Context Protocol) server: Streamable HTTP transport plus the
+// RFC 9728 protected resource metadata used for OAuth discovery. Both answer
+// 404 unless NEXT_PUBLIC_MCP_ENABLED=true.
+app.use(MCP_PATH, mcpRateLimitMiddleware);
+app.route(MCP_PATH, mcpRoute);
+app.route(MCP_PROTECTED_RESOURCE_METADATA_PATH, mcpWellKnownRoute);
 
 // API servers.
 app.route('/api/v1', tsRestHonoApp);
