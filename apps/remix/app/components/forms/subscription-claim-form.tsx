@@ -1,6 +1,7 @@
 import { IS_BILLING_ENABLED } from '@documenso/lib/constants/app';
 import type { TLicenseClaim } from '@documenso/lib/types/license';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
+import { isExplicitOnlyClaimFlag } from '@documenso/lib/utils/claim-flags';
 import { trpc } from '@documenso/trpc/react';
 import { ZCreateSubscriptionClaimRequestSchema } from '@documenso/trpc/server/admin-router/create-subscription-claim.types';
 import { Alert, AlertDescription } from '@documenso/ui/primitives/alert';
@@ -207,10 +208,10 @@ export const SubscriptionClaimForm = ({
                           <div className="flex items-center">
                             <Checkbox
                               id={`flag-${key}`}
-                              checked={(!IS_BILLING_ENABLED() && key !== 'disableEmails') || field.value}
+                              checked={(!IS_BILLING_ENABLED() && !isExplicitOnlyClaimFlag(key)) || field.value}
                               onCheckedChange={field.onChange}
                               disabled={
-                                (!IS_BILLING_ENABLED() && key !== 'disableEmails') ||
+                                (!IS_BILLING_ENABLED() && !isExplicitOnlyClaimFlag(key)) ||
                                 (isRestrictedFeature && !field.value)
                               } // Allow disabling of restricted features.
                             />

@@ -1312,6 +1312,10 @@ msgstr ""
 msgid "Acknowledgment"
 msgstr "Kennisgeving"
 
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "ACP agent server"
+msgstr ""
+
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
 #: apps/remix/app/components/tables/admin-document-logs-table.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
@@ -1672,6 +1676,18 @@ msgstr "Na het elektronisch ondertekenen van een document krijg je de mogelijkhe
 msgid "After submission, a document will be automatically generated and added to your documents page. You will also receive a notification via email."
 msgstr "Na indiening wordt er automatisch een document gegenereerd en toegevoegd aan je documentenpagina. Je ontvangt ook een melding per e-mail."
 
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Agent Communication Protocol server at /api/acp and the A2A agent card, used by agent orchestrators. When off, every ACP route, including discovery, receives a 503 ACP_DISABLED response."
+msgstr ""
+
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Agent Protocols"
+msgstr ""
+
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Agent Protocols Updated"
+msgstr ""
+
 #: apps/remix/app/components/general/document-signing/document-signing-consent-dialog.tsx
 msgid "Agree and continue"
 msgstr ""
@@ -1721,7 +1737,7 @@ msgid "All email domains have been synced successfully"
 msgstr "Alle e-maildomeinen zijn succesvol gesynchroniseerd"
 
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
-msgid "All features are enabled while billing is disabled. Email sending can still be disabled below."
+msgid "All features are enabled while billing is disabled, except the opt-in flags below (legacy envelopes, MCP server access, ACP agent access). Email sending can still be disabled below."
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.folders._index.tsx
@@ -2114,6 +2130,7 @@ msgstr "Er is een onverwachte fout opgetreden."
 #: apps/remix/app/components/forms/signup.tsx
 #: apps/remix/app/components/forms/signup.tsx
 #: apps/remix/app/components/forms/team-update-form.tsx
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
 #: apps/remix/app/components/general/admin-email-blocklist-section.tsx
 #: apps/remix/app/components/general/admin-site-banner-section.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx
@@ -7738,6 +7755,10 @@ msgstr "Maximaal aantal ontvangers per document toegestaan. 0 = Onbeperkt"
 msgid "Maximum number of uploaded files per envelope allowed"
 msgstr "Maximaal toegestaan aantal geüploade bestanden per envelop"
 
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "MCP server"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
 #: apps/remix/app/components/dialogs/admin-organisation-member-update-dialog.tsx
 #: apps/remix/app/components/dialogs/team-member-create-dialog.tsx
@@ -7834,6 +7855,10 @@ msgstr "Ontbrekende ontvangers"
 #: apps/remix/app/utils/toast-error-messages.ts
 #: apps/remix/app/utils/toast-error-messages.ts
 msgid "Missing signature fields"
+msgstr ""
+
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Model Context Protocol server at /api/mcp, used by assistants such as Claude or Cursor. When off, requests receive a 503 MCP_DISABLED response."
 msgstr ""
 
 #: apps/remix/app/components/general/document/document-page-view-recipients.tsx
@@ -11670,6 +11695,10 @@ msgstr "Support"
 msgid "Support ticket created"
 msgstr "Supportticket aangemaakt"
 
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Switch the AI agent servers of this instance on or off without a restart. Each server also needs its deployment flag (NEXT_PUBLIC_MCP_ENABLED or NEXT_PUBLIC_ACP_ENABLED) and an organisation must be granted the matching access flag in its claims before its API tokens can use it. Changes take effect within 30 seconds."
+msgstr ""
+
 #: apps/remix/app/components/dialogs/admin-organisation-sync-subscription-dialog.tsx
 #: apps/remix/app/components/tables/organisation-email-domains-table.tsx
 msgid "Sync"
@@ -12119,6 +12148,10 @@ msgstr "Het account is succesvol uitgeschakeld."
 #: apps/remix/app/components/dialogs/admin-user-enable-dialog.tsx
 msgid "The account has been enabled successfully."
 msgstr "Het account is succesvol ingeschakeld."
+
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "The agent protocol settings have been updated successfully."
+msgstr ""
 
 #: packages/ui/components/recipient/recipient-action-auth-select.tsx
 msgid "The authentication methods required for recipients to sign fields"
@@ -13583,6 +13616,10 @@ msgstr "Naamloze groep"
 msgid "Update"
 msgstr "Bijwerken"
 
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "Update Agent Protocols"
+msgstr ""
+
 #: apps/remix/app/components/general/admin-site-banner-section.tsx
 msgid "Update Banner"
 msgstr "Banner bijwerken"
@@ -14503,6 +14540,10 @@ msgstr "Er is een onbekende fout opgetreden bij het inloggen. Probeer het later 
 #: apps/remix/app/components/forms/signup.tsx
 msgid "We encountered an unknown error while attempting to sign you Up. Please try again later."
 msgstr "Er is een onbekende fout opgetreden bij het registreren. Probeer het later opnieuw."
+
+#: apps/remix/app/components/general/admin-agent-protocols-section.tsx
+msgid "We encountered an unknown error while attempting to update the agent protocol settings. Please try again later."
+msgstr ""
 
 #: apps/remix/app/components/general/admin-site-banner-section.tsx
 msgid "We encountered an unknown error while attempting to update the banner. Please try again later."

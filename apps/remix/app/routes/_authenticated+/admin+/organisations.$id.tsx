@@ -5,6 +5,7 @@ import { AppError } from '@documenso/lib/errors/app-error';
 import { LicenseClient } from '@documenso/lib/server-only/license/license-client';
 import type { TLicenseClaim } from '@documenso/lib/types/license';
 import { SUBSCRIPTION_CLAIM_FEATURE_FLAGS } from '@documenso/lib/types/subscription';
+import { isExplicitOnlyClaimFlag } from '@documenso/lib/utils/claim-flags';
 import { canExecuteOrganisationAction, getHighestOrganisationRoleInGroup } from '@documenso/lib/utils/organisations';
 import { trpc } from '@documenso/trpc/react';
 import type { TGetAdminOrganisationResponse } from '@documenso/trpc/server/admin-router/get-admin-organisation.types';
@@ -872,7 +873,8 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
               <Trans>Capabilities enabled for this organisation.</Trans>
             ) : (
               <Trans>
-                All features are enabled while billing is disabled. Email sending can still be disabled below.
+                All features are enabled while billing is disabled, except the opt-in flags below (legacy envelopes, MCP
+                server access, ACP agent access). Email sending can still be disabled below.
               </Trans>
             )}
           </p>
@@ -893,10 +895,10 @@ const OrganisationAdminForm = ({ organisation, licenseFlags }: OrganisationAdmin
                         <div className="flex items-center">
                           <Checkbox
                             id={`flag-${key}`}
-                            checked={(!IS_BILLING_ENABLED() && key !== 'disableEmails') || field.value}
+                            checked={(!IS_BILLING_ENABLED() && !isExplicitOnlyClaimFlag(key)) || field.value}
                             onCheckedChange={field.onChange}
                             disabled={
-                              (!IS_BILLING_ENABLED() && key !== 'disableEmails') ||
+                              (!IS_BILLING_ENABLED() && !isExplicitOnlyClaimFlag(key)) ||
                               (isRestrictedFeature && !field.value)
                             } // Allow disabling of restricted features.
                           />
