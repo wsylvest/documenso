@@ -21,6 +21,8 @@ const BACKPORT_SUBSCRIPTION_CLAIM_JOB_DEFINITION_SCHEMA = z.object({
     hipaa: z.literal(true).optional(),
     signingReminders: z.literal(true).optional(),
     cscQesSigning: z.literal(true).optional(),
+    mcpAccess: z.literal(true).optional(),
+    acpAccess: z.literal(true).optional(),
     // Do NOT backport disableEmails.
     // Todo: Envelopes - Do we need to check?
     // authenticationPortal & emailDomains missing here.

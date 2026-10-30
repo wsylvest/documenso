@@ -79,6 +79,14 @@ export const ZClaimFlagsSchema = z.object({
   cscQesSigning: z.boolean().optional(),
 
   /**
+   * Grants the organisation's team API tokens access to the agent protocol
+   * servers (MCP at `/api/mcp`, ACP at `/api/acp`). Explicit-only: never
+   * implied by a billing-disabled instance, see `EXPLICIT_ONLY_CLAIM_FLAGS`.
+   */
+  mcpAccess: z.boolean().optional(),
+  acpAccess: z.boolean().optional(),
+
+  /**
    * Controls whether an organisation is prevented from sending emails.
    *
    * When this is enabled, ALL emails for the organisation are blocked.
@@ -159,6 +167,14 @@ export const SUBSCRIPTION_CLAIM_FEATURE_FLAGS: Record<
     key: 'cscQesSigning',
     label: 'QES signing',
     isEnterprise: true,
+  },
+  mcpAccess: {
+    key: 'mcpAccess',
+    label: 'MCP server access',
+  },
+  acpAccess: {
+    key: 'acpAccess',
+    label: 'ACP agent access',
   },
   disableEmails: {
     key: 'disableEmails',
