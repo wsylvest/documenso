@@ -1,5 +1,6 @@
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
 import { AppError } from '@documenso/lib/errors/app-error';
+import { getAgentProtocolSettings } from '@documenso/lib/server-only/site-settings/get-agent-protocol-settings';
 import type { RequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
 import { env } from '@documenso/lib/utils/env';
 import { logger as rootLogger } from '@documenso/lib/utils/logger';
@@ -38,6 +39,41 @@ type AcpContext = Context<AcpHonoEnv>;
 const getLogger = (c: AcpContext): Logger => c.get('logger') ?? rootLogger;
 
 const getRequestMetadata = (c: AcpContext): RequestMetadata => c.get('context')?.requestMetadata ?? {};
+
+export const ACP_DISABLED_MESSAGE = 'The ACP server has been disabled by an administrator of this instance.';
+
+/**
+ * 503 body returned while the site-setting switch is off. `error` and
+ * `message` are the documented kill-switch shape; `code` and `data.code` keep
+ * the body a valid ACP `Error` so conformant clients can still parse it.
+ */
+export const buildAcpDisabledBody = () => ({
+  error: 'ACP_DISABLED' as const,
+  message: ACP_DISABLED_MESSAGE,
+  code: 'server_error' as const,
+  data: { code: 'ACP_DISABLED' as const },
+});
+
+const serviceUnavailable = (c: Context) => {
+  c.header('Cache-Control', 'no-store');
+
+  return c.json(buildAcpDisabledBody(), 503);
+};
+
+/**
+ * Site-setting kill switch, checked per request (cached for 30 seconds in
+ * `getAgentProtocolSettings`). Applies to discovery as well as runs so a
+ * disabled server advertises nothing.
+ */
+const acpSiteSettingGate: MiddlewareHandler<AcpHonoEnv> = async (c, next) => {
+  const { acpEnabled } = await getAgentProtocolSettings();
+
+  if (!acpEnabled) {
+    return serviceUnavailable(c);
+  }
+
+  await next();
+};
 
 /**
  * Authenticate with an API token and attach the principal to the context.
@@ -80,7 +116,13 @@ const requestLogger = (c: AcpContext, principal: AcpPrincipal): Logger =>
     apiTokenId: principal.apiTokenId,
   });
 
-const agentCardHandler = (c: Context) => {
+const agentCardHandler = async (c: Context) => {
+  const { acpEnabled } = await getAgentProtocolSettings();
+
+  if (!acpEnabled) {
+    return serviceUnavailable(c);
+  }
+
   return c.json(
     buildAgentCard({
       webAppUrl: NEXT_PUBLIC_WEBAPP_URL(),
@@ -126,6 +168,8 @@ export const acp = new Hono<AcpHonoEnv>()
     // biome-ignore lint/suspicious/noExplicitAny: status is validated by toAcpError.
     return c.json(body, status as any);
   })
+
+  .use('*', acpSiteSettingGate)
 
   // ---- Discovery (unauthenticated, static) ----
 

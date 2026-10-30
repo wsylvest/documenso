@@ -2,12 +2,19 @@ import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const getApiTokenByTokenMock = vi.fn();
+const getOrganisationClaimByTeamIdMock = vi.fn();
 
 vi.mock('@documenso/lib/server-only/public-api/get-api-token-by-token', () => ({
   getApiTokenByToken: (...args: unknown[]) => getApiTokenByTokenMock(...args),
 }));
 
-const { buildApiRequestMetadata, parseAuthorizationHeader, resolveAcpPrincipal } = await import('./auth');
+vi.mock('@documenso/lib/server-only/organisation/get-organisation-claims', () => ({
+  getOrganisationClaimByTeamId: (...args: unknown[]) => getOrganisationClaimByTeamIdMock(...args),
+}));
+
+const { assertAcpAccess, buildApiRequestMetadata, parseAuthorizationHeader, resolveAcpPrincipal } = await import(
+  './auth'
+);
 
 const requestMetadata = { ipAddress: '203.0.113.7', userAgent: 'acp-client/1.0' };
 
@@ -50,9 +57,34 @@ describe('buildApiRequestMetadata', () => {
   });
 });
 
+describe('assertAcpAccess', () => {
+  beforeEach(() => {
+    getOrganisationClaimByTeamIdMock.mockReset();
+  });
+
+  it('passes when the organisation claim grants acpAccess', async () => {
+    getOrganisationClaimByTeamIdMock.mockResolvedValue({ flags: { acpAccess: true } });
+
+    await expect(assertAcpAccess(7)).resolves.toBeUndefined();
+    expect(getOrganisationClaimByTeamIdMock).toHaveBeenCalledWith({ teamId: 7 });
+  });
+
+  it('throws a 403 FORBIDDEN when the flag is missing, even with other flags set', async () => {
+    getOrganisationClaimByTeamIdMock.mockResolvedValue({ flags: { mcpAccess: true, embedSigning: true } });
+
+    await expect(assertAcpAccess(7)).rejects.toMatchObject({
+      code: AppErrorCode.FORBIDDEN,
+      statusCode: 403,
+      message: expect.stringMatching(/ACP agent access is not enabled/),
+    });
+  });
+});
+
 describe('resolveAcpPrincipal', () => {
   beforeEach(() => {
     getApiTokenByTokenMock.mockReset();
+    getOrganisationClaimByTeamIdMock.mockReset();
+    getOrganisationClaimByTeamIdMock.mockResolvedValue({ flags: { acpAccess: true } });
   });
 
   it('rejects requests without a token with a 401', async () => {
@@ -75,6 +107,19 @@ describe('resolveAcpPrincipal', () => {
     expect(principal.user).toEqual({ id: 3, name: 'Ada', email: 'ada@example.com' });
     expect(principal.metadata.auth).toBe('api');
     expect(principal.metadata.source).toBe('apiV2');
+    expect(getOrganisationClaimByTeamIdMock).toHaveBeenCalledWith({ teamId: 7 });
+  });
+
+  it('rejects tokens of organisations without the acpAccess flag with a 403', async () => {
+    getApiTokenByTokenMock.mockResolvedValue(baseToken);
+    getOrganisationClaimByTeamIdMock.mockResolvedValue({ flags: {} });
+
+    await expect(
+      resolveAcpPrincipal({ authorizationHeader: 'Bearer api_valid', requestMetadata }),
+    ).rejects.toMatchObject({
+      code: AppErrorCode.FORBIDDEN,
+      statusCode: 403,
+    });
   });
 
   it('propagates token lookup failures unchanged', async () => {
