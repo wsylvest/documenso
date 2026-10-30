@@ -1,6 +1,8 @@
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
+import { getOrganisationClaimByTeamId } from '@documenso/lib/server-only/organisation/get-organisation-claims';
 import { getApiTokenByToken } from '@documenso/lib/server-only/public-api/get-api-token-by-token';
 import { assertUserNotDisabled } from '@documenso/lib/server-only/user/assert-user-not-disabled';
+import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
 import type { AuthInfo } from '@modelcontextprotocol/sdk/server/auth/types.js';
 
 import { parseBearerToken } from './parse-bearer-token';
@@ -86,6 +88,11 @@ export const toAuthInfo = (auth: McpAuth): AuthInfo => ({
   },
 });
 
+export const MCP_ACCESS_DENIED_ERROR = 'mcp_access_denied';
+
+export const MCP_ACCESS_DENIED_DESCRIPTION =
+  'MCP server access is not enabled for this organisation. Ask an instance administrator to grant the "MCP server access" flag.';
+
 export type McpAuthenticateResult =
   | {
       ok: true;
@@ -93,13 +100,35 @@ export type McpAuthenticateResult =
     }
   | {
       ok: false;
+      status: 401;
 
       /**
        * RFC 6750 error code. `null` when no credentials were presented.
        */
       error: 'invalid_token' | null;
       description: string;
+    }
+  | {
+      ok: false;
+      status: 403;
+
+      /**
+       * The token is valid but the organisation has not been granted MCP access.
+       */
+      error: typeof MCP_ACCESS_DENIED_ERROR;
+      description: string;
     };
+
+/**
+ * Whether the organisation that owns the team may use the MCP server. The
+ * `mcpAccess` claim flag is explicit-only, so it must be granted by a
+ * super-admin even on instances without billing.
+ */
+export const hasMcpAccess = async (teamId: number): Promise<boolean> => {
+  const organisationClaim = await getOrganisationClaimByTeamId({ teamId });
+
+  return isClaimFlagEnabled(organisationClaim.flags, 'mcpAccess');
+};
 
 /**
  * Authenticate an MCP HTTP request.
@@ -116,10 +145,13 @@ export const authenticateMcpRequest = async (request: Request): Promise<McpAuthe
   if (!token) {
     return {
       ok: false,
+      status: 401,
       error: null,
       description: 'An API token is required. Send it as Authorization: Bearer api_...',
     };
   }
+
+  let auth: McpAuth;
 
   try {
     // The organisation API quota is counted per tool call by the tRPC
@@ -128,17 +160,29 @@ export const authenticateMcpRequest = async (request: Request): Promise<McpAuthe
 
     assertUserNotDisabled(apiToken.user);
 
-    return {
-      ok: true,
-      auth: mapApiTokenToMcpAuth(apiToken),
-    };
+    auth = mapApiTokenToMcpAuth(apiToken);
   } catch (error) {
     const appError = AppError.parseError(error);
 
     return {
       ok: false,
+      status: 401,
       error: 'invalid_token',
       description: appError.message || 'Invalid API token',
     };
   }
+
+  if (!(await hasMcpAccess(auth.teamId))) {
+    return {
+      ok: false,
+      status: 403,
+      error: MCP_ACCESS_DENIED_ERROR,
+      description: MCP_ACCESS_DENIED_DESCRIPTION,
+    };
+  }
+
+  return {
+    ok: true,
+    auth,
+  };
 };

@@ -1,6 +1,7 @@
 export { MCP_PATH, MCP_PROTECTED_RESOURCE_METADATA_PATH } from './src/constants';
 export {
   authenticateMcpRequest,
+  hasMcpAccess,
   type McpAuth,
   mapApiTokenToMcpAuth,
   toAuthInfo,

@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+import { getAgentProtocolSettings } from '@documenso/lib/server-only/site-settings/get-agent-protocol-settings';
 import { env } from '@documenso/lib/utils/env';
 import { logger as rootLogger } from '@documenso/lib/utils/logger';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
@@ -63,6 +64,36 @@ const unauthorised = (c: Context<McpHonoEnv>, baseUrl: string, error: 'invalid_t
     401,
   );
 };
+
+export const MCP_DISABLED_MESSAGE = 'The MCP server has been disabled by an administrator of this instance.';
+
+/**
+ * Site-setting kill switch. Unlike `isMcpEnabled` (deployment flag, 404) this
+ * is flipped at runtime by a super-admin, so a 503 tells clients the server
+ * exists but is currently unavailable. `error_description` repeats the message
+ * for clients that only understand the RFC 6749 error shape.
+ */
+const serviceUnavailable = (c: Context<McpHonoEnv>) => {
+  c.header('Cache-Control', 'no-store');
+
+  return c.json(
+    {
+      error: 'MCP_DISABLED',
+      message: MCP_DISABLED_MESSAGE,
+      error_description: MCP_DISABLED_MESSAGE,
+    },
+    503,
+  );
+};
+
+const forbidden = (c: Context<McpHonoEnv>, error: string, description: string) =>
+  c.json(
+    {
+      error,
+      error_description: description,
+    },
+    403,
+  );
 
 const createTransport = (sessionIdGenerator: (() => string) | undefined) =>
   new WebStandardStreamableHTTPServerTransport({
@@ -168,6 +199,12 @@ const handleMcpRequest = async (c: Context<McpHonoEnv>) => {
     return c.json({ error: 'mcp_disabled', error_description: 'The MCP server is not enabled on this instance.' }, 404);
   }
 
+  const { mcpEnabled } = await getAgentProtocolSettings();
+
+  if (!mcpEnabled) {
+    return serviceUnavailable(c);
+  }
+
   const isOriginValid = validateMcpOrigin({
     origin: c.req.header('origin'),
     baseUrl,
@@ -175,12 +212,16 @@ const handleMcpRequest = async (c: Context<McpHonoEnv>) => {
   });
 
   if (!isOriginValid) {
-    return c.json({ error: 'invalid_origin', error_description: 'Origin is not allowed.' }, 403);
+    return forbidden(c, 'invalid_origin', 'Origin is not allowed.');
   }
 
   const authResult = await authenticateMcpRequest(c.req.raw);
 
   if (!authResult.ok) {
+    if (authResult.status === 403) {
+      return forbidden(c, authResult.error, authResult.description);
+    }
+
     return unauthorised(c, baseUrl, authResult.error, authResult.description);
   }
 
@@ -221,9 +262,15 @@ export const mcpRoute = new Hono<McpHonoEnv>()
   )
   .all('/', handleMcpRequest);
 
-const handleProtectedResourceMetadata = (c: Context<McpHonoEnv>) => {
+const handleProtectedResourceMetadata = async (c: Context<McpHonoEnv>) => {
   if (!isMcpEnabled()) {
     return c.json({ error: 'mcp_disabled' }, 404);
+  }
+
+  const { mcpEnabled } = await getAgentProtocolSettings();
+
+  if (!mcpEnabled) {
+    return serviceUnavailable(c);
   }
 
   c.header('Cache-Control', 'public, max-age=3600');
