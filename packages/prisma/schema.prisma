@@ -72,6 +72,7 @@ model User {
   webhooks           Webhook[]
   siteSettings       SiteSettings[]
   passkeys           Passkey[]
+  acpRuns            AcpRun[]
   avatarImage        AvatarImage?           @relation(fields: [avatarImageId], references: [id], onDelete: SetNull)
 
   @@index([email])
@@ -231,6 +232,7 @@ model ApiToken {
   user       User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   teamId     Int
   team       Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  acpRuns    AcpRun[]
 }
 
 enum SubscriptionStatus {
@@ -1058,6 +1060,7 @@ model Team {
   apiTokens  ApiToken[]
   webhooks   Webhook[]
   teamGroups TeamGroup[]
+  acpRuns    AcpRun[]
 
   organisationId String
   organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
@@ -1283,4 +1286,71 @@ model RateLimit {
 
   @@id([key, action, bucket])
   @@index([createdAt])
+}
+
+/**
+ * Agent Communication Protocol (ACP) runs exposed at /api/acp.
+ * A run is one invocation of an ACP agent on behalf of an API token. The
+ * status mirrors the ACP `RunStatus` enum. `state` holds agent-private JSON
+ * that allows an `AWAITING` run to be resumed after a process restart.
+ */
+enum AcpRunStatus {
+  CREATED
+  IN_PROGRESS
+  AWAITING
+  CANCELLING
+  CANCELLED
+  COMPLETED
+  FAILED
+}
+
+model AcpRun {
+  id        String       @id
+  agentName String
+  status    AcpRunStatus @default(CREATED)
+
+  sessionId      String?
+  idempotencyKey String?
+
+  input        Json
+  output       Json
+  state        Json?
+  awaitRequest Json?
+  awaitResume  Json?
+  error        Json?
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  finishedAt DateTime?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  teamId Int
+  team   Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  apiTokenId Int?
+  apiToken   ApiToken? @relation(fields: [apiTokenId], references: [id], onDelete: SetNull)
+
+  events AcpRunEvent[]
+
+  @@unique([teamId, idempotencyKey])
+  @@index([teamId, createdAt])
+  @@index([sessionId])
+  @@index([status])
+}
+
+model AcpRunEvent {
+  id String @id @default(cuid())
+
+  runId String
+  run   AcpRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  sequence Int
+  type     String
+  payload  Json
+
+  createdAt DateTime @default(now())
+
+  @@unique([runId, sequence])
 }
