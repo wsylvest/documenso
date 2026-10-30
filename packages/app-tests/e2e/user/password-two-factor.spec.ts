@@ -1,12 +1,12 @@
 import { DOCUMENSO_ENCRYPTION_KEY } from '@documenso/lib/constants/crypto';
 import { enableTwoFactorAuthentication } from '@documenso/lib/server-only/2fa/enable-2fa';
+import { generateHOTP } from '@documenso/lib/server-only/2fa/otp';
 import { setupTwoFactorAuthentication } from '@documenso/lib/server-only/2fa/setup-2fa';
 import { symmetricDecrypt } from '@documenso/lib/universal/crypto';
 import { prisma } from '@documenso/prisma';
 import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, test } from '@playwright/test';
 import { base32 } from '@scure/base';
-import { generateHOTP } from 'oslo/otp';
 
 import { apiSignin } from '../fixtures/authentication';
 import { waitForHydration } from '../fixtures/hydration';
@@ -27,7 +27,7 @@ const getCurrentTotpCode = async (userId: number) => {
     'utf-8',
   );
 
-  return await generateHOTP(base32.decode(secret), Math.floor(Date.now() / 30_000));
+  return generateHOTP(base32.decode(secret), Math.floor(Date.now() / 30_000));
 };
 
 test('[USER] password update requires a 2FA code when 2FA is enabled', async ({ page }) => {

@@ -1,6 +1,6 @@
+import { createTOTPKeyURI } from '@documenso/lib/server-only/2fa/otp';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
-import { createTOTPKeyURI } from 'oslo/otp';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../../constants/crypto';
 

@@ -80,6 +80,7 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
 
 COPY --from=builder /app/lingui.config.ts ./lingui.config.ts
 COPY --from=builder /app/patches ./patches
+COPY --from=builder /app/vendor ./vendor
 
 RUN npm ci
 
@@ -120,6 +121,7 @@ COPY --from=builder --chown=nodejs:nodejs /app/out/json/ .
 COPY --from=builder --chown=nodejs:nodejs /app/out/full/packages/tailwind-config ./packages/tailwind-config
 # Copy the patches across
 COPY --from=builder --chown=nodejs:nodejs /app/patches ./patches
+COPY --from=builder --chown=nodejs:nodejs /app/vendor ./vendor
 
 RUN npm ci --omit=dev --no-audit --no-fund && npm cache clean --force
 
