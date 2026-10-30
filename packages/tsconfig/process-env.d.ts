@@ -143,5 +143,20 @@ declare namespace NodeJS {
     GOOGLE_VERTEX_PROJECT_ID?: string;
     GOOGLE_VERTEX_LOCATION?: string;
     GOOGLE_VERTEX_API_KEY?: string;
+
+    /**
+     * Model Context Protocol (MCP) server environment variables.
+     */
+    NEXT_PUBLIC_MCP_ENABLED?: string;
+    NEXT_PRIVATE_MCP_SESSIONS_ENABLED?: string;
+    NEXT_PRIVATE_MCP_ALLOWED_ORIGINS?: string;
+    NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS?: string;
+
+    /**
+     * Used only by the `documenso-mcp` stdio proxy (packages/mcp/src/stdio.ts),
+     * never by the web app.
+     */
+    DOCUMENSO_URL?: string;
+    DOCUMENSO_API_TOKEN?: string;
   }
 }
