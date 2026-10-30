@@ -10,6 +10,7 @@
     "clean": "rimraf node_modules"
   },
   "dependencies": {
+    "@documenso/ee": "*",
     "@documenso/lib": "*",
     "@documenso/prisma": "*",
     "@documenso/trpc": "*",

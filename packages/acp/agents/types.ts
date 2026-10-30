@@ -17,6 +17,16 @@ export type AcpPrincipal = {
   teamId: number;
   apiTokenId: number | null;
   metadata: ApiRequestMetadata;
+
+  /**
+   * Signer details forwarded via the `X-Signer-IP-Address` and
+   * `X-Signer-User-Agent` headers of the request that created or resumed the
+   * run. Unvalidated; `resolveSignerRequestMetadata` validates on use.
+   */
+  forwardedSigner?: {
+    ipAddress?: string;
+    userAgent?: string;
+  };
 };
 
 export type AgentStepContext<TInput, TState> = {

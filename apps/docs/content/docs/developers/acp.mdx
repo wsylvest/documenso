@@ -29,7 +29,7 @@ enable it.
 | `envelope-sender` | Create a document from a template or an inline PDF, set recipients and fields, prefill, distribute. | Optional `approval` before sending (`requireApproval: true`). |
 | `signing-status` | Report envelope and recipient status, list pending recipients, resend reminders. | No |
 | `document-retrieval` | Return the sealed PDF, certificate and audit log as download URLs or inline base64. | No |
-| `recipient-signer` | Drive signing for a recipient token: view, sign fields, complete or reject. | `confirmation` before completing (unless `autoComplete: true`). |
+| `recipient-signer` | Drive the native signing flow for a recipient token: view, ESIGN consent, sign fields, complete or reject. | `consent` when consent is missing; `confirmation` before completing (unless `autoComplete: true`). |
 
 Each agent's manifest carries a JSON Schema of its input in `metadata.annotations.input_schema`.
 
@@ -159,16 +159,45 @@ To send from an inline PDF instead of a template, add an `application/pdf` part 
 
 ## Signing as a recipient
 
-`recipient-signer` wraps the recipient flow for a signing token. After inserting fields it pauses so
-the human can confirm:
+`recipient-signer` wraps the [native Signing API](/docs/developers/api/signing) for a signing token and
+adds the human-in-the-loop pauses. Actions: `status`, `view`, `consent`, `sign` (default), `complete`,
+`reject`.
 
 ```json
-{ "token": "<recipient token>", "action": "sign", "fields": [{ "fieldId": 101, "value": "Jane Doe" }] }
+{
+  "token": "<recipient token>",
+  "action": "sign",
+  "fields": [
+    { "fieldId": 101, "fieldValue": { "type": "SIGNATURE", "value": "Jane Doe" } },
+    { "fieldId": 102, "fieldValue": { "type": "TEXT", "value": "Approved" } }
+  ],
+  "signer": { "ipAddress": "203.0.113.42", "userAgent": "Mozilla/5.0 ..." }
+}
 ```
 
-Resume with `{ "type": "confirmation", "decision": "complete" }` or
-`{ "type": "confirmation", "decision": "reject", "reason": "..." }`. Pass `signer.ipAddress` and
-`signer.userAgent` to record the human signer's details on the audit log instead of the caller's.
+The `sign` action records the view, inserts the fields and then pauses:
+
+- **Consent.** Field signing and completion are refused with `ELECTRONIC_CONSENT_REQUIRED` until the
+  signer has consented to conduct the transaction electronically (ESIGN). When that happens the run
+  enters `awaiting` with `await_request.type = "consent"`. Show the consumer disclosure and resume with
+  `{ "type": "consent", "consented": true }` to record consent and continue signing, or
+  `{ "consented": false }` to reject the document with the paper-copy reason. Pass `"consent": true` in
+  the input to record consent up front when the signer has already agreed, or run `action: "consent"`
+  on its own.
+- **Confirmation.** After the fields are inserted the run pauses with `await_request.type =
+  "confirmation"` listing the remaining fields. Resume with `{ "type": "confirmation", "decision":
+  "complete" }` or `{ "decision": "reject", "reason": "..." }`. Set `autoComplete: true` to skip this
+  pause when no required field remains.
+
+Completion returns `completion.status` of `SIGNED`, `ALREADY_SIGNED` or `REDIRECT` (AES/QES
+envelopes that must finish with the trust service provider), and every result carries the envelope's
+`signingStatus` (`PENDING`, `PROCESSING`, `COMPLETED`, `REJECTED`). Two factor access authentication
+is supplied with `accessAuthOptions` exactly as in the Signing API.
+
+Audit entries record the human signer rather than your server when you forward the signer's
+connection details, either as `signer: { ipAddress, userAgent }` in the input (or the resume payload)
+or as the `X-Signer-IP-Address` and `X-Signer-User-Agent` headers on the run or resume request. The
+body wins when both are present; an invalid IP address fails the run with `INVALID_REQUEST`.
 
 ## Streaming
 

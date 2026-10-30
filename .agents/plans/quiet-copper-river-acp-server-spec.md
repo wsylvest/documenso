@@ -108,7 +108,7 @@ request without reading docs.
 | `envelope-sender` | create a document from a template or an inline PDF, add recipients and fields, prefill, distribute | optional `approval` before distribution (`requireApproval: true`) |
 | `signing-status` | status of an envelope, pending recipients, optional reminders | none |
 | `document-retrieval` | sealed PDF, certificate, audit log as `content_url` or inline base64 | none |
-| `recipient-signer` | view, sign fields, complete or reject on behalf of a recipient token | `confirmation` before completion unless `autoComplete: true` |
+| `recipient-signer` | native signing flow for a recipient token: status, view, ESIGN consent, sign fields, complete or reject | `consent` when consent is missing; `confirmation` before completion unless `autoComplete: true` |
 
 Input schemas (summarised; the Zod schemas in each agent file are authoritative):
 
@@ -133,10 +133,12 @@ Input schemas (summarised; the Zod schemas in each agent file are authoritative)
 // recipient-signer
 {
   token: string;                        // recipient signing token
-  action: 'view' | 'sign' | 'complete' | 'reject';
-  fields?: { fieldId: number; value: string; isBase64?: boolean }[];
+  action: 'status' | 'view' | 'consent' | 'sign' | 'complete' | 'reject';
+  consent?: boolean;                    // record ESIGN consent before signing
+  fields?: { fieldId: number; fieldValue: TSignEnvelopeFieldValue }[];
   reason?: string;                      // reject
   nextSigner?: { email; name };
+  accessAuthOptions?: TRecipientAccessAuth; // two factor proof for complete/reject
   autoComplete?: boolean;               // skip the confirmation await after signing
   signer?: { ipAddress?: string; userAgent?: string }; // forwarded like the native signing API
 }
@@ -356,11 +358,14 @@ limits enforced inside `getApiTokenByToken`. SSE connections count once at conne
 
 1. Should runs be visible to every team member through the UI (an "Agent runs" table) or remain API-only?
 2. Retention: delete `AcpRun` rows after N days (suggest 90) via the cron scheduler?
-3. The fork's native Signing API, consent gate and `Recipient.electronicConsentAt` described in
-   `CLAUDE.md` are **not present on `main`** (no `packages/trpc/server/signing-router`,
-   no `electronic-consent.ts`). `recipient-signer` therefore wraps the `main` lib functions
-   (`viewedDocument`, `signFieldWithToken`, `completeDocumentWithToken`, `rejectDocumentWithToken`). When
-   that branch lands, add a `consent` action and route through `signEnvelopeField`.
+3. `recipient-signer` wraps the fork's native Signing API building blocks (`getSigningRecipient`,
+   `assertSigningAccessAuth`, `consentToElectronicSigning`, `signEnvelopeField`,
+   `completeDocumentWithToken`, `rejectDocumentWithToken`, `getEnvelopeSigningStatus`) and surfaces
+   `ELECTRONIC_CONSENT_REQUIRED` as an `awaiting` step of type `consent` (resume `{ consented }`; a
+   refusal rejects with `PAPER_COPY_REQUESTED_REJECTION_REASON`). Signer IP/user agent follow
+   `resolveSignerRequestMetadata`: input `signer` wins over `X-Signer-IP-Address` / `X-Signer-User-Agent`
+   headers, API callers only. Should the consent disclosure text itself be returned in the await message
+   (versioned by `ELECTRONIC_CONSENT_DISCLOSURE_VERSION`) so integrations never show stale wording?
 4. A2A `SendStreamingMessage` over SSE: trivial given `server/sse.ts`, but needs the 1.0 `StreamResponse`
    envelope; defer until a consumer asks.
 5. Should `document-retrieval` presign S3 URLs for `content_url` instead of pointing at the authenticated

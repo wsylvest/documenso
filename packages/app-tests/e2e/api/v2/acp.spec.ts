@@ -4,7 +4,9 @@ import { prisma } from '@documenso/prisma';
 import { seedPendingDocument } from '@documenso/prisma/seed/documents';
 import { seedUser } from '@documenso/prisma/seed/users';
 import { expect, test } from '@playwright/test';
-import type { Team, User } from '@prisma/client';
+import { FieldType, type Team, type User } from '@prisma/client';
+
+import { apiSeedPendingDocument } from '../../fixtures/api-seeds';
 
 /**
  * Agent Communication Protocol server at /api/acp.
@@ -375,17 +377,19 @@ test.describe('ACP server', () => {
     });
 
     test('cancels a run that is awaiting input', async ({ request }) => {
-      const document = await seedPendingDocument(userA, teamA.id, ['signer@test.documenso.com']);
+      const { token: apiToken, distributeResult } = await apiSeedPendingDocument(request, {
+        recipients: [{ email: 'acp-signer@test.documenso.com', name: 'ACP Signer' }],
+      });
 
       // recipient-signer pauses for confirmation after the (empty) sign step.
       const res = await request.post(`${baseUrl}/runs`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers: { Authorization: `Bearer ${apiToken}` },
         data: {
           agent_name: 'recipient-signer',
           input: [
             {
               role: 'user',
-              parts: [{ content: JSON.stringify({ token: document.recipients[0].token, action: 'sign' }) }],
+              parts: [{ content: JSON.stringify({ token: distributeResult.recipients[0].token, action: 'sign' }) }],
             },
           ],
         },
@@ -399,14 +403,14 @@ test.describe('ACP server', () => {
       expect(run.await_request?.type).toBe('confirmation');
 
       const wrongType = await request.post(`${baseUrl}/runs/${run.run_id}`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers: { Authorization: `Bearer ${apiToken}` },
         data: { await_resume: { type: 'approval', approved: true } },
       });
 
       expect(wrongType.status()).toBe(409);
 
       const cancel = await request.post(`${baseUrl}/runs/${run.run_id}/cancel`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers: { Authorization: `Bearer ${apiToken}` },
       });
 
       expect(cancel.status()).toBe(202);
@@ -414,7 +418,7 @@ test.describe('ACP server', () => {
       await expect
         .poll(async () => {
           const latest = await request.get(`${baseUrl}/runs/${run.run_id}`, {
-            headers: { Authorization: `Bearer ${tokenA}` },
+            headers: { Authorization: `Bearer ${apiToken}` },
           });
 
           return ((await latest.json()) as AcpRun).status;
@@ -422,20 +426,141 @@ test.describe('ACP server', () => {
         .toBe('cancelled');
 
       const again = await request.post(`${baseUrl}/runs/${run.run_id}/cancel`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers: { Authorization: `Bearer ${apiToken}` },
       });
 
       expect(again.status()).toBe(409);
     });
 
-    test('resumes recipient-signer with a rejection decision', async ({ request }) => {
-      const document = await seedPendingDocument(userA, teamA.id, ['signer@test.documenso.com']);
+    test('pauses recipient-signer for ESIGN consent, then for confirmation, and completes', async ({ request }) => {
+      const SIGNER_IP = '203.0.113.42';
+      const SIGNER_USER_AGENT = 'AcpSigningClient/1.0 (test)';
 
+      const {
+        envelope,
+        token: apiToken,
+        distributeResult,
+      } = await apiSeedPendingDocument(request, {
+        recipients: [{ email: 'acp-consent@test.documenso.com', name: 'ACP Consent' }],
+        fieldsPerRecipient: [
+          [
+            { type: FieldType.SIGNATURE, page: 1, positionX: 5, positionY: 5, width: 15, height: 5 },
+            { type: FieldType.TEXT, page: 1, positionX: 5, positionY: 20, width: 20, height: 5 },
+          ],
+        ],
+      });
+
+      const [recipient] = distributeResult.recipients;
+
+      const signatureField = envelope.fields.find(
+        (field) => field.recipientId === recipient.id && field.type === FieldType.SIGNATURE,
+      );
+      const textField = envelope.fields.find(
+        (field) => field.recipientId === recipient.id && field.type === FieldType.TEXT,
+      );
+
+      if (!signatureField || !textField) {
+        throw new Error('Expected fields not found');
+      }
+
+      const headers = {
+        Authorization: `Bearer ${apiToken}`,
+        'X-Signer-IP-Address': SIGNER_IP,
+        'X-Signer-User-Agent': SIGNER_USER_AGENT,
+      };
+
+      // 1. Field signing before consent pauses the run with a consent request.
       const res = await request.post(`${baseUrl}/runs`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers,
         data: {
           agent_name: 'recipient-signer',
-          input: [{ role: 'user', parts: [{ content: JSON.stringify({ token: document.recipients[0].token }) }] }],
+          input: [
+            {
+              role: 'user',
+              parts: [
+                {
+                  content_type: 'application/json',
+                  content: JSON.stringify({
+                    token: recipient.token,
+                    action: 'sign',
+                    fields: [
+                      { fieldId: signatureField.id, fieldValue: { type: FieldType.SIGNATURE, value: 'ACP Consent' } },
+                      { fieldId: textField.id, fieldValue: { type: FieldType.TEXT, value: 'signed natively' } },
+                    ],
+                  }),
+                },
+              ],
+            },
+          ],
+        },
+      });
+
+      expect(res.ok(), await res.text()).toBeTruthy();
+
+      const run = (await res.json()) as AcpRun;
+
+      expect(run.status).toBe('awaiting');
+      expect(run.await_request?.type).toBe('consent');
+
+      // 2. Consent is recorded on resume and the fields are then signed.
+      const consented = await request.post(`${baseUrl}/runs/${run.run_id}`, {
+        headers,
+        data: { await_resume: { type: 'consent', consented: true }, mode: 'sync' },
+      });
+
+      expect(consented.ok(), await consented.text()).toBeTruthy();
+
+      const afterConsent = (await consented.json()) as AcpRun;
+
+      expect(afterConsent.status).toBe('awaiting');
+      expect(afterConsent.await_request?.type).toBe('confirmation');
+
+      const consentedRecipient = await prisma.recipient.findUniqueOrThrow({ where: { id: recipient.id } });
+
+      expect(consentedRecipient.electronicConsentAt).not.toBeNull();
+
+      const signedFields = await prisma.field.findMany({ where: { id: { in: [signatureField.id, textField.id] } } });
+
+      expect(signedFields.every((field) => field.inserted)).toBe(true);
+
+      // 3. The human confirms; the recipient is completed.
+      const completed = await request.post(`${baseUrl}/runs/${run.run_id}`, {
+        headers,
+        data: { await_resume: { type: 'confirmation', decision: 'complete' }, mode: 'sync' },
+      });
+
+      expect(completed.ok(), await completed.text()).toBeTruthy();
+
+      const finished = (await completed.json()) as AcpRun;
+
+      expect(finished.status).toBe('completed');
+      expect(resultPart(finished).completion).toEqual({ status: 'SIGNED' });
+
+      const signedRecipient = await prisma.recipient.findUniqueOrThrow({ where: { id: recipient.id } });
+
+      expect(signedRecipient.signingStatus).toBe('SIGNED');
+
+      // Audit entries record the forwarded signer, not the test runner.
+      const consentLog = await prisma.documentAuditLog.findFirst({
+        where: { envelopeId: envelope.id, type: 'DOCUMENT_RECIPIENT_CONSENTED' },
+      });
+
+      expect(consentLog?.ipAddress).toBe(SIGNER_IP);
+      expect(consentLog?.userAgent).toBe(SIGNER_USER_AGENT);
+    });
+
+    test('resumes recipient-signer with a rejection decision', async ({ request }) => {
+      const { token: apiToken, distributeResult } = await apiSeedPendingDocument(request, {
+        recipients: [{ email: 'acp-reject@test.documenso.com', name: 'ACP Reject' }],
+      });
+
+      const [recipient] = distributeResult.recipients;
+
+      const res = await request.post(`${baseUrl}/runs`, {
+        headers: { Authorization: `Bearer ${apiToken}` },
+        data: {
+          agent_name: 'recipient-signer',
+          input: [{ role: 'user', parts: [{ content: JSON.stringify({ token: recipient.token }) }] }],
         },
       });
 
@@ -444,7 +569,7 @@ test.describe('ACP server', () => {
       expect(run.status).toBe('awaiting');
 
       const resumed = await request.post(`${baseUrl}/runs/${run.run_id}`, {
-        headers: { Authorization: `Bearer ${tokenA}` },
+        headers: { Authorization: `Bearer ${apiToken}` },
         data: {
           await_resume: { type: 'confirmation', decision: 'reject', reason: 'Wrong address on the contract' },
           mode: 'sync',
@@ -458,10 +583,31 @@ test.describe('ACP server', () => {
       expect(finished.status).toBe('completed');
       expect(resultPart(finished).action).toBe('reject');
 
-      const recipient = await prisma.recipient.findUniqueOrThrow({ where: { id: document.recipients[0].id } });
+      const rejected = await prisma.recipient.findUniqueOrThrow({ where: { id: recipient.id } });
 
-      expect(recipient.signingStatus).toBe('REJECTED');
-      expect(recipient.rejectionReason).toBe('Wrong address on the contract');
+      expect(rejected.signingStatus).toBe('REJECTED');
+      expect(rejected.rejectionReason).toBe('Wrong address on the contract');
+    });
+
+    test('refuses a recipient token from another team', async ({ request }) => {
+      const { distributeResult } = await apiSeedPendingDocument(request, {
+        recipients: [{ email: 'acp-foreign@test.documenso.com', name: 'ACP Foreign' }],
+      });
+
+      const res = await request.post(`${baseUrl}/runs`, {
+        headers: { Authorization: `Bearer ${tokenB}` },
+        data: {
+          agent_name: 'recipient-signer',
+          input: [
+            { role: 'user', parts: [{ content: JSON.stringify({ token: distributeResult.recipients[0].token }) }] },
+          ],
+        },
+      });
+
+      const run = (await res.json()) as AcpRun;
+
+      expect(run.status).toBe('failed');
+      expect(run.error?.code).toBe('not_found');
     });
   });
 

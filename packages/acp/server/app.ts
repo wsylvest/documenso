@@ -3,6 +3,7 @@ import { AppError } from '@documenso/lib/errors/app-error';
 import type { RequestMetadata } from '@documenso/lib/universal/extract-request-metadata';
 import { env } from '@documenso/lib/utils/env';
 import { logger as rootLogger } from '@documenso/lib/utils/logger';
+import { SIGNER_IP_ADDRESS_HEADER, SIGNER_USER_AGENT_HEADER } from '@documenso/trpc/server/signing-router/schema';
 import type { Context, MiddlewareHandler } from 'hono';
 import { Hono } from 'hono';
 import type { Logger } from 'pino';
@@ -46,6 +47,15 @@ const acpAuthMiddleware: MiddlewareHandler<AcpHonoEnv> = async (c, next) => {
     authorizationHeader: c.req.header('authorization'),
     requestMetadata: getRequestMetadata(c),
   });
+
+  // Signer details forwarded by integrations that proxy a human signer, as
+  // in the native Signing API. Validated when a signing agent uses them.
+  const forwardedIpAddress = c.req.header(SIGNER_IP_ADDRESS_HEADER);
+  const forwardedUserAgent = c.req.header(SIGNER_USER_AGENT_HEADER);
+
+  if (forwardedIpAddress !== undefined || forwardedUserAgent !== undefined) {
+    principal.forwardedSigner = { ipAddress: forwardedIpAddress, userAgent: forwardedUserAgent };
+  }
 
   c.set('acpPrincipal', principal);
 
