@@ -174,7 +174,7 @@ export const EmailDomainsUpsell = () => {
                       transition={{ duration: 0.28, ease: EASE }}
                       className="truncate"
                     >
-                      {isBranded ? brandedSender.email : 'noreply@app.documenso.com'}
+                      {isBranded ? brandedSender.email : 'noreply@smartroofing.ai'}
                     </motion.p>
                   </AnimatePresence>
                 </div>

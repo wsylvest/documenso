@@ -10,7 +10,7 @@ const DEMO_BRANDS = [
   {
     name: 'Documenso',
     letter: 'D',
-    domain: 'noreply@app.documenso.com',
+    domain: 'noreply@smartroofing.ai',
     accent: '#A2E771',
     ink: '#162C07',
     tint: '#F2FBEA',
@@ -19,7 +19,7 @@ const DEMO_BRANDS = [
   {
     name: 'Documenso',
     letter: 'D',
-    domain: 'noreply@app.documenso.com',
+    domain: 'noreply@smartroofing.ai',
     accent: '#387BC7',
     ink: '#ffffff',
     tint: '#EDF3FA',
@@ -28,7 +28,7 @@ const DEMO_BRANDS = [
   {
     name: 'Documenso',
     letter: 'D',
-    domain: 'noreply@app.documenso.com',
+    domain: 'noreply@smartroofing.ai',
     accent: '#9747F5',
     ink: '#ffffff',
     tint: '#F4EDFE',
