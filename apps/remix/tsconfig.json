@@ -16,6 +16,7 @@
       "@documenso/auth": ["../../packages/auth"],
       "@documenso/ee": ["../../packages/ee"],
       "@documenso/lib": ["../../packages/lib"],
+      "@documenso/mcp": ["../../packages/mcp"],
       "@documenso/prisma": ["../../packages/prisma"],
       "@documenso/trpc": ["../../packages/trpc"],
       "@documenso/ui": ["../../packages/ui"],

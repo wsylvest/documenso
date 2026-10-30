@@ -123,3 +123,13 @@ export const fileUploadRateLimit = createRateLimit({
   max: 20,
   window: '1m',
 });
+
+/**
+ * MCP (Model Context Protocol) endpoint. Each tool call additionally counts
+ * against the organisation API quota via `getApiTokenByToken`.
+ */
+export const mcpRateLimit = createRateLimit({
+  action: 'api.mcp',
+  max: 300,
+  window: '1m',
+});

@@ -389,6 +389,13 @@ export const procedureMiddleware = t.middleware(async ({ ctx, next, path }) => {
  * Routers and Procedures
  */
 export const router = t.router;
+/**
+ * Build a server-side caller for a router. Used by the MCP server to execute
+ * procedures with a context built from the incoming HTTP request so the same
+ * middlewares (and therefore the same auth and permission checks) run as for
+ * API V2 requests.
+ */
+export const createCallerFactory = t.createCallerFactory;
 export const procedure = t.procedure.use(procedureMiddleware);
 export const authenticatedProcedure = t.procedure.use(authenticatedMiddleware);
 // While this is functionally the same as `procedure`, it's useful for indicating purpose

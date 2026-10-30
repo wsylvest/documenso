@@ -20,6 +20,7 @@
     "@documenso/auth": "*",
     "@documenso/ee": "*",
     "@documenso/lib": "*",
+    "@documenso/mcp": "*",
     "@documenso/prisma": "*",
     "@documenso/tailwind-config": "*",
     "@documenso/trpc": "*",

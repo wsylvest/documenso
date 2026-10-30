@@ -1,0 +1,193 @@
+---
+title: MCP Server
+description: Operate the signing workflow from Claude Desktop, Claude Code, Cursor or your own agents through the Model Context Protocol.
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+<Callout type="info">
+  The MCP server is specific to this Documenso fork. It is served by the same application as the web
+  app and the REST API, and it is disabled unless the instance sets `NEXT_PUBLIC_MCP_ENABLED=true`.
+</Callout>
+
+## Overview
+
+The [Model Context Protocol](https://modelcontextprotocol.io) (MCP) lets LLM clients discover and call
+tools. This instance exposes an MCP server at:
+
+```
+https://sign.smartroofing.ai/api/mcp
+```
+
+It implements the Streamable HTTP transport of the MCP `2025-11-25` specification (clients speaking
+`2025-06-18` or `2025-03-26` are negotiated down automatically). Every tool runs under a **team API
+token** and goes through the same permission checks and audit trail as the REST API V2, so an assistant
+can only see and change what the token's team can.
+
+What you get:
+
+- **Tools** for templates, documents, recipients, fields, sending, reminders, status, downloads and the
+  native [Signing API](/docs/developers/api/signing).
+- **Resources** (`documenso://envelope/...`, `documenso://template/...`) for envelope JSON and for the
+  signed PDF, certificate and audit log.
+- **Prompts** for common flows such as "send a contract to a homeowner".
+
+## Authentication
+
+Create a team API token under **Team settings → API tokens** and send it as a bearer token:
+
+```
+Authorization: Bearer api_xxxxxxxx
+```
+
+Requests without a valid token receive `401` with a `WWW-Authenticate: Bearer` challenge that points at
+the [RFC 9728](https://www.rfc-editor.org/rfc/rfc9728) protected resource metadata:
+
+```
+GET https://sign.smartroofing.ai/.well-known/oauth-protected-resource/api/mcp
+```
+
+The metadata lists no authorization servers by default: this instance is an OAuth *resource server*
+only and does not issue tokens itself. Clients that implement the MCP OAuth flow will see that and fall
+back to a static token, which is how you configure them below. Operators can advertise an external
+OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` once one is in place.
+
+## Connecting a client
+
+<Tabs items={['Claude Code', 'Claude Desktop', 'Cursor', 'stdio proxy']}>
+  <Tab value="Claude Code">
+    Add the remote server with your token in the `Authorization` header:
+
+    ```bash
+    claude mcp add --transport http documenso https://sign.smartroofing.ai/api/mcp \
+      --header "Authorization: Bearer api_xxxxxxxx"
+    ```
+
+    Or in `.mcp.json` at the root of a project:
+
+    ```json
+    {
+      "mcpServers": {
+        "documenso": {
+          "type": "http",
+          "url": "https://sign.smartroofing.ai/api/mcp",
+          "headers": {
+            "Authorization": "Bearer api_xxxxxxxx"
+          }
+        }
+      }
+    }
+    ```
+
+  </Tab>
+  <Tab value="Claude Desktop">
+    Claude Desktop connects to remote servers through **Settings → Connectors → Add custom
+    connector** with the URL `https://sign.smartroofing.ai/api/mcp`. Because this instance does not run
+    an OAuth authorization server, use the stdio proxy instead when the connector dialog insists on
+    OAuth. Add this to `claude_desktop_config.json`:
+
+    ```json
+    {
+      "mcpServers": {
+        "documenso": {
+          "command": "npx",
+          "args": ["--yes", "--package", "@documenso/mcp", "documenso-mcp"],
+          "env": {
+            "DOCUMENSO_URL": "https://sign.smartroofing.ai",
+            "DOCUMENSO_API_TOKEN": "api_xxxxxxxx"
+          }
+        }
+      }
+    }
+    ```
+
+    When running from a checkout of this repository use `"command": "node"` with
+    `"args": ["/path/to/documenso/packages/mcp/bin/documenso-mcp.mjs"]`.
+
+  </Tab>
+  <Tab value="Cursor">
+    In **Cursor Settings → MCP → Add new global MCP server** (or `.cursor/mcp.json`):
+
+    ```json
+    {
+      "mcpServers": {
+        "documenso": {
+          "url": "https://sign.smartroofing.ai/api/mcp",
+          "headers": {
+            "Authorization": "Bearer api_xxxxxxxx"
+          }
+        }
+      }
+    }
+    ```
+
+  </Tab>
+  <Tab value="stdio proxy">
+    `documenso-mcp` is a small stdio server that forwards every request to the remote `/api/mcp`
+    endpoint with your token. It needs only Node.js 20+; it never talks to the database.
+
+    ```bash
+    DOCUMENSO_URL=https://sign.smartroofing.ai \
+    DOCUMENSO_API_TOKEN=api_xxxxxxxx \
+    node packages/mcp/bin/documenso-mcp.mjs
+    ```
+
+    Use it with any client that only supports stdio servers.
+
+  </Tab>
+</Tabs>
+
+## Tools
+
+| Tool | What it does |
+| --- | --- |
+| `list_teams`, `list_folders` | Show the token's team and folders. |
+| `list_templates`, `get_template` | Find templates and their placeholder recipients. |
+| `create_document_from_template` | Create a document from a template with real recipients; `distribute: true` sends it. |
+| `create_envelope` | Create a document or template from PDFs supplied as base64 or a URL. |
+| `list_envelopes`, `get_envelope`, `get_envelope_audit_logs` | Search documents, inspect recipients, fields, status and the audit trail. |
+| `add_recipients`, `update_recipients`, `add_fields`, `update_fields`, `update_envelope` | Edit drafts. |
+| `distribute_envelope`, `resend_envelope` | Send a draft; remind recipients who have not signed. |
+| `download_envelope_pdf`, `download_certificate`, `download_audit_log` | Return the sealed PDF, certificate or audit log as a resource link. |
+| `cancel_envelope`, `delete_envelope` | Destructive; require `confirm: true`. |
+| `signing_get_envelope`, `signing_get_status`, `signing_view`, `signing_consent`, `signing_sign_field`, `signing_complete`, `signing_reject` | Drive a recipient's signing flow with their signing token (native Signing API). `signing_reject` requires `confirm: true`. |
+
+Every tool declares MCP annotations (`readOnlyHint`, `destructiveHint`, `idempotentHint`,
+`openWorldHint`), a JSON schema for its input and an output schema; results carry
+`structuredContent` as well as a readable text summary. Errors come back as tool results with
+`isError: true` and the same error codes as the REST API, for example `NOT_FOUND` or
+`ELECTRONIC_CONSENT_REQUIRED`.
+
+### Binary downloads
+
+Tools never embed PDFs by default. `download_envelope_pdf` returns a `resource_link` such as
+`documenso://envelope/envelope_abc/item/item_xyz/pdf?version=signed`; read it with `resources/read`
+to receive the bytes as a base64 blob. Pass `inline: true` to also get the blob in the tool result
+(up to 10 MB).
+
+### Example conversation
+
+> Send the "Roof replacement agreement" template to Jane Doe (jane@example.com).
+
+The assistant calls `list_templates` with the query, `get_template` to find the signer placeholder,
+then `create_document_from_template` with `distribute: true` and reports the envelope ID and signing
+link. The `send_contract_to_homeowner` prompt packages exactly these steps.
+
+## Operating the server
+
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_MCP_ENABLED` | `true` enables `/api/mcp` and the well-known metadata. Off by default. |
+| `NEXT_PRIVATE_MCP_SESSIONS_ENABLED` | `true` issues `Mcp-Session-Id` sessions held in process memory (single instance only). Default: stateless, every request independent. |
+| `NEXT_PRIVATE_MCP_ALLOWED_ORIGINS` | Extra browser origins allowed in addition to the web app URL. Requests without an `Origin` header (desktop clients, servers) are always accepted. |
+| `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` | Issuer URLs to advertise in the protected resource metadata. |
+
+- Rate limit: 300 requests per minute per IP on `/api/mcp` (`X-RateLimit-*` headers), plus the
+  organisation API quota for each tool call.
+- Logging: each tool call writes a structured `mcp.tool` log entry with the tool name, user ID, team
+  ID, API token ID and envelope ID. Signing tokens and file contents are never logged.
+- Audit trail: actions performed through MCP appear in the document audit log attributed to the API
+  token's team, exactly like REST API calls.
+- Transport: Streamable HTTP only (JSON responses). The deprecated HTTP+SSE transport is not served.
