@@ -1,0 +1,25 @@
+{
+  "name": "@documenso/acp",
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rimraf node_modules"
+  },
+  "dependencies": {
+    "@documenso/lib": "*",
+    "@documenso/prisma": "*",
+    "@documenso/trpc": "*",
+    "hono": "^4.12.14",
+    "ts-pattern": "^5.9.0",
+    "zod": "^3.25.76",
+    "zod-to-json-schema": "^3.24.6"
+  },
+  "devDependencies": {
+    "vite-plugin-babel-macros": "^1.0.6",
+    "vitest": "^4.0.18"
+  }
+}
