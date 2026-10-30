@@ -6,7 +6,10 @@
  *  This file will be copied to the build folder during build time.
  *  Running this file will not work without a build.
  */
-import { serve } from '@hono/node-server';
+import { chmodSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
+import { dirname } from 'node:path';
+
+import { createAdaptorServer, serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import handle from 'hono-react-router-adapter/node';
 
@@ -44,6 +47,63 @@ server.use(
 
 const handler = handle(build, server, { getLoadContext });
 
-const port = parseInt(process.env.PORT || '3000', 10);
+// Listen on a Unix domain socket when NEXT_PRIVATE_LISTEN_SOCKET is set, so a
+// reverse proxy on the same host (nginx `proxy_pass http://unix:/path:`) can
+// reach the app without a TCP port. A loopback port is still opened when PORT
+// is set explicitly, because the app calls itself over HTTP for background jobs
+// and PDF rendering (NEXT_PRIVATE_INTERNAL_WEBAPP_URL) and `fetch` cannot
+// target a socket path.
+const socketPath = process.env.NEXT_PRIVATE_LISTEN_SOCKET?.trim();
 
-serve({ fetch: handler.fetch, port });
+if (socketPath) {
+  const socketDir = dirname(socketPath);
+
+  if (!existsSync(socketDir)) {
+    mkdirSync(socketDir, { recursive: true, mode: 0o750 });
+  }
+
+  // A previous process that died without cleaning up leaves a stale socket
+  // file; listening on it would fail with EADDRINUSE.
+  if (existsSync(socketPath)) {
+    unlinkSync(socketPath);
+  }
+
+  const socketServer = createAdaptorServer({ fetch: handler.fetch });
+
+  socketServer.listen(socketPath, () => {
+    // Owner and group (the proxy's user, via the directory's group) may connect.
+    chmodSync(socketPath, 0o660);
+    console.log(`Listening on unix socket ${socketPath}`);
+  });
+
+  const removeSocket = () => {
+    try {
+      unlinkSync(socketPath);
+    } catch {
+      // Already gone.
+    }
+  };
+
+  for (const signal of ['SIGINT', 'SIGTERM']) {
+    process.once(signal, () => {
+      socketServer.close(() => {
+        removeSocket();
+        process.exit(0);
+      });
+    });
+  }
+
+  process.once('exit', removeSocket);
+
+  if (process.env.PORT) {
+    const port = parseInt(process.env.PORT, 10);
+
+    serve({ fetch: handler.fetch, port, hostname: '127.0.0.1' }, () => {
+      console.log(`Listening on 127.0.0.1:${port} for internal requests`);
+    });
+  }
+} else {
+  const port = parseInt(process.env.PORT || '3000', 10);
+
+  serve({ fetch: handler.fetch, port });
+}

@@ -1,6 +1,8 @@
 declare namespace NodeJS {
   export interface ProcessEnv {
     PORT?: string;
+    /** Unix socket path for the production server to listen on instead of (or alongside) PORT. */
+    NEXT_PRIVATE_LISTEN_SOCKET?: string;
     NEXT_PUBLIC_WEBAPP_URL?: string;
     NEXT_PUBLIC_SUPPORT_EMAIL?: string;
     NEXT_PRIVATE_DOCUMENSO_LICENSE_KEY?: string;
