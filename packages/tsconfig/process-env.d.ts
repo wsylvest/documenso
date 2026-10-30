@@ -143,5 +143,11 @@ declare namespace NodeJS {
     GOOGLE_VERTEX_PROJECT_ID?: string;
     GOOGLE_VERTEX_LOCATION?: string;
     GOOGLE_VERTEX_API_KEY?: string;
+
+    /**
+     * Agent Communication Protocol (ACP) server at /api/acp
+     */
+    NEXT_PUBLIC_ACP_ENABLED?: string;
+    NEXT_PRIVATE_ACP_SYNC_TIMEOUT_MS?: string;
   }
 }
