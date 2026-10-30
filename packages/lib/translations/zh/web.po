@@ -5523,6 +5523,10 @@ msgstr "邮件发件人"
 msgid "Email sending has been temporarily paused"
 msgstr "电子邮件发送已被暂时暂停"
 
+#: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
+msgid "Email sending is not set up on this instance yet. Please contact your system administrator."
+msgstr ""
+
 #: packages/lib/utils/document-audit-logs.ts
 msgctxt "Audit log format"
 msgid "Email sent"

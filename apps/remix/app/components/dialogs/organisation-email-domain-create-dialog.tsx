@@ -102,7 +102,9 @@ export const OrganisationEmailDomainCreateDialog = ({ trigger, ...props }: Organ
       } else if (error.code === AppErrorCode.NOT_SETUP) {
         toast({
           title: t`Email provider not configured`,
-          description: error.userMessage ?? error.message,
+          description:
+            error.userMessage ??
+            t`Email sending is not set up on this instance yet. Please contact your system administrator.`,
           variant: 'destructive',
           duration: 10000,
         });

@@ -5518,6 +5518,10 @@ msgstr "Email Sender"
 msgid "Email sending has been temporarily paused"
 msgstr "Email sending has been temporarily paused"
 
+#: apps/remix/app/components/dialogs/organisation-email-domain-create-dialog.tsx
+msgid "Email sending is not set up on this instance yet. Please contact your system administrator."
+msgstr "Email sending is not set up on this instance yet. Please contact your system administrator."
+
 #: packages/lib/utils/document-audit-logs.ts
 msgctxt "Audit log format"
 msgid "Email sent"

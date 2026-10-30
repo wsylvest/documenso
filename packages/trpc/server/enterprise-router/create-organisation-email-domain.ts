@@ -2,6 +2,7 @@ import { createEmailDomain } from '@documenso/ee/server-only/lib/create-email-do
 import { ORGANISATION_MEMBER_ROLE_PERMISSIONS_MAP } from '@documenso/lib/constants/organisations';
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { isClaimFlagEnabled } from '@documenso/lib/utils/claim-flags';
+import { isAdmin } from '@documenso/lib/utils/is-admin';
 import { buildOrganisationWhereQuery } from '@documenso/lib/utils/organisations';
 import { prisma } from '@documenso/prisma';
 
@@ -53,8 +54,29 @@ export const createOrganisationEmailDomainRoute = authenticatedProcedure
       });
     }
 
-    return await createEmailDomain({
-      domain,
-      organisationId,
-    });
+    try {
+      return await createEmailDomain({
+        domain,
+        organisationId,
+      });
+    } catch (err) {
+      const error = AppError.parseError(err);
+
+      // The NOT_SETUP message names instance configuration (env vars). Only
+      // instance admins should see that detail; organisation managers get a
+      // generic message instead.
+      const fullUser =
+        error.code === AppErrorCode.NOT_SETUP
+          ? await prisma.user.findUniqueOrThrow({ where: { id: user.id }, select: { roles: true } })
+          : null;
+
+      if (fullUser && !isAdmin(fullUser)) {
+        throw new AppError(AppErrorCode.NOT_SETUP, {
+          message: error.message,
+          userMessage: 'Email sending is not set up on this instance yet. Please contact your system administrator.',
+        });
+      }
+
+      throw err;
+    }
   });
