@@ -488,7 +488,7 @@ export const AddTemplateSettingsFormPartial = ({
                                       </SelectItem>
                                     ))}
 
-                                    <SelectItem value={'-1'}>Documenso</SelectItem>
+                                    <SelectItem value={'-1'}>SmartRoofing AI</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </FormControl>

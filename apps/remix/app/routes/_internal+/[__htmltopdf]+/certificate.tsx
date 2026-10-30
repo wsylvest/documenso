@@ -23,7 +23,7 @@ import { match } from 'ts-pattern';
 import { UAParser } from 'ua-parser-js';
 import { renderSVG } from 'uqr';
 
-import { BrandingLogo } from '~/components/general/branding-logo';
+import { DocumensoLogo } from '~/components/general/documenso-logo';
 
 import type { Route } from './+types/certificate';
 
@@ -398,7 +398,7 @@ export default function SigningCertificate({ loaderData }: Route.ComponentProps)
             <p className="flex-shrink-0 font-medium text-sm print:text-xs">
               {_(msg`Signing certificate provided by`)}:
             </p>
-            <BrandingLogo className="max-h-6 print:max-h-4" />
+            <DocumensoLogo className="max-h-6 print:max-h-4" />
           </div>
         </div>
       )}

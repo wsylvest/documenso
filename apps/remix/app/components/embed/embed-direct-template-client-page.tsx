@@ -41,7 +41,7 @@ import { DateTime } from 'luxon';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
-import { BrandingLogo } from '~/components/general/branding-logo';
+import { DocumensoLogo } from '~/components/general/documenso-logo';
 import PDFViewerLazy from '~/components/general/pdf-viewer/pdf-viewer-lazy';
 import { injectCss } from '~/utils/css-vars';
 import { getDirectTemplateErrorMessage } from '~/utils/toast-error-messages';
@@ -536,7 +536,7 @@ export const EmbedDirectTemplateClientPage = ({
           <span>
             <Trans>Powered by</Trans>
           </span>
-          <BrandingLogo className="ml-2 inline-block h-[14px]" />
+          <DocumensoLogo className="ml-2 inline-block h-[14px]" />
         </div>
       )}
     </div>

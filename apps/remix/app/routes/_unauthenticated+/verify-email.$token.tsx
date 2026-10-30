@@ -142,7 +142,9 @@ export default function VerifyEmailPage({ loaderData }: Route.ComponentProps) {
             </h2>
 
             <p className="mt-4 text-muted-foreground">
-              <Trans>Your email has been successfully confirmed! You can now use all features of Documenso.</Trans>
+              <Trans>
+                Your email has been successfully confirmed! You can now use all features of SmartRoofing AI.
+              </Trans>
             </p>
 
             <Button className="mt-4" asChild>
@@ -167,7 +169,7 @@ export default function VerifyEmailPage({ loaderData }: Route.ComponentProps) {
             </h2>
 
             <p className="mt-4 text-muted-foreground">
-              <Trans>Your email has already been confirmed. You can now use all features of Documenso.</Trans>
+              <Trans>Your email has already been confirmed. You can now use all features of SmartRoofing AI.</Trans>
             </p>
 
             <Button className="mt-4" asChild>
