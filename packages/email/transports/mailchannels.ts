@@ -1,13 +1,16 @@
 import { env } from '@documenso/lib/utils/env';
 import type { SentMessageInfo, Transport } from 'nodemailer';
-import type { Address } from 'nodemailer/lib/mailer';
 import type MailMessage from 'nodemailer/lib/mailer/mail-message';
 
 import { normalizeMailHeaders } from './normalize-headers';
 
 const VERSION = '1.0.0';
 
-type NodeMailerAddress = string | Address | Array<string | Address> | undefined;
+/** Any address input nodemailer accepts: a string, an address or group object, or nested arrays of these. */
+type NodeMailerAddress = MailMessage['data']['to'] | MailMessage['data']['from'];
+
+/** The callback nodemailer hands to a transport; the result is omitted on failure. */
+type SendCallback = Parameters<Transport<SentMessageInfo>['send']>[1];
 
 interface MailChannelsAddress {
   email: string;
@@ -46,9 +49,9 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
     };
   }
 
-  public send(mail: MailMessage, callback: (_err: Error | null, _info: SentMessageInfo) => void) {
+  public send(mail: MailMessage, callback: SendCallback) {
     if (!mail.data.to || !mail.data.from) {
-      return callback(new Error('Missing required fields "to" or "from"'), null);
+      return callback(new Error('Missing required fields "to" or "from"'));
     }
 
     const mailTo = this.toMailChannelsAddresses(mail.data.to);
@@ -59,7 +62,7 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
     const [replyTo] = this.toMailChannelsAddresses(mail.data.replyTo);
 
     if (!from) {
-      return callback(new Error('Missing required field "from"'), null);
+      return callback(new Error('Missing required field "from"'));
     }
 
     const requestHeaders: Record<string, string> = {
@@ -102,13 +105,15 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
     })
       .then((res) => {
         if (res.status >= 200 && res.status <= 299) {
+          const recipients = [...mailTo, ...mailCc, ...mailBcc].map((recipient) => recipient.email);
+
           return callback(null, {
             messageId: '',
             envelope: {
-              from: mail.data.from,
-              to: mail.data.to,
+              from: from.email,
+              to: recipients,
             },
-            accepted: mail.data.to,
+            accepted: recipients,
             rejected: [],
             pending: [],
           });
@@ -116,11 +121,11 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
 
         res
           .json()
-          .then((data) => callback(new Error(`MailChannels error: ${data.message}`), null))
-          .catch((err) => callback(err, null));
+          .then((data) => callback(new Error(`MailChannels error: ${data.message}`)))
+          .catch((err) => callback(err));
       })
       .catch((err) => {
-        return callback(err, null);
+        return callback(err);
       });
   }
 
@@ -136,17 +141,18 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
       return [{ email: address }];
     }
 
+    // Arrays can be nested, so flatten recursively.
     if (Array.isArray(address)) {
-      return address.map((address) => {
-        if (typeof address === 'string') {
-          return { email: address };
-        }
+      return address.flatMap((entry) => this.toMailChannelsAddresses(entry));
+    }
 
-        return {
-          email: address.address,
-          name: address.name,
-        };
-      });
+    // Group addresses ("Team: a@x, b@x;") carry their members instead of an address of their own.
+    if (address.group) {
+      return address.group.flatMap((member) => this.toMailChannelsAddresses(member));
+    }
+
+    if (!address.address) {
+      return [];
     }
 
     return [

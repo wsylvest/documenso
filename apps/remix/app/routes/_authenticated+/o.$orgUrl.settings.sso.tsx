@@ -309,7 +309,8 @@ const SSOProviderForm = ({ authenticationPortal }: SSOProviderFormProps) => {
                       id="client-secret"
                       type="password"
                       {...field}
-                      value={field.value === null ? '**********************' : field.value}
+                      value={field.value ?? ''}
+                      placeholder="**********************"
                     />
                   </FormControl>
                   <FormMessage />
