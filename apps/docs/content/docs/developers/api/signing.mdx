@@ -1,6 +1,6 @@
 ---
 title: Signing API
-description: Drive the recipient signing flow from your own UI without the Documenso signing page or an iframe.
+description: Drive the recipient signing flow from your own UI without the SR Sign signing page or an iframe.
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
@@ -8,16 +8,16 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
 <Callout type="info">
-  The Signing API is specific to this Documenso fork. It is not part of the upstream Documenso API or
+  The Signing API is specific to this SR Sign fork. It is not part of the upstream SR Sign API or
   the official SDKs. The endpoints appear in this instance's OpenAPI document at
   `/api/v2/openapi.json` under the **Signing** tag.
 </Callout>
 
 ## Overview
 
-The embed SDKs and direct links render the Documenso signing page inside your site. The Signing API
+The embed SDKs and direct links render the SR Sign signing page inside your site. The Signing API
 goes one level deeper: your application renders the PDF and fields itself and calls these endpoints to
-record what the signer does. Documenso still owns the audit trail, sealing, certificates and webhooks.
+record what the signer does. SR Sign still owns the audit trail, sealing, certificates and webhooks.
 
 All endpoints:
 
@@ -55,9 +55,9 @@ page does:
   hosted page which shows the document first. `complete` and `reject` require
   `accessAuthOptions: { type: "TWO_FACTOR_AUTH", method: "email", token: "123456" }`, obtained with
   `POST /signing/access-code/request`.
-- **ACCOUNT** access or action authentication requires the recipient to be signed in to Documenso and
+- **ACCOUNT** access or action authentication requires the recipient to be signed in to SR Sign and
   can never be satisfied through the API. Every endpoint returns `401` for such envelopes.
-- **PASSKEY** action authentication requires the Documenso origin and cannot be satisfied either.
+- **PASSKEY** action authentication requires the SR Sign origin and cannot be satisfied either.
 
 <Callout type="warn">
   Use two factor email, password or no authentication on envelopes you intend to sign natively.
@@ -87,7 +87,7 @@ page does:
   </Step>
   <Step>
     **Request an access code** with `POST /signing/access-code/request` if the envelope requires two
-    factor access authentication. Documenso emails the code to the recipient.
+    factor access authentication. SR Sign emails the code to the recipient.
   </Step>
   <Step>
     **Sign each field** with `POST /signing/field/sign`. Send a `null` value to clear a field. For
@@ -126,7 +126,7 @@ as `complete`.
 <Tabs items={['TypeScript', 'curl']}>
 <Tab value="TypeScript">
 ```typescript
-const API_TOKEN = process.env.DOCUMENSO_API_TOKEN;
+const API_TOKEN = process.env.SR_SIGN_API_TOKEN;
 const BASE_URL = 'https://your-instance.com/api/v2/signing';
 
 type SignerContext = { ipAddress: string; userAgent: string };
@@ -214,7 +214,7 @@ character limits, are enforced server side and return `400` with a message.
 
 ## Integrity evidence
 
-When the last recipient finishes, Documenso flattens the fields, appends the signing certificate (and the
+When the last recipient finishes, SR Sign flattens the fields, appends the signing certificate (and the
 audit log when the team enables it), and signs the file with a PAdES signature. The `DOCUMENT_COMPLETED`
 audit event then records a SHA-256 digest of each sealed PDF as stored, so you can verify a file you
 hold against the database record independently of the signature embedded in the PDF. Read it with

@@ -55,7 +55,7 @@ export const documentRetrievalAgent = defineAgent<TDocumentRetrievalInput, null>
   inputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   outputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE, PDF_CONTENT_TYPE],
   metadata: {
-    tags: ['documenso', 'documents', 'artifacts'],
+    tags: ['sr-sign', 'documents', 'artifacts'],
     capabilities: [
       { name: 'document', description: 'Sealed PDF of a completed document, original PDF otherwise' },
       { name: 'certificate', description: 'Signing certificate PDF (completed documents only)' },

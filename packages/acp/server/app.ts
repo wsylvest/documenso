@@ -177,11 +177,11 @@ export const acp = new Hono<AcpHonoEnv>()
 
   .get('/', (c) =>
     c.json({
-      name: 'Documenso ACP server',
+      name: 'SR Sign ACP server',
       protocol: ACP_PROTOCOL_VERSION,
       agents: `${c.req.url.replace(/\/$/, '')}/agents`,
       agent_card: `${c.req.url.replace(/\/$/, '')}/.well-known/agent-card.json`,
-      documentation: 'https://docs.documenso.com/developers/acp',
+      documentation: 'https://github.com/wsylvest/documenso/blob/main/apps/docs/content/docs/developers/acp.mdx',
     }),
   )
 

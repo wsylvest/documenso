@@ -76,8 +76,8 @@ export const DocumentCertificateQRView = ({
 
               <DialogDescription>
                 <Trans>
-                  This document is available in your SmartRoofing AI account. You can view more details, recipients, and
-                  audit logs there.
+                  This document is available in your SR Sign account. You can view more details, recipients, and audit
+                  logs there.
                 </Trans>
               </DialogDescription>
             </DialogHeader>

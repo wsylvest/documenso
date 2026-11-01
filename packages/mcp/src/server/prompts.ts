@@ -40,7 +40,7 @@ export const registerPrompts = (server: McpServer, ctx: McpToolContext) => {
     ({ homeownerName, homeownerEmail, templateName, propertyAddress }) =>
       userMessage(
         [
-          `You are operating Documenso for the team "${ctx.auth.team.name}".`,
+          `You are operating SR Sign for the team "${ctx.auth.team.name}".`,
           `Send a contract to ${homeownerName} <${homeownerEmail}> for signature.`,
           '',
           'Steps:',

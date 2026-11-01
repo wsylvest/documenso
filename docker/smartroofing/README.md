@@ -1,6 +1,6 @@
 # sign.smartroofing.ai
 
-Deployment bundle for the SmartRoofing AI signing instance: Caddy with automatic TLS in front of a Documenso container built from this fork, plus Postgres.
+Deployment bundle for the SmartRoofing AI signing instance: Caddy with automatic TLS in front of an SR Sign container built from this fork (SR Sign is a fork of Documenso), plus Postgres.
 
 ## First deploy
 
@@ -19,10 +19,10 @@ Deployment bundle for the SmartRoofing AI signing instance: Caddy with automatic
 3. On the host:
 
    ```bash
-   cd /opt/smartroofing/documenso/docker/smartroofing
+   cd /opt/smartroofing/sr-sign/docker/smartroofing
    cp .env.example .env    # fill in every <SECRET>
    docker compose up -d --build
-   docker compose logs -f documenso   # wait for "Starting Documenso server"
+   docker compose logs -f sr-sign   # wait for "Starting Documenso server" (the upstream start script prints this)
    ```
 
 4. Sign in with the first admin account (create it with `npm run prisma:seed` equivalents or through the admin API), create the **SmartRoofing AI** organisation and team, then in **Admin → Organisations** confirm the claim shows unlimited members and teams.
@@ -64,7 +64,7 @@ The source logo is only published as a PNG (`573x423`); there is no vector versi
 
 ```bash
 git pull --ff-only
-docker compose up -d --build documenso
+docker compose up -d --build sr-sign
 ```
 
 Migrations run automatically on container start.

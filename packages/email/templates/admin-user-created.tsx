@@ -13,7 +13,7 @@ export const AdminUserCreatedTemplate = ({
 }: TemplateAdminUserCreatedProps) => {
   const { _ } = useLingui();
 
-  const previewText = msg`Set your password for SmartRoofing AI`;
+  const previewText = msg`Set your password for SR Sign`;
 
   return (
     <Html>

@@ -1,14 +1,9 @@
-# Report security vulnerabilities privately via GitHub Security Advisories (preferred).
-Contact: https://github.com/documenso/documenso/security/advisories/new
+# Report security vulnerabilities privately by email.
+Contact: mailto:support@smartroofing.ai
 
-# Alternatively, report critical issues privately by email.
-Contact: mailto:security@documenso.com
-
-# Security policy
-Policy: https://github.com/documenso/documenso/security/policy
-
-# General (non-security) issues
-Contact: https://github.com/documenso/documenso/issues/new?assignees=&labels=bug&projects=&template=bug-report.yml
+# SR Sign is a fork of Documenso. Vulnerabilities in the upstream project itself can also be reported there:
+# https://github.com/documenso/documenso/security/policy
 
 Preferred-Languages: en
-Canonical: https://documenso.com/.well-known/security.txt
+Canonical: https://sign.smartroofing.ai/.well-known/security.txt
+Expires: 2027-10-31T00:00:00.000Z

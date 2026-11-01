@@ -410,7 +410,7 @@ export const SignUpForm = ({
           <Trans>
             By proceeding, you agree to our{' '}
             <Link
-              to="https://documen.so/terms"
+              to="https://smartroofing.ai/terms-of-service"
               target="_blank"
               className="text-documenso-700 duration-200 hover:opacity-70"
             >
@@ -418,7 +418,7 @@ export const SignUpForm = ({
             </Link>{' '}
             and{' '}
             <Link
-              to="https://documen.so/privacy"
+              to="https://smartroofing.ai/privacy-policy"
               target="_blank"
               className="text-documenso-700 duration-200 hover:opacity-70"
             >

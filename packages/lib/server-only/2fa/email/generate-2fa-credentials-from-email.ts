@@ -1,10 +1,11 @@
 import { createTOTPKeyURI } from '@documenso/lib/server-only/2fa/otp';
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
+import { PRODUCT_NAME } from '../../../constants/app';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../../constants/crypto';
 
-const ISSUER = 'SmartRoofing AI Email 2FA';
+const ISSUER = `${PRODUCT_NAME} Email 2FA`;
 
 export type GenerateTwoFactorCredentialsFromEmailOptions = {
   envelopeId: string;

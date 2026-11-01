@@ -133,7 +133,7 @@ export const hasMcpAccess = async (teamId: number): Promise<boolean> => {
 /**
  * Authenticate an MCP HTTP request.
  *
- * Only Documenso API tokens are accepted. This is the single place to extend
+ * Only SR Sign API tokens are accepted. This is the single place to extend
  * when OAuth 2.1 access tokens issued by an external authorization server are
  * supported: validate the JWT against the issuer's JWKS, check the audience is
  * the MCP resource URL, map the subject to a user and team and return the same

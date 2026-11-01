@@ -19,6 +19,10 @@ export const buildEnvelopeEmailHeaders = ({
   teamId,
 }: BuildEnvelopeEmailHeadersOptions): Record<string, string> => {
   return {
+    'X-SR-Sign-Sender-User-Id': String(userId),
+    'X-SR-Sign-Envelope-Id': envelopeId,
+    'X-SR-Sign-Team-Id': String(teamId),
+    // Legacy names, kept so existing mail rules and webhooks keep matching.
     'X-Documenso-Sender-User-Id': String(userId),
     'X-Documenso-Envelope-Id': envelopeId,
     'X-Documenso-Team-Id': String(teamId),

@@ -29,6 +29,6 @@ export const parseBearerToken = (header: string | null | undefined): string | nu
 };
 
 /**
- * Whether a credential looks like a Documenso API token.
+ * Whether a credential looks like an SR Sign API token.
  */
-export const isDocumensoApiToken = (token: string) => token.startsWith('api_');
+export const isApiToken = (token: string) => token.startsWith('api_');

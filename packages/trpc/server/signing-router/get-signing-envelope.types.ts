@@ -10,7 +10,7 @@ export const getSigningEnvelopeMeta: TrpcRouteMeta = {
     path: '/signing/envelope',
     summary: 'Get signing envelope',
     description:
-      'Returns everything a signing experience needs for the recipient identified by the token: the envelope, its items with download URLs, the recipient and their fields, the other recipients, turn order and signing options. Use this to render a native signing UI in your own application instead of embedding the Documenso signing page.',
+      'Returns everything a signing experience needs for the recipient identified by the token: the envelope, its items with download URLs, the recipient and their fields, the other recipients, turn order and signing options. Use this to render a native signing UI in your own application instead of embedding the SR Sign signing page.',
     tags: ['Signing'],
   },
 };

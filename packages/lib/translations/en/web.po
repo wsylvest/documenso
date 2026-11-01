@@ -790,8 +790,8 @@ msgid "<0>{organisationName}</0> has requested to create an account on your beha
 msgstr "<0>{organisationName}</0> has requested to create an account on your behalf."
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "<0>{organisationName}</0> has requested to link your current SmartRoofing AI account to their organisation."
-msgstr "<0>{organisationName}</0> has requested to link your current SmartRoofing AI account to their organization."
+msgid "<0>{organisationName}</0> has requested to link your current SR Sign account to their organisation."
+msgstr "<0>{organisationName}</0> has requested to link your current SR Sign account to their organization."
 
 #: apps/remix/app/components/general/document-signing/document-signing-page-view-v1.tsx
 msgid "<0>{senderName} {senderEmail}</0> has invited you to approve this document"
@@ -830,8 +830,8 @@ msgid "<0>{senderName} {senderEmail}</0> on behalf of \"{0}\" has invited you to
 msgstr "<0>{senderName} {senderEmail}</0> on behalf of \"{0}\" has invited you to view this document"
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "<0>{teamName}</0> has requested to use your email address for their team on SmartRoofing AI."
-msgstr "<0>{teamName}</0> has requested to use your email address for their team on SmartRoofing AI."
+msgid "<0>{teamName}</0> has requested to use your email address for their team on SR Sign."
+msgstr "<0>{teamName}</0> has requested to use your email address for their team on SR Sign."
 
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "<0>{teamName}</0> would like to use <1>{email}</1> as their team email."
@@ -1096,8 +1096,8 @@ msgid "A means to print or download documents for your records"
 msgstr "A means to print or download documents for your records"
 
 #: packages/email/templates/organisation-join.tsx
-msgid "A member has joined your organisation on SmartRoofing AI"
-msgstr "A member has joined your organization on SmartRoofing AI"
+msgid "A member has joined your organisation on SR Sign"
+msgstr "A member has joined your organization on SR Sign"
 
 #: packages/lib/jobs/definitions/emails/send-organisation-member-left-email.handler.ts
 msgid "A member has left your organisation"
@@ -1108,8 +1108,8 @@ msgid "A member has left your organisation {organisationName}"
 msgstr "A member has left your organization {organisationName}"
 
 #: packages/email/templates/organisation-leave.tsx
-msgid "A member has left your organisation on SmartRoofing AI"
-msgstr "A member has left your organization on SmartRoofing AI"
+msgid "A member has left your organisation on SR Sign"
+msgstr "A member has left your organization on SR Sign"
 
 #: apps/remix/app/components/dialogs/token-create-dialog.tsx
 msgid "A name to help you identify this token later."
@@ -1152,18 +1152,18 @@ msgid "A request has been made to create an account for you"
 msgstr "A request has been made to create an account for you"
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "A request has been made to link your SmartRoofing AI account"
-msgstr "A request has been made to link your SmartRoofing AI account"
+msgid "A request has been made to link your SR Sign account"
+msgstr "A request has been made to link your SR Sign account"
 
 #. placeholder {0}: team.name
 #: packages/lib/server-only/team/create-team-email-verification.ts
-msgid "A request to use your email has been initiated by {0} on SmartRoofing AI"
-msgstr "A request to use your email has been initiated by {0} on SmartRoofing AI"
+msgid "A request to use your email has been initiated by {0} on SR Sign"
+msgstr "A request to use your email has been initiated by {0} on SR Sign"
 
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-edit-dialog.tsx
-msgid "A secret that will be sent to your URL so you can verify that the request has been sent by Documenso."
-msgstr "A secret that will be sent to your URL so you can verify that the request has been sent by Documenso."
+msgid "A secret that will be sent to your URL so you can verify that the request has been sent by SR Sign."
+msgstr "A secret that will be sent to your URL so you can verify that the request has been sent by SR Sign."
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "A stable internet connection"
@@ -1215,12 +1215,12 @@ msgid "Accept & Link Account"
 msgstr "Accept & Link Account"
 
 #: packages/email/templates/organisation-invite.tsx
-msgid "Accept invitation to join an organisation on SmartRoofing AI"
-msgstr "Accept invitation to join an organization on SmartRoofing AI"
+msgid "Accept invitation to join an organisation on SR Sign"
+msgstr "Accept invitation to join an organization on SR Sign"
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "Accept team email request for {teamName} on SmartRoofing AI"
-msgstr "Accept team email request for {teamName} on SmartRoofing AI"
+msgid "Accept team email request for {teamName} on SR Sign"
+msgstr "Accept team email request for {teamName} on SR Sign"
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Acceptance and Consent"
@@ -1838,8 +1838,8 @@ msgid "An admin has deleted your document \"{documentName}\"."
 msgstr "An admin has deleted your document \"{documentName}\"."
 
 #: packages/email/template-components/template-admin-user-created.tsx
-msgid "An administrator has created a SmartRoofing AI account for you."
-msgstr "An administrator has created a SmartRoofing AI account for you."
+msgid "An administrator has created an SR Sign account for you."
+msgstr "An administrator has created an SR Sign account for you."
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "An electronic signature provided by you on our platform, achieved through clicking through to a document and entering your name, or any other electronic signing method we provide, is legally binding. It carries the same weight and enforceability as a manual signature written with ink on paper."
@@ -4475,10 +4475,6 @@ msgstr "Disabling direct link signing will prevent anyone from accessing the lin
 msgid "Disabling the user results in the user not being able to use the account. It also disables all the related contents such as subscription, webhooks, teams, and API keys."
 msgstr "Disabling the user results in the user not being able to use the account. It also disables all the related contents such as subscription, webhooks, teams, and API keys."
 
-#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
-msgid "Discord"
-msgstr "Discord"
-
 #: apps/remix/app/components/dialogs/organisation-email-create-dialog.tsx
 #: apps/remix/app/components/dialogs/organisation-email-update-dialog.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
@@ -4517,10 +4513,6 @@ msgstr "Do not proceed if you are unsure about this request."
 #: apps/remix/app/components/general/admin-license-card.tsx
 msgid "Documenso License"
 msgstr "Documenso License"
-
-#: apps/remix/app/components/dialogs/account-delete-dialog.tsx
-msgid "Documenso will delete <0>all of your documents</0>, along with all of your completed documents, signatures, and all other resources belonging to your Account."
-msgstr "Documenso will delete <0>all of your documents</0>, along with all of your completed documents, signatures, and all other resources belonging to your Account."
 
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id.logs.tsx
@@ -4938,10 +4930,6 @@ msgstr "Document Volume"
 #: apps/remix/app/components/dialogs/envelope-delete-dialog.tsx
 msgid "Document will be permanently deleted"
 msgstr "Document will be permanently deleted"
-
-#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
-msgid "Documentation"
-msgstr "Documentation"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 #: apps/remix/app/components/general/app-nav-desktop.tsx
@@ -5551,6 +5539,10 @@ msgstr "Email sent!"
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-fields-page.tsx
 msgid "Email Settings"
 msgstr "Email Settings"
+
+#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
+msgid "Email support"
+msgstr "Email support"
 
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
 msgid "Email the organisation owner to notify them of the deletion."
@@ -6654,6 +6646,10 @@ msgstr "Help complete the document for other signers."
 msgid "Help the AI assign fields to the right recipients."
 msgstr "Help the AI assign fields to the right recipients."
 
+#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
+msgid "Here is how to get help:"
+msgstr "Here is how to get help:"
+
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.email-domains._index.tsx
 msgid "Here you can add email domains to your organisation."
 msgstr "Here you can add email domains to your organization."
@@ -7187,12 +7183,8 @@ msgid "Japanese"
 msgstr "Japanese"
 
 #: packages/email/templates/organisation-invite.tsx
-msgid "Join {organisationName} on SmartRoofing AI"
-msgstr "Join {organisationName} on SmartRoofing AI"
-
-#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
-msgid "Join our community on <0>Discord</0> for community support and discussion."
-msgstr "Join our community on <0>Discord</0> for community support and discussion."
+msgid "Join {organisationName} on SR Sign"
+msgstr "Join {organisationName} on SR Sign"
 
 #: apps/remix/app/components/tables/organisation-insights-table.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
@@ -7429,8 +7421,8 @@ msgid "Link template"
 msgstr "Link template"
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
-msgid "Link your SmartRoofing AI account"
-msgstr "Link your SmartRoofing AI account"
+msgid "Link your SR Sign account"
+msgstr "Link your SR Sign account"
 
 #: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.linked-accounts.tsx
@@ -9093,6 +9085,10 @@ msgstr "Plain text"
 msgid "Plans without a transport use the system default mailer."
 msgstr "Plans without a transport use the system default mailer."
 
+#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
+msgid "Platform documentation"
+msgstr "Platform documentation"
+
 #. placeholder {0}: _(actionVerb).toLowerCase()
 #: packages/email/template-components/template-document-invite.tsx
 msgid "Please {0} your document<0/>\"{documentName}\""
@@ -9534,10 +9530,6 @@ msgstr "Read only"
 #: packages/ui/components/document/envelope-recipient-field-tooltip.tsx
 msgid "Read Only"
 msgstr "Read Only"
-
-#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
-msgid "Read our documentation to get started with Documenso."
-msgstr "Read our documentation to get started with Documenso."
 
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 msgid "Read Status"
@@ -10247,10 +10239,6 @@ msgstr "Return"
 msgid "Return Home"
 msgstr "Return Home"
 
-#: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
-msgid "Return to Documenso sign in page here"
-msgstr "Return to Documenso sign in page here"
-
 #: apps/remix/app/components/general/envelope-editor/envelope-editor.tsx
 msgid "Return to documents"
 msgstr "Return to documents"
@@ -10263,6 +10251,10 @@ msgstr "Return to sign in"
 #: apps/remix/app/components/general/envelope-editor/envelope-editor.tsx
 msgid "Return to templates"
 msgstr "Return to templates"
+
+#: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
+msgid "Return to the SR Sign sign in page here"
+msgstr "Return to the SR Sign sign in page here"
 
 #: packages/email/templates/organisation-account-link-confirmation.tsx
 msgid "Review request"
@@ -10831,8 +10823,8 @@ msgid "Sender reported"
 msgstr "Sender reported"
 
 #: apps/remix/app/components/general/settings-upsell/email-domains-upsell.tsx
-msgid "Sending from app.documenso.com"
-msgstr "Sending from app.documenso.com"
+msgid "Sending from sign.smartroofing.ai"
+msgstr "Sending from sign.smartroofing.ai"
 
 #: apps/remix/app/components/general/settings-upsell/email-domains-upsell.tsx
 msgid "Sending from your domain"
@@ -10889,8 +10881,8 @@ msgid "Set up your template properties and recipient information"
 msgstr "Set up your template properties and recipient information"
 
 #: packages/email/templates/admin-user-created.tsx
-msgid "Set your password for SmartRoofing AI"
-msgstr "Set your password for SmartRoofing AI"
+msgid "Set your password for SR Sign"
+msgstr "Set your password for SR Sign"
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx
@@ -11025,8 +11017,8 @@ msgid "Sign Document"
 msgstr "Sign Document"
 
 #: apps/remix/app/routes/_recipient+/_layout.tsx
-msgid "Sign Document - SmartRoofing AI"
-msgstr "Sign Document - SmartRoofing AI"
+msgid "Sign Document - SR Sign"
+msgstr "Sign Document - SR Sign"
 
 #: apps/remix/app/components/embed/multisign/multi-sign-document-list.tsx
 msgid "Sign Documents"
@@ -11467,6 +11459,14 @@ msgstr "Space-separated list of domains. Leave empty to allow all domains."
 msgid "Spanish"
 msgstr "Spanish"
 
+#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
+msgid "SR Sign is built on the open-source Documenso platform. Its documentation covers templates, fields and the API."
+msgstr "SR Sign is built on the open-source Documenso platform. Its documentation covers templates, fields and the API."
+
+#: apps/remix/app/components/dialogs/account-delete-dialog.tsx
+msgid "SR Sign will delete <0>all of your documents</0>, along with all of your completed documents, signatures, and all other resources belonging to your Account."
+msgstr "SR Sign will delete <0>all of your documents</0>, along with all of your completed documents, signatures, and all other resources belonging to your Account."
+
 #: packages/lib/utils/settings-nav.ts
 msgid "SSO"
 msgstr "SSO"
@@ -11758,8 +11758,8 @@ msgstr "Team"
 
 #. placeholder {0}: team.name
 #: packages/lib/server-only/team/delete-team.ts
-msgid "Team \"{0}\" has been deleted on SmartRoofing AI"
-msgstr "Team \"{0}\" has been deleted on SmartRoofing AI"
+msgid "Team \"{0}\" has been deleted on SR Sign"
+msgstr "Team \"{0}\" has been deleted on SR Sign"
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.analytics._index.tsx
 msgid "Team activity"
@@ -11814,8 +11814,8 @@ msgid "Team email removed"
 msgstr "Team email removed"
 
 #: packages/email/templates/team-email-removed.tsx
-msgid "Team email removed for {teamName} on SmartRoofing AI"
-msgstr "Team email removed for {teamName} on SmartRoofing AI"
+msgid "Team email removed for {teamName} on SR Sign"
+msgstr "Team email removed for {teamName} on SR Sign"
 
 #: apps/remix/app/routes/_unauthenticated+/team.verify.email.$token.tsx
 msgid "Team email verified!"
@@ -12592,8 +12592,8 @@ msgstr "The types of signatures that recipients are allowed to use when signing 
 
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-edit-dialog.tsx
-msgid "The URL for Documenso to send webhook events to."
-msgstr "The URL for Documenso to send webhook events to."
+msgid "The URL for SR Sign to send webhook events to."
+msgstr "The URL for SR Sign to send webhook events to."
 
 #: apps/remix/app/routes/_authenticated+/admin+/users.$id.tsx
 msgid "The user you are looking for may have been removed, renamed or may have never existed."
@@ -12799,8 +12799,8 @@ msgid "This document has too many recipients. Please remove some recipients or c
 msgstr "This document has too many recipients. Please remove some recipients or contact support if you need more."
 
 #: apps/remix/app/components/general/document/document-certificate-qr-view.tsx
-msgid "This document is available in your SmartRoofing AI account. You can view more details, recipients, and audit logs there."
-msgstr "This document is available in your SmartRoofing AI account. You can view more details, recipients, and audit logs there."
+msgid "This document is available in your SR Sign account. You can view more details, recipients, and audit logs there."
+msgstr "This document is available in your SR Sign account. You can view more details, recipients, and audit logs there."
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/documents.$id._index.tsx
 msgid "This document is currently a draft and has not been sent"
@@ -12827,8 +12827,8 @@ msgid "This document was created using a direct link."
 msgstr "This document was created using a direct link."
 
 #: packages/email/template-components/template-footer.tsx
-msgid "This document was sent using <0>Documenso</0>."
-msgstr "This document was sent using <0>Documenso</0>."
+msgid "This document was sent using <0>SR Sign</0>."
+msgstr "This document was sent using <0>SR Sign</0>."
 
 #: apps/remix/app/components/dialogs/envelope-duplicate-dialog.tsx
 msgid "This document will be duplicated."
@@ -13891,8 +13891,8 @@ msgid "Use a unique window for each rate limit"
 msgstr "Use a unique window for each rate limit"
 
 #: apps/remix/app/components/dialogs/token-create-dialog.tsx
-msgid "Use API tokens to authenticate with the Documenso API."
-msgstr "Use API tokens to authenticate with the Documenso API."
+msgid "Use API tokens to authenticate with the SR Sign API."
+msgstr "Use API tokens to authenticate with the SR Sign API."
 
 #: apps/remix/app/components/forms/2fa/disable-authenticator-app-dialog.tsx
 #: apps/remix/app/components/forms/2fa/two-factor-code-dialog.tsx
@@ -14223,10 +14223,6 @@ msgstr "View organization template"
 msgid "View owner"
 msgstr "View owner"
 
-#: packages/email/template-components/template-document-self-signed.tsx
-msgid "View plans"
-msgstr "View plans"
-
 #: apps/remix/app/components/forms/2fa/view-recovery-codes-dialog.tsx
 #: apps/remix/app/components/forms/2fa/view-recovery-codes-dialog.tsx
 msgid "View Recovery Codes"
@@ -14310,8 +14306,8 @@ msgstr "Waiting for Your Turn"
 
 #: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
-msgid "Want to send slick signing links like this one? <0>Check out SmartRoofing AI</0>."
-msgstr "Want to send slick signing links like this one? <0>Check out SmartRoofing AI</0>."
+msgid "Want to send slick signing links like this one? <0>Check out SR Sign</0>."
+msgstr "Want to send slick signing links like this one? <0>Check out SR Sign</0>."
 
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Want your own public profile?"
@@ -14832,13 +14828,13 @@ msgid "Welcome to {organisationName}"
 msgstr "Welcome to {organisationName}"
 
 #: packages/lib/jobs/definitions/emails/send-admin-user-created-email.handler.ts
-msgid "Welcome to Documenso"
-msgstr "Welcome to Documenso"
+msgid "Welcome to SR Sign"
+msgstr "Welcome to SR Sign"
 
 #: packages/email/template-components/template-admin-user-created.tsx
 #: packages/email/template-components/template-confirmation-email.tsx
-msgid "Welcome to SmartRoofing AI!"
-msgstr "Welcome to SmartRoofing AI!"
+msgid "Welcome to SR Sign!"
+msgstr "Welcome to SR Sign!"
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Well-known URL is required"
@@ -14888,8 +14884,8 @@ msgid "Whether to enable the SSO portal for your organisation"
 msgstr "Whether to enable the SSO portal for your organization"
 
 #: apps/remix/app/routes/_profile+/p.$url.tsx
-msgid "While waiting for them to do so you can create your own SmartRoofing AI account and get started with document signing right away."
-msgstr "While waiting for them to do so you can create your own SmartRoofing AI account and get started with document signing right away."
+msgid "While waiting for them to do so you can create your own SR Sign account and get started with document signing right away."
+msgstr "While waiting for them to do so you can create your own SR Sign account and get started with document signing right away."
 
 #: apps/remix/app/components/dialogs/organisation-create-dialog.tsx
 msgid "Whitelabeling, unlimited members and more"
@@ -14919,6 +14915,10 @@ msgstr "Works with any OIDC provider — Okta, Entra ID, Google and more"
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "Write a description to display on your public profile"
 msgstr "Write a description to display on your public profile"
+
+#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
+msgid "Write to {COMPANY_NAME} at {SUPPORT_EMAIL} and we will get back to you as soon as possible."
+msgstr "Write to {COMPANY_NAME} at {SUPPORT_EMAIL} and we will get back to you as soon as possible."
 
 #: apps/remix/app/components/dialogs/organisation-create-dialog.tsx
 #: apps/remix/app/components/general/billing-plans.tsx
@@ -15180,8 +15180,8 @@ msgid "You can only detect fields in draft envelopes"
 msgstr "You can only detect fields in draft envelopes"
 
 #: packages/email/templates/confirm-team-email.tsx
-msgid "You can revoke access at any time in your team settings on SmartRoofing AI <0>here</0>."
-msgstr "You can revoke access at any time in your team settings on SmartRoofing AI <0>here</0>."
+msgid "You can revoke access at any time in your team settings on SR Sign <0>here</0>."
+msgstr "You can revoke access at any time in your team settings on SR Sign <0>here</0>."
 
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "You can update the profile URL by updating the team URL in the general settings page."
@@ -15341,12 +15341,12 @@ msgstr "You have been invited by <0>{organisationName}</0> to join their organiz
 
 #. placeholder {0}: organisation.name
 #: packages/lib/server-only/organisation/create-organisation-member-invites.ts
-msgid "You have been invited to join {0} on SmartRoofing AI"
-msgstr "You have been invited to join {0} on SmartRoofing AI"
+msgid "You have been invited to join {0} on SR Sign"
+msgstr "You have been invited to join {0} on SR Sign"
 
 #: apps/remix/app/routes/_unauthenticated+/organisation.invite.$token.tsx
-msgid "You have been invited to join <0>{organisationName}</0> on SmartRoofing AI."
-msgstr "You have been invited to join <0>{organisationName}</0> on SmartRoofing AI."
+msgid "You have been invited to join <0>{organisationName}</0> on SR Sign."
+msgstr "You have been invited to join <0>{organisationName}</0> on SR Sign."
 
 #: packages/email/templates/organisation-invite.tsx
 msgid "You have been invited to join the following organisation"
@@ -15840,10 +15840,6 @@ msgstr "Your current {currentProductName} plan is past due. Please update your p
 msgid "Your current license does not include these features."
 msgstr "Your current license does not include these features."
 
-#: apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx
-msgid "Your current plan includes the following support channels:"
-msgstr "Your current plan includes the following support channels:"
-
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.billing.tsx
 msgid "Your current plan is inactive."
 msgstr "Your current plan is inactive."
@@ -15931,12 +15927,12 @@ msgid "Your Email"
 msgstr "Your Email"
 
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
-msgid "Your email has already been confirmed. You can now use all features of SmartRoofing AI."
-msgstr "Your email has already been confirmed. You can now use all features of SmartRoofing AI."
+msgid "Your email has already been confirmed. You can now use all features of SR Sign."
+msgstr "Your email has already been confirmed. You can now use all features of SR Sign."
 
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
-msgid "Your email has been successfully confirmed! You can now use all features of SmartRoofing AI."
-msgstr "Your email has been successfully confirmed! You can now use all features of SmartRoofing AI."
+msgid "Your email has been successfully confirmed! You can now use all features of SR Sign."
+msgstr "Your email has been successfully confirmed! You can now use all features of SR Sign."
 
 #. placeholder {0}: teamEmail.team.name
 #. placeholder {1}: teamEmail.team.url
@@ -16062,8 +16058,8 @@ msgid "Your plan does not support inviting members. Please upgrade or your plan 
 msgstr "Your plan does not support inviting members. Please upgrade or your plan or contact sales at <0>{SUPPORT_EMAIL}</0> if you would like to discuss your options."
 
 #: apps/remix/app/components/general/organisations/organisation-billing-banner.tsx
-msgid "Your plan is no longer valid. Please subscribe to a new plan to continue using Documenso."
-msgstr "Your plan is no longer valid. Please subscribe to a new plan to continue using Documenso."
+msgid "Your plan is no longer valid. Please subscribe to a new plan to continue using SR Sign."
+msgstr "Your plan is no longer valid. Please subscribe to a new plan to continue using SR Sign."
 
 #: apps/remix/app/components/forms/profile.tsx
 msgid "Your profile has been updated successfully."

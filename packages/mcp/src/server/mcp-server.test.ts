@@ -7,7 +7,7 @@ import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import type { McpAuth } from './auth/authenticate';
 import type { McpCaller, McpToolContext } from './context';
-import { createDocumensoMcpServer } from './mcp-server';
+import { createMcpServer } from './mcp-server';
 
 const auth: McpAuth = {
   apiTokenId: 1,
@@ -91,13 +91,13 @@ beforeAll(async () => {
 
   serverTransport.send = async (message, options) => send(JSON.parse(JSON.stringify(message)), options);
 
-  const server = createDocumensoMcpServer(ctx);
+  const server = createMcpServer(ctx);
 
   await server.connect(serverTransport);
   await client.connect(clientTransport);
 });
 
-describe('createDocumensoMcpServer', () => {
+describe('createMcpServer', () => {
   it('lists every tool with annotations, input and output schemas', async () => {
     const { tools } = await client.listTools();
 
@@ -166,11 +166,11 @@ describe('createDocumensoMcpServer', () => {
     const { resourceTemplates } = await client.listResourceTemplates();
 
     expect(resourceTemplates.map((template) => template.uriTemplate)).toEqual([
-      'documenso://envelope/{envelopeId}',
-      'documenso://template/{envelopeId}',
-      'documenso://envelope/{envelopeId}/item/{envelopeItemId}/pdf{?version}',
-      'documenso://envelope/{envelopeId}/certificate',
-      'documenso://envelope/{envelopeId}/audit-log',
+      'sr-sign://envelope/{envelopeId}',
+      'sr-sign://template/{envelopeId}',
+      'sr-sign://envelope/{envelopeId}/item/{envelopeItemId}/pdf{?version}',
+      'sr-sign://envelope/{envelopeId}/certificate',
+      'sr-sign://envelope/{envelopeId}/audit-log',
     ]);
 
     const { prompts } = await client.listPrompts();
@@ -207,7 +207,7 @@ describe('createDocumensoMcpServer', () => {
     const { resources } = await client.listResources();
 
     expect(resources).toEqual([
-      expect.objectContaining({ uri: 'documenso://template/envelope_tpl', title: 'Roofing contract' }),
+      expect.objectContaining({ uri: 'sr-sign://template/envelope_tpl', title: 'Roofing contract' }),
     ]);
   });
 

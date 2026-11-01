@@ -285,7 +285,7 @@ const PendingInvitation = ({
 
         <p className="mt-2 mb-4 text-muted-foreground text-sm">
           <Trans>
-            You have been invited to join <strong>{organisationName}</strong> on SmartRoofing AI.
+            You have been invited to join <strong>{organisationName}</strong> on SR Sign.
           </Trans>
         </p>
 

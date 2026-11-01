@@ -149,7 +149,7 @@ test.describe('MCP server', () => {
 
     const { result: initResult, sessionId } = await initialise(request, apiToken);
 
-    expect(initResult.serverInfo.name).toBe('documenso');
+    expect(initResult.serverInfo.name).toBe('sr-sign');
     expect(initResult.capabilities).toHaveProperty('tools');
     expect(initResult.capabilities).toHaveProperty('resources');
     expect(initResult.capabilities).toHaveProperty('prompts');

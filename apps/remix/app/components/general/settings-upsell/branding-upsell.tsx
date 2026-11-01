@@ -8,8 +8,8 @@ import { useTimedCycle } from './use-timed-cycle';
 
 const DEMO_BRANDS = [
   {
-    name: 'Documenso',
-    letter: 'D',
+    name: 'SmartRoofing AI',
+    letter: 'S',
     domain: 'noreply@smartroofing.ai',
     accent: '#A2E771',
     ink: '#162C07',
@@ -17,8 +17,8 @@ const DEMO_BRANDS = [
     sheen: 'rgba(162, 231, 113, 0.32)',
   },
   {
-    name: 'Documenso',
-    letter: 'D',
+    name: 'SmartRoofing AI',
+    letter: 'S',
     domain: 'noreply@smartroofing.ai',
     accent: '#387BC7',
     ink: '#ffffff',
@@ -26,8 +26,8 @@ const DEMO_BRANDS = [
     sheen: 'rgba(56, 123, 199, 0.28)',
   },
   {
-    name: 'Documenso',
-    letter: 'D',
+    name: 'SmartRoofing AI',
+    letter: 'S',
     domain: 'noreply@smartroofing.ai',
     accent: '#9747F5',
     ink: '#ffffff',

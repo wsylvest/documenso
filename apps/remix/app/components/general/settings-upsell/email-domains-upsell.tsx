@@ -92,7 +92,11 @@ export const EmailDomainsUpsell = () => {
                 )}
 
                 <span className="truncate">
-                  {isBranded ? <Trans>Sending from your domain</Trans> : <Trans>Sending from app.documenso.com</Trans>}
+                  {isBranded ? (
+                    <Trans>Sending from your domain</Trans>
+                  ) : (
+                    <Trans>Sending from sign.smartroofing.ai</Trans>
+                  )}
                 </span>
               </motion.div>
             </AnimatePresence>
@@ -147,7 +151,7 @@ export const EmailDomainsUpsell = () => {
                       transition={{ duration: 0.28, ease: EASE }}
                       className="flex min-w-0 items-center gap-1.5"
                     >
-                      <span className="min-w-0 truncate">{isBranded ? brandedSender.name : 'Documenso'}</span>
+                      <span className="min-w-0 truncate">{isBranded ? brandedSender.name : 'SmartRoofing AI'}</span>
 
                       {/* Inside the keyed row so it exits with the name and pops back in on every cycle step. */}
                       {isBranded && (

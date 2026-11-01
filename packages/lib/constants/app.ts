@@ -2,6 +2,12 @@ import { env } from '@documenso/lib/utils/env';
 import { AppError, AppErrorCode } from '../errors/app-error';
 import { SignatureLevel, type TSignatureLevel } from '../types/signature-level';
 
+/** Name of the product shown to users (titles, emails, signing pages). */
+export const PRODUCT_NAME = 'SR Sign';
+
+/** Name of the company operating the service (sender name, footers, copyright). */
+export const COMPANY_NAME = 'SmartRoofing AI';
+
 export const APP_DOCUMENT_UPLOAD_SIZE_LIMIT = Number(env('NEXT_PUBLIC_DOCUMENT_SIZE_UPLOAD_LIMIT')) || 50;
 
 export const NEXT_PUBLIC_WEBAPP_URL = () => env('NEXT_PUBLIC_WEBAPP_URL') ?? 'http://localhost:3000';
@@ -92,7 +98,7 @@ export const IS_AI_FEATURES_CONFIGURED = (): boolean => {
 export const NEXT_PRIVATE_USE_PLAYWRIGHT_PDF = () => env('NEXT_PRIVATE_USE_PLAYWRIGHT_PDF') === 'true';
 
 export const NEXT_PRIVATE_SIGNING_TIMESTAMP_AUTHORITY = () => env('NEXT_PRIVATE_SIGNING_TIMESTAMP_AUTHORITY');
-export const NEXT_PRIVATE_SIGNING_REASON = () => env('NEXT_PRIVATE_SIGNING_REASON') || 'Signed by Documenso';
+export const NEXT_PRIVATE_SIGNING_REASON = () => env('NEXT_PRIVATE_SIGNING_REASON') || `Signed by ${PRODUCT_NAME}`;
 
 export const NEXT_PRIVATE_SIGNING_TRANSPORT = () => env('NEXT_PRIVATE_SIGNING_TRANSPORT') || 'local';
 

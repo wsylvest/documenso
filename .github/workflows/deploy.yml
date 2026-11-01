@@ -7,6 +7,8 @@ on:
 
 jobs:
   deploy:
+    # Fast-forwards Documenso's `release` branch using their token. Not for forks.
+    if: github.repository == 'documenso/documenso'
     runs-on: ubuntu-latest
     timeout-minutes: 60
 

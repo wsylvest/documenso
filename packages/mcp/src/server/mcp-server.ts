@@ -14,7 +14,7 @@ import { registerTemplateTools } from './tools/templates';
 
 const buildInstructions = (ctx: McpToolContext) =>
   [
-    `Documenso document signing for team "${ctx.auth.team.name}" (${ctx.baseUrl}).`,
+    `SR Sign document signing for team "${ctx.auth.team.name}" (${ctx.baseUrl}).`,
     'Documents and templates are both "envelopes" identified by an envelope ID (envelope_...).',
     'Typical flow: list_templates -> get_template -> create_document_from_template (distribute: true), or create_envelope -> add_recipients -> add_fields -> distribute_envelope.',
     'Check progress with get_envelope; remind with resend_envelope; fetch results with download_envelope_pdf, download_certificate and download_audit_log (returned as resource links).',
@@ -29,7 +29,7 @@ const buildInstructions = (ctx: McpToolContext) =>
  *
  * Registration order is deterministic so `tools/list` is cacheable by clients.
  */
-export const createDocumensoMcpServer = (ctx: McpToolContext) => {
+export const createMcpServer = (ctx: McpToolContext) => {
   const server = new McpServer(
     {
       name: MCP_SERVER_NAME,

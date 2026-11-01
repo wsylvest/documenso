@@ -5,7 +5,7 @@
   "types": "./index.ts",
   "license": "MIT",
   "bin": {
-    "documenso-mcp": "./bin/documenso-mcp.mjs"
+    "sr-sign-mcp": "./bin/sr-sign-mcp.mjs"
   },
   "scripts": {
     "test": "vitest run",

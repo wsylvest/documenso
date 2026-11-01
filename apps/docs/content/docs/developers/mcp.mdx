@@ -8,7 +8,7 @@ import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 
 <Callout type="info">
-  The MCP server is specific to this Documenso fork. It is served by the same application as the web
+  The MCP server is specific to this SR Sign fork. It is served by the same application as the web
   app and the REST API, and it is disabled unless the instance sets `NEXT_PUBLIC_MCP_ENABLED=true`.
 </Callout>
 
@@ -30,7 +30,7 @@ What you get:
 
 - **Tools** for templates, documents, recipients, fields, sending, reminders, status, downloads and the
   native [Signing API](/docs/developers/api/signing).
-- **Resources** (`documenso://envelope/...`, `documenso://template/...`) for envelope JSON and for the
+- **Resources** (`sr-sign://envelope/...`, `sr-sign://template/...`) for envelope JSON and for the
   signed PDF, certificate and audit log.
 - **Prompts** for common flows such as "send a contract to a homeowner".
 
@@ -61,7 +61,7 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
     Add the remote server with your token in the `Authorization` header:
 
     ```bash
-    claude mcp add --transport http documenso https://sign.smartroofing.ai/api/mcp \
+    claude mcp add --transport http sr-sign https://sign.smartroofing.ai/api/mcp \
       --header "Authorization: Bearer api_xxxxxxxx"
     ```
 
@@ -70,7 +70,7 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
     ```json
     {
       "mcpServers": {
-        "documenso": {
+        "sr-sign": {
           "type": "http",
           "url": "https://sign.smartroofing.ai/api/mcp",
           "headers": {
@@ -91,12 +91,12 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
     ```json
     {
       "mcpServers": {
-        "documenso": {
+        "sr-sign": {
           "command": "npx",
-          "args": ["--yes", "--package", "@documenso/mcp", "documenso-mcp"],
+          "args": ["--yes", "--package", "@documenso/mcp", "sr-sign-mcp"],
           "env": {
-            "DOCUMENSO_URL": "https://sign.smartroofing.ai",
-            "DOCUMENSO_API_TOKEN": "api_xxxxxxxx"
+            "SR_SIGN_URL": "https://sign.smartroofing.ai",
+            "SR_SIGN_API_TOKEN": "api_xxxxxxxx"
           }
         }
       }
@@ -104,7 +104,7 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
     ```
 
     When running from a checkout of this repository use `"command": "node"` with
-    `"args": ["/path/to/documenso/packages/mcp/bin/documenso-mcp.mjs"]`.
+    `"args": ["/path/to/sr-sign/packages/mcp/bin/sr-sign-mcp.mjs"]`.
 
   </Tab>
   <Tab value="Cursor">
@@ -113,7 +113,7 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
     ```json
     {
       "mcpServers": {
-        "documenso": {
+        "sr-sign": {
           "url": "https://sign.smartroofing.ai/api/mcp",
           "headers": {
             "Authorization": "Bearer api_xxxxxxxx"
@@ -125,13 +125,13 @@ OAuth 2.1 authorization server with `NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS` onc
 
   </Tab>
   <Tab value="stdio proxy">
-    `documenso-mcp` is a small stdio server that forwards every request to the remote `/api/mcp`
+    `sr-sign-mcp` is a small stdio server that forwards every request to the remote `/api/mcp`
     endpoint with your token. It needs only Node.js 20+; it never talks to the database.
 
     ```bash
-    DOCUMENSO_URL=https://sign.smartroofing.ai \
-    DOCUMENSO_API_TOKEN=api_xxxxxxxx \
-    node packages/mcp/bin/documenso-mcp.mjs
+    SR_SIGN_URL=https://sign.smartroofing.ai \
+    SR_SIGN_API_TOKEN=api_xxxxxxxx \
+    node packages/mcp/bin/sr-sign-mcp.mjs
     ```
 
     Use it with any client that only supports stdio servers.
@@ -163,7 +163,7 @@ Every tool declares MCP annotations (`readOnlyHint`, `destructiveHint`, `idempot
 ### Binary downloads
 
 Tools never embed PDFs by default. `download_envelope_pdf` returns a `resource_link` such as
-`documenso://envelope/envelope_abc/item/item_xyz/pdf?version=signed`; read it with `resources/read`
+`sr-sign://envelope/envelope_abc/item/item_xyz/pdf?version=signed`; read it with `resources/read`
 to receive the bytes as a base64 blob. Pass `inline: true` to also get the blob in the tool result
 (up to 10 MB).
 

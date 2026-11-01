@@ -77,6 +77,8 @@ export const PROTECTED_TEAM_URLS = [
   'dashboard',
   'docs',
   'documenso',
+  'sr-sign',
+  'srsign',
   'documentation',
   'document',
   'documents',

@@ -1,11 +1,11 @@
-import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+import { COMPANY_NAME, NEXT_PUBLIC_WEBAPP_URL, PRODUCT_NAME } from '@documenso/lib/constants/app';
 import { i18n, type MessageDescriptor } from '@lingui/core';
 
-export const APP_NAME = 'SmartRoofing AI';
+export const APP_NAME = PRODUCT_NAME;
 
 export const appMetaTags = (title?: MessageDescriptor) => {
   const description =
-    'Sign roofing contracts, proposals and change orders online with SmartRoofing AI. Secure electronic signatures with a signing certificate and audit trail, powered by the open-source Documenso platform.';
+    'Sign roofing contracts, proposals and change orders online with SR Sign by SmartRoofing AI. Secure electronic signatures with a signing certificate and audit trail, powered by the open-source Documenso platform.';
 
   return [
     {
@@ -18,11 +18,11 @@ export const appMetaTags = (title?: MessageDescriptor) => {
     {
       name: 'keywords',
       content:
-        'SmartRoofing AI, roofing contracts, document signing, electronic signature, e-signature, roofing proposals, signing certificate',
+        'SR Sign, SmartRoofing AI, roofing contracts, document signing, electronic signature, e-signature, roofing proposals, signing certificate',
     },
     {
       name: 'author',
-      content: APP_NAME,
+      content: COMPANY_NAME,
     },
     {
       name: 'robots',

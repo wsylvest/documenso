@@ -25,7 +25,7 @@ describe('protected resource metadata (RFC 9728)', () => {
       authorization_servers: [],
       bearer_methods_supported: ['header'],
       scopes_supported: [],
-      resource_name: 'Documenso MCP',
+      resource_name: 'SR Sign MCP',
       resource_documentation: 'https://sign.smartroofing.ai/docs/developers/mcp',
     });
   });
@@ -50,7 +50,7 @@ describe('buildWwwAuthenticateHeader', () => {
     const header = buildWwwAuthenticateHeader({ baseUrl: BASE_URL, errorDescription: 'Token required' });
 
     expect(header).toBe(
-      'Bearer realm="documenso", error_description="Token required", resource_metadata="https://sign.smartroofing.ai/.well-known/oauth-protected-resource/api/mcp"',
+      'Bearer realm="sr-sign", error_description="Token required", resource_metadata="https://sign.smartroofing.ai/.well-known/oauth-protected-resource/api/mcp"',
     );
   });
 

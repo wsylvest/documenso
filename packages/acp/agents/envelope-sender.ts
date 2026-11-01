@@ -117,7 +117,7 @@ export const envelopeSenderAgent = defineAgent<TEnvelopeSenderInput, EnvelopeSen
   inputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE, PDF_CONTENT_TYPE],
   outputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   metadata: {
-    tags: ['documenso', 'envelopes', 'send'],
+    tags: ['sr-sign', 'envelopes', 'send'],
     capabilities: [
       { name: 'create-from-template', description: 'Create a document from a template envelope' },
       { name: 'create-from-pdf', description: 'Create a document from an inline PDF with recipients and fields' },

@@ -27,7 +27,7 @@ describe('toAcpError', () => {
     expect(body).toEqual({ code: 'not_found', message: 'Run x not found', data: { code: 'NOT_FOUND' } });
   });
 
-  it('honours an explicit status code and keeps the Documenso code in data', () => {
+  it('honours an explicit status code and keeps the application code in data', () => {
     const { status, body } = toAcpError(
       new AppError(AppErrorCode.INVALID_REQUEST, { message: 'conflict', statusCode: 409 }),
     );
