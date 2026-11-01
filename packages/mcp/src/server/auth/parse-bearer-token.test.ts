@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { isDocumensoApiToken, parseBearerToken } from './parse-bearer-token';
+import { isApiToken, parseBearerToken } from './parse-bearer-token';
 
 describe('parseBearerToken', () => {
   it('extracts the token from a Bearer header', () => {
@@ -24,8 +24,8 @@ describe('parseBearerToken', () => {
     expect(parseBearerToken('Bearer   ')).toBeNull();
   });
 
-  it('recognises Documenso API tokens', () => {
-    expect(isDocumensoApiToken('api_abc')).toBe(true);
-    expect(isDocumensoApiToken('eyJhbGciOi')).toBe(false);
+  it('recognises SR Sign API tokens', () => {
+    expect(isApiToken('api_abc')).toBe(true);
+    expect(isApiToken('eyJhbGciOi')).toBe(false);
   });
 });

@@ -359,7 +359,7 @@ Environment variables (registered in `turbo.json` `globalEnv`, `packages/tsconfi
 
 Client configuration (see `apps/docs/content/docs/developers/mcp.mdx`): remote URL
 `https://sign.smartroofing.ai/api/mcp` with header `Authorization: Bearer api_...`; or stdio via
-`npx documenso-mcp` (from the repo) with `DOCUMENSO_URL` and `DOCUMENSO_API_TOKEN`.
+`npx documenso-mcp` (from the repo) with `SR_SIGN_URL` and `SR_SIGN_API_TOKEN`.
 
 Build: `@documenso/mcp` is added to `apps/remix` dependencies, the remix `tsconfig.json` paths and the
 rollup `resolveOnly` list so the production server bundle includes it.

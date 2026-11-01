@@ -3,6 +3,7 @@ import { createTOTPKeyURI } from '@documenso/lib/server-only/2fa/otp';
 import { prisma } from '@documenso/prisma';
 import type { User } from '@prisma/client';
 import { base32 } from '@scure/base';
+import { PRODUCT_NAME } from '../../constants/app';
 
 import { DOCUMENSO_ENCRYPTION_KEY } from '../../constants/crypto';
 import { symmetricEncrypt } from '../../universal/crypto';
@@ -11,7 +12,7 @@ type SetupTwoFactorAuthenticationOptions = {
   user: Pick<User, 'id' | 'email'>;
 };
 
-const ISSUER = 'SmartRoofing AI';
+const ISSUER = PRODUCT_NAME;
 
 export const setupTwoFactorAuthentication = async ({ user }: SetupTwoFactorAuthenticationOptions) => {
   const key = DOCUMENSO_ENCRYPTION_KEY;

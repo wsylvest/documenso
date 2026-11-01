@@ -21,7 +21,7 @@ type BuildProtectedResourceMetadataOptions = {
 
   /**
    * Issuer URLs of authorization servers that can mint tokens for this resource.
-   * Empty when only Documenso API tokens are accepted.
+   * Empty when only SR Sign API tokens are accepted.
    */
   authorizationServers?: string[];
 };
@@ -72,7 +72,7 @@ export const buildProtectedResourceMetadata = ({
   authorization_servers: authorizationServers,
   bearer_methods_supported: ['header'],
   scopes_supported: [],
-  resource_name: 'Documenso MCP',
+  resource_name: 'SR Sign MCP',
   resource_documentation: `${trimTrailingSlash(baseUrl)}${MCP_DOCUMENTATION_PATH}`,
 });
 
@@ -98,7 +98,7 @@ export const buildWwwAuthenticateHeader = ({
   error,
   errorDescription,
 }: BuildWwwAuthenticateHeaderOptions): string => {
-  const parts = [`realm=${quote('documenso')}`];
+  const parts = [`realm=${quote('sr-sign')}`];
 
   if (error) {
     parts.push(`error=${quote(error)}`);

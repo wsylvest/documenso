@@ -15,5 +15,5 @@ export {
 } from './src/server/auth/protected-resource-metadata';
 export { createMcpToolContext, type McpToolContext } from './src/server/context';
 export { isMcpEnabled, mcpRoute, mcpWellKnownRoute } from './src/server/hono';
-export { createDocumensoMcpServer } from './src/server/mcp-server';
+export { createMcpServer } from './src/server/mcp-server';
 export { validateMcpOrigin } from './src/server/origin';

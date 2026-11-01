@@ -25,7 +25,7 @@ export const TeamEmailRemovedTemplate = ({
 }: TeamEmailRemovedTemplateProps) => {
   const { _ } = useLingui();
 
-  const previewText = msg`Team email removed for ${teamName} on SmartRoofing AI`;
+  const previewText = msg`Team email removed for ${teamName} on SR Sign`;
 
   return (
     <Html>

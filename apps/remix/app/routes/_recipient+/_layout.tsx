@@ -14,7 +14,7 @@ import type { Route } from './+types/_layout';
 
 export function meta() {
   return [
-    { title: i18n._(msg`Sign Document - SmartRoofing AI`) },
+    { title: i18n._(msg`Sign Document - SR Sign`) },
     { name: 'robots', content: 'noindex, nofollow, noarchive, nosnippet, noimageindex' },
   ];
 }

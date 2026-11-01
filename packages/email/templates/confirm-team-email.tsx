@@ -25,7 +25,7 @@ export const ConfirmTeamEmailTemplate = ({
 }: ConfirmTeamEmailProps) => {
   const { _ } = useLingui();
 
-  const previewText = msg`Accept team email request for ${teamName} on SmartRoofing AI`;
+  const previewText = msg`Accept team email request for ${teamName} on SR Sign`;
 
   return (
     <Html>
@@ -49,7 +49,7 @@ export const ConfirmTeamEmailTemplate = ({
               <Text className="text-center text-base">
                 <Trans>
                   <span className="font-bold">{teamName}</span> has requested to use your email address for their team
-                  on SmartRoofing AI.
+                  on SR Sign.
                 </Trans>
               </Text>
 
@@ -78,7 +78,7 @@ export const ConfirmTeamEmailTemplate = ({
 
                 <Text className="mt-2 text-sm">
                   <Trans>
-                    You can revoke access at any time in your team settings on SmartRoofing AI{' '}
+                    You can revoke access at any time in your team settings on SR Sign{' '}
                     <Link href={`${baseUrl}/settings/teams`}>here</Link>.
                   </Trans>
                 </Text>

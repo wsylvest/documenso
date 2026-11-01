@@ -269,7 +269,7 @@ export const buildAgentCard = ({ webAppUrl, version }: BuildAgentCardOptions) =>
   const agents = listAgents();
 
   return {
-    name: 'Documenso Signing',
+    name: 'SR Sign',
     description:
       'Document signing agents: create and send envelopes, report signing status, retrieve sealed documents, ' +
       'certificates and audit logs, and drive recipient signing with human-in-the-loop confirmation.',
@@ -282,10 +282,10 @@ export const buildAgentCard = ({ webAppUrl, version }: BuildAgentCardOptions) =>
       },
     ],
     provider: {
-      organization: 'Documenso',
+      organization: 'SmartRoofing AI',
       url: webAppUrl,
     },
-    documentationUrl: 'https://docs.documenso.com/developers/acp',
+    documentationUrl: 'https://github.com/wsylvest/documenso/blob/main/apps/docs/content/docs/developers/acp.mdx',
     capabilities: {
       streaming: false,
       pushNotifications: false,
@@ -303,7 +303,7 @@ export const buildAgentCard = ({ webAppUrl, version }: BuildAgentCardOptions) =>
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'api_...',
-        description: 'Documenso API token. Create one under Team settings > API Tokens.',
+        description: 'SR Sign API token. Create one under Team settings > API Tokens.',
       },
     },
     security: [{ apiToken: [] }],

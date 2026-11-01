@@ -23,7 +23,7 @@ type AssertSigningAccessAuthOptions = {
  *
  * The Signing API acts on behalf of the recipient from an integration's
  * backend, so ACCOUNT access authentication (which requires the recipient to be
- * signed in to Documenso) can never be satisfied and is rejected outright.
+ * signed in to SR Sign) can never be satisfied and is rejected outright.
  */
 export const assertSigningAccessAuth = async ({
   recipient,
@@ -38,7 +38,7 @@ export const assertSigningAccessAuth = async ({
 
   if (derivedRecipientAccessAuth.includes(DocumentAuth.ACCOUNT)) {
     throw new AppError(AppErrorCode.UNAUTHORIZED, {
-      message: 'This envelope requires the recipient to sign in to Documenso and cannot be signed through the API',
+      message: 'This envelope requires the recipient to sign in to SR Sign and cannot be signed through the API',
     });
   }
 

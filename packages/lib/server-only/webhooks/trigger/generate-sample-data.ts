@@ -23,7 +23,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
     authOptions: null,
     formValues: null,
     visibility: DocumentVisibility.EVERYONE,
-    title: 'documenso.pdf',
+    title: 'sample.pdf',
     status: DocumentStatus.DRAFT,
     documentDataId: 'hs8qz1ktr9204jn7mg6c5dxy0',
     createdAt: now,
@@ -56,7 +56,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         envelopeId: 'env_123',
         documentId: 10,
         templateId: null,
-        email: 'signer@documenso.com',
+        email: 'signer@example.com',
         name: 'John Doe',
         token: 'SIGNING_TOKEN',
         documentDeletedAt: null,
@@ -78,7 +78,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         envelopeId: 'env_123',
         documentId: 10,
         templateId: null,
-        email: 'signer@documenso.com',
+        email: 'signer@example.com',
         name: 'John Doe',
         token: 'SIGNING_TOKEN',
         documentDeletedAt: null,
@@ -117,7 +117,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         recipients: [
           {
             ...basePayload.recipients[0],
-            email: 'signer2@documenso.com',
+            email: 'signer2@example.com',
             name: 'Signer 2',
             role: RecipientRole.VIEWER,
             sendStatus: SendStatus.SENT,
@@ -135,7 +135,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         Recipient: [
           {
             ...basePayload.Recipient[0],
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             signingOrder: 2,
@@ -166,7 +166,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         recipients: [
           {
             ...basePayload.recipients[0],
-            email: 'signer2@documenso.com',
+            email: 'signer2@example.com',
             name: 'Signer 2',
             role: RecipientRole.VIEWER,
             readStatus: ReadStatus.OPENED,
@@ -184,7 +184,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         Recipient: [
           {
             ...basePayload.Recipient[0],
-            email: 'signer2@documenso.com',
+            email: 'signer2@example.com',
             name: 'Signer 2',
             role: RecipientRole.VIEWER,
             readStatus: ReadStatus.OPENED,
@@ -216,7 +216,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
           {
             ...basePayload.recipients[0],
             id: 51,
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             signedAt: now,
@@ -238,7 +238,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
           {
             ...basePayload.Recipient[0],
             id: 51,
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             signedAt: now,
@@ -275,7 +275,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 10,
             templateId: null,
-            email: 'signer2@documenso.com',
+            email: 'signer2@example.com',
             name: 'Signer 2',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -298,7 +298,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 10,
             templateId: null,
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -323,7 +323,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 10,
             templateId: null,
-            email: 'signer2@documenso.com',
+            email: 'signer2@example.com',
             name: 'Signer 2',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -346,7 +346,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 10,
             templateId: null,
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -454,7 +454,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 7,
             templateId: null,
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -479,7 +479,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
             envelopeId: 'env_123',
             documentId: 7,
             templateId: null,
-            email: 'signer@documenso.com',
+            email: 'signer@example.com',
             name: 'Signer',
             token: 'SIGNING_TOKEN',
             documentDeletedAt: null,
@@ -515,7 +515,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         recipients: [
           {
             ...basePayload.recipients[0],
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             sendStatus: SendStatus.SENT,
             documentDeletedAt: null,
@@ -532,7 +532,7 @@ export const generateSampleWebhookPayload = (event: WebhookTriggerEvents, webhoo
         Recipient: [
           {
             ...basePayload.Recipient[0],
-            email: 'signer1@documenso.com',
+            email: 'signer1@example.com',
             name: 'Signer 1',
             sendStatus: SendStatus.SENT,
             documentDeletedAt: null,

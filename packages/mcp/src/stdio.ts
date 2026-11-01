@@ -3,12 +3,12 @@
  *
  * Runs as a local process for MCP clients that only support stdio servers and
  * proxies every request to the remote Streamable HTTP endpoint (`/api/mcp`) of
- * a Documenso instance, authenticating with an API token. Nothing touches the
+ * an SR Sign instance, authenticating with an API token. Nothing touches the
  * database locally, so this can run on any laptop with Node.js.
  *
- *   DOCUMENSO_URL=https://sign.smartroofing.ai \
- *   DOCUMENSO_API_TOKEN=api_xxx \
- *   npx documenso-mcp
+ *   SR_SIGN_URL=https://sign.smartroofing.ai \
+ *   SR_SIGN_API_TOKEN=api_xxx \
+ *   npx sr-sign-mcp
  */
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
@@ -40,15 +40,15 @@ import { MCP_PATH, MCP_SERVER_NAME, MCP_SERVER_VERSION } from './constants';
 
 const log = (message: string) => {
   // stdout is the protocol channel; diagnostics go to stderr.
-  process.stderr.write(`[documenso-mcp] ${message}\n`);
+  process.stderr.write(`[sr-sign-mcp] ${message}\n`);
 };
 
 const readConfig = () => {
-  const baseUrl = (process.env.DOCUMENSO_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
-  const apiToken = process.env.DOCUMENSO_API_TOKEN;
+  const baseUrl = (process.env.SR_SIGN_URL ?? 'http://localhost:3000').replace(/\/+$/, '');
+  const apiToken = process.env.SR_SIGN_API_TOKEN;
 
   if (!apiToken) {
-    log('DOCUMENSO_API_TOKEN is required (a team API token, e.g. api_xxx).');
+    log('SR_SIGN_API_TOKEN is required (a team API token, e.g. api_xxx).');
     process.exit(2);
   }
 

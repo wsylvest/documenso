@@ -153,11 +153,11 @@ declare namespace NodeJS {
     NEXT_PRIVATE_MCP_AUTHORIZATION_SERVERS?: string;
 
     /**
-     * Used only by the `documenso-mcp` stdio proxy (packages/mcp/src/stdio.ts),
+     * Used only by the `sr-sign-mcp` stdio proxy (packages/mcp/src/stdio.ts),
      * never by the web app.
      */
-    DOCUMENSO_URL?: string;
-    DOCUMENSO_API_TOKEN?: string;
+    SR_SIGN_URL?: string;
+    SR_SIGN_API_TOKEN?: string;
 
     /**
      * Agent Communication Protocol (ACP) server at /api/acp

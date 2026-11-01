@@ -26,7 +26,7 @@ export const OrganisationLeaveEmailTemplate = ({
 }: OrganisationLeaveEmailProps) => {
   const { _ } = useLingui();
 
-  const previewText = msg`A member has left your organisation on SmartRoofing AI`;
+  const previewText = msg`A member has left your organisation on SR Sign`;
 
   return (
     <Html>

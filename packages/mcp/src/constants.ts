@@ -1,8 +1,8 @@
 /**
  * Identity advertised to MCP clients during initialisation.
  */
-export const MCP_SERVER_NAME = 'documenso';
-export const MCP_SERVER_TITLE = 'Documenso';
+export const MCP_SERVER_NAME = 'sr-sign';
+export const MCP_SERVER_TITLE = 'SR Sign';
 export const MCP_SERVER_VERSION = '1.0.0';
 
 /**
@@ -19,7 +19,7 @@ export const MCP_PROTECTED_RESOURCE_METADATA_PATH = '/.well-known/oauth-protecte
 /**
  * URI scheme used for MCP resources exposed by this server.
  */
-export const MCP_RESOURCE_URI_SCHEME = 'documenso';
+export const MCP_RESOURCE_URI_SCHEME = 'sr-sign';
 
 /**
  * Upper bound for a single JSON-RPC POST body. Large enough for a base64

@@ -59,10 +59,12 @@ export const toAgentManifest = (agent: AgentDefinition): TAgentManifest => {
     input_content_types: agent.inputContentTypes,
     output_content_types: agent.outputContentTypes,
     metadata: {
-      framework: 'documenso',
+      framework: 'sr-sign',
       programming_language: 'TypeScript',
       natural_languages: ['en'],
-      documentation: agent.metadata.documentation ?? 'https://docs.documenso.com/developers/acp',
+      documentation:
+        agent.metadata.documentation ??
+        'https://github.com/wsylvest/documenso/blob/main/apps/docs/content/docs/developers/acp.mdx',
       tags: agent.metadata.tags,
       capabilities: agent.metadata.capabilities,
       domains: ['document-signing'],

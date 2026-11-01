@@ -1,7 +1,8 @@
 import { env } from '../utils/env';
+import { COMPANY_NAME } from './app';
 
 export const FROM_ADDRESS = env('NEXT_PRIVATE_SMTP_FROM_ADDRESS') || 'noreply@smartroofing.ai';
-export const FROM_NAME = env('NEXT_PRIVATE_SMTP_FROM_NAME') || 'SmartRoofing AI';
+export const FROM_NAME = env('NEXT_PRIVATE_SMTP_FROM_NAME') || COMPANY_NAME;
 
 export const DOCUMENSO_INTERNAL_EMAIL = {
   name: FROM_NAME,

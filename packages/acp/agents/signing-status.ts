@@ -31,7 +31,7 @@ export const signingStatusAgent = defineAgent<TSigningStatusInput, null>({
   inputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   outputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   metadata: {
-    tags: ['documenso', 'signing', 'status'],
+    tags: ['sr-sign', 'signing', 'status'],
     capabilities: [
       { name: 'status', description: 'Return envelope and recipient status' },
       { name: 'remind', description: 'Resend signing invitations to pending recipients' },

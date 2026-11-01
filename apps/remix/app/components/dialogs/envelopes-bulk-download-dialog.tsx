@@ -214,7 +214,7 @@ export const EnvelopesBulkDownloadDialog = ({
 
       try {
         downloadFile({
-          filename: `documenso-documents-${new Date().toISOString().slice(0, 10)}.zip`,
+          filename: `sr-sign-documents-${new Date().toISOString().slice(0, 10)}.zip`,
           data: zipWriter.finalize(),
         });
       } catch (error) {

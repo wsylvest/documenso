@@ -12,7 +12,7 @@ import { viewSigningEnvelopeRoute } from './view-signing-envelope';
  * Public signing API.
  *
  * Lets an integration drive the recipient signing flow from its own UI instead
- * of the Documenso signing page or embed. Every route is authenticated with an
+ * of the SR Sign signing page or embed. Every route is authenticated with an
  * API token, scoped to the token's team, and keyed by the recipient signing
  * token. Signer connection details may be forwarded so the audit log records
  * the signer rather than the integration's server.

@@ -111,8 +111,8 @@ export const recipientSignerAgent = defineAgent<TRecipientSignerInput, Recipient
   inputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   outputContentTypes: [JSON_CONTENT_TYPE, TEXT_CONTENT_TYPE],
   metadata: {
-    documentation: 'https://docs.documenso.com/developers/api/signing',
-    tags: ['documenso', 'signing', 'recipient', 'esign-consent', 'human-in-the-loop'],
+    documentation: 'https://github.com/wsylvest/documenso/blob/main/apps/docs/content/docs/developers/api/signing.mdx',
+    tags: ['sr-sign', 'signing', 'recipient', 'esign-consent', 'human-in-the-loop'],
     capabilities: [
       { name: 'status', description: 'Overall signing state of the envelope for a recipient token' },
       { name: 'view', description: 'Record the document as viewed and return the fields to complete' },

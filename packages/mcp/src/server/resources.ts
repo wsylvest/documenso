@@ -52,7 +52,7 @@ const rethrowResourceError = (error: unknown): never => {
 export const registerResources = (server: McpServer, ctx: McpToolContext) => {
   server.registerResource(
     'envelope',
-    new ResourceTemplate('documenso://envelope/{envelopeId}', { list: undefined }),
+    new ResourceTemplate('sr-sign://envelope/{envelopeId}', { list: undefined }),
     {
       title: 'Envelope',
       description: 'A document or template envelope as JSON, including recipients, fields and settings.',
@@ -73,7 +73,7 @@ export const registerResources = (server: McpServer, ctx: McpToolContext) => {
 
   server.registerResource(
     'template',
-    new ResourceTemplate('documenso://template/{envelopeId}', {
+    new ResourceTemplate('sr-sign://template/{envelopeId}', {
       list: async () => {
         const result = await ctx.caller.envelope.find({
           type: EnvelopeType.TEMPLATE,
@@ -116,7 +116,7 @@ export const registerResources = (server: McpServer, ctx: McpToolContext) => {
 
   server.registerResource(
     'envelope-item-pdf',
-    new ResourceTemplate('documenso://envelope/{envelopeId}/item/{envelopeItemId}/pdf{?version}', { list: undefined }),
+    new ResourceTemplate('sr-sign://envelope/{envelopeId}/item/{envelopeItemId}/pdf{?version}', { list: undefined }),
     {
       title: 'Envelope item PDF',
       description:
@@ -142,7 +142,7 @@ export const registerResources = (server: McpServer, ctx: McpToolContext) => {
 
   server.registerResource(
     'envelope-certificate',
-    new ResourceTemplate('documenso://envelope/{envelopeId}/certificate', { list: undefined }),
+    new ResourceTemplate('sr-sign://envelope/{envelopeId}/certificate', { list: undefined }),
     {
       title: 'Signing certificate',
       description: 'The signing certificate PDF of a completed document.',
@@ -163,7 +163,7 @@ export const registerResources = (server: McpServer, ctx: McpToolContext) => {
 
   server.registerResource(
     'envelope-audit-log',
-    new ResourceTemplate('documenso://envelope/{envelopeId}/audit-log', { list: undefined }),
+    new ResourceTemplate('sr-sign://envelope/{envelopeId}/audit-log', { list: undefined }),
     {
       title: 'Audit log',
       description: 'The audit log PDF of a document.',

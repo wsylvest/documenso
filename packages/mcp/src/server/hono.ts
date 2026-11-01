@@ -17,7 +17,7 @@ import {
   parseAuthorizationServers,
 } from './auth/protected-resource-metadata';
 import { createMcpToolContext } from './context';
-import { createDocumensoMcpServer } from './mcp-server';
+import { createMcpServer } from './mcp-server';
 import { parseAllowedOrigins, validateMcpOrigin } from './origin';
 import { getMcpSession, registerMcpSession, removeMcpSession } from './sessions';
 
@@ -116,7 +116,7 @@ const handleStateless = async (c: Context<McpHonoEnv>, auth: McpAuth, logger: Lo
 
   const ctx = createMcpToolContext({ request: c.req.raw, auth, logger });
 
-  const server = createDocumensoMcpServer(ctx);
+  const server = createMcpServer(ctx);
   const transport = createTransport(undefined);
 
   await server.connect(transport);
@@ -172,7 +172,7 @@ const handleWithSessions = async (c: Context<McpHonoEnv>, auth: McpAuth, logger:
 
   const ctx = createMcpToolContext({ request: c.req.raw, auth, logger, sessionId: newSessionId });
 
-  const server = createDocumensoMcpServer(ctx);
+  const server = createMcpServer(ctx);
   const transport = createTransport(() => newSessionId);
 
   transport.onclose = () => {

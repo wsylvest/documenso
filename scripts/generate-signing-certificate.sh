@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 #
 # Generate a self-signed X.509 document-signing certificate as a PKCS#12 bundle
-# for Documenso's local signing transport, and print the environment variables
-# that point Documenso at it.
+# for SR Sign's local signing transport, and print the environment variables
+# that point SR Sign at it.
 #
 # Self-signed certificates guarantee integrity (any edit after sealing breaks
 # the signature) and identify your organisation in the signature panel, but PDF
 # readers show "certificate not trusted" because no CA vouches for it. For a
 # green checkmark in Acrobat you need a document-signing certificate from a CA
 # on the Adobe Approved Trust List, which usually ships on a hardware token or
-# cloud HSM. Documenso supports Google Cloud HSM for that case.
+# cloud HSM. SR Sign supports Google Cloud HSM for that case.
 #
 # Usage:
 #   scripts/generate-signing-certificate.sh \
@@ -120,7 +120,7 @@ chmod 600 "${base}.p12"
 
 echo
 echo "Wrote:"
-echo "  ${base}.p12      (PKCS#12 bundle Documenso loads)"
+echo "  ${base}.p12      (PKCS#12 bundle SR Sign loads)"
 echo "  ${base}.key.pem  (private key, keep offline)"
 echo "  ${base}.crt.pem  (public certificate, safe to share)"
 echo

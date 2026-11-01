@@ -24,7 +24,7 @@ const codeForStatus = (status: number): TAcpErrorCode => {
  * Map any thrown value onto an ACP `Error` body and an HTTP status.
  *
  * Only the three codes from the specification are used so conformant clients
- * can validate the body; the Documenso error code travels in `data.code`.
+ * can validate the body; the application error code travels in `data.code`.
  */
 export const toAcpError = (error: unknown): AcpHttpError => {
   if (error instanceof ZodError) {
