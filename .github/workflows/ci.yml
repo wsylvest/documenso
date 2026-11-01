@@ -12,6 +12,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check_rebrand:
+    name: Check product name
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Find stray "Documenso" strings
+        run: node scripts/check-rebrand.mts
+
   build_app:
     name: Build App
     runs-on: ubuntu-latest

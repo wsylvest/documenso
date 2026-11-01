@@ -1,0 +1,136 @@
+# Allowed occurrences of "Documenso". Every rule needs a reason. See scripts/check-rebrand.mts for the format.
+# Scrub regexes are case-sensitive. A rule without a regex allows the whole file.
+#
+# Policy: user-visible names, public API names, emails and operations say SR Sign / SmartRoofing AI. What stays is
+# listed below. When this check fails after an upstream merge, rename the new string unless it fits a rule here.
+
+# === 1. Package scope and internal identifiers (decision D2: kept so upstream merges stay small) ================
+** :: @documenso/[A-Za-z0-9._/*-]*
+# Environment variable and constant names, e.g. NEXT_PRIVATE_DOCUMENSO_LICENSE_KEY, DOCUMENSO_ENCRYPTION_KEY,
+# IS_DOCUMENSO_CLOUD, DOCUMENSO_INTERNAL_EMAIL. Renaming would break deployed configuration.
+** :: \b[A-Z0-9_]*DOCUMENSO[A-Z0-9_]*\b
+# Module-private globalThis keys and local identifiers.
+** :: \b__documenso[A-Za-z_]*\b
+** :: \b(?:isDocumensoCloud|documensoImage)\b
+# Tailwind colour scale and the recipient wrapper class (defined in packages/tailwind-config and app.css).
+** :: [A-Za-z0-9:/\[\]-]*-documenso(?:-[0-9]+)?(?:/[0-9]+)?
+** :: \.?documenso-branded
+# Attribution mark component and its assets ("Powered by" on signing pages, certificate and audit-log footers).
+** :: DocumensoLogo(?:Props)?
+** :: documenso-logo(?:\.png)?
+
+# === 2. Licences, legal text and upstream-owned content ============================================================
+# Documenso, Inc. owns these. Kept verbatim.
+LICENSE
+CLA.md
+CONTRIBUTING.md
+MANIFEST.md
+WRITING_STYLE.md
+packages/ee/**
+# Enterprise licence UI and the licence server: these name Documenso Inc's real licence, not the product.
+apps/remix/app/components/general/admin-license-*.tsx
+apps/remix/app/root.tsx :: This is an expired license instance of Documenso
+** :: https://license\.documenso\.com
+# PENDING LEGAL REVIEW: the ESIGN disclosure names the service provider. It must name the operating entity and the
+# consent version must be bumped when it changes (see CLAUDE.md). Do not edit without review.
+apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
+
+# Intentional attribution and fork-relationship text that we wrote.
+README.md
+SECURITY.md
+apps/remix/README.md
+docker/smartroofing/README.md
+**/security.txt :: ^# SR Sign is a fork of Documenso\..*$
+apps/remix/app/routes/_authenticated+/o.$orgUrl.support.tsx :: open-source Documenso platform
+apps/remix/app/utils/meta.ts :: powered by the open-source Documenso platform
+# The code style guide describes the upstream codebase.
+CODE_STYLE.md
+
+# === 3. Links to upstream documentation, source and attribution ====================================================
+** :: https://docs\.documenso\.com[^\s"'`)\]>]*
+** :: https://stg-app\.documenso\.com
+** :: https://openapi-v1\.documenso\.com
+** :: github\.com/(?:documenso|wsylvest)/documenso[^\s"'`)\]>]*
+# Attribution link next to the Documenso mark on the signing page.
+apps/remix/app/** :: href="https://documenso\.com"
+
+# === 4. Persisted values and functional sentinels. DO NOT RENAME ===================================================
+# Placeholder recipient addresses are matched by regex and compared against stored rows; templates already contain them.
+packages/lib/constants/direct-templates.ts
+packages/lib/constants/template.ts
+packages/lib/server-only/envelope/create-envelope.ts
+packages/lib/server-only/pdf/helpers.ts
+# Reserved organisation and team URL; the BullMQ queue name and default prefix (changing them orphans queued jobs).
+packages/lib/constants/teams.ts :: ^\s*'documenso',$
+packages/lib/jobs/client/bullmq.ts :: 'documenso(?:-jobs)?'
+# Billing-only pricing link (not shown while billing is disabled).
+apps/remix/app/components/dialogs/organisation-create-dialog.tsx :: https://documenso\.com/pricing
+# Database enum value and historical migrations; seed fixtures.
+packages/prisma/**
+# Legacy service-account emails are matched against existing database rows.
+packages/lib/server-only/user/service-accounts/*.ts
+packages/lib/utils/templates.ts
+# Licence cache file name used by the licence client.
+packages/lib/types/license.ts :: \.documenso-license\.json
+# Legacy header names are sent next to the SR Sign ones on purpose (decision D3).
+packages/lib/server-only/webhooks/execute-webhook-call.ts :: X-Documenso-[A-Za-z-]+
+packages/lib/server-only/email/build-envelope-email-headers.ts :: X-Documenso-[A-Za-z-]+
+# Inngest application id (a persisted identifier at the Inngest service).
+packages/lib/jobs/client/inngest.ts :: documenso-app
+# Tailwind token definition.
+packages/tailwind-config/index.cjs :: ^\s*documenso: \{
+# Patch comments in vendored dependency patches.
+patches/**
+# Telemetry goes to Documenso; the log line must say so accurately.
+packages/lib/server-only/telemetry/telemetry-client.ts
+# On-host path of the existing signing certificate (see scripts/generate-signing-certificate.sh --out-dir).
+scripts/generate-signing-certificate.sh :: \.config/documenso/signing
+
+# === 5. Generated files, test fixtures and example data ============================================================
+packages/lib/translations/**
+package-lock.json
+packages/app-tests/**
+packages/lib/types/name.test.ts
+**/*.test.ts :: https?://[a-z.]*documenso\.com
+# Default props used only by the email preview app and when a template renders without props.
+packages/email/templates/** :: (?:https?://documenso\.com|[A-Za-z0-9._-]+@documenso\.com)
+packages/email/preview/**
+apps/remix/app/components/general/user-profile-timur.tsx
+
+# Development defaults that match docker/development/compose.yml, and the upstream telemetry notice.
+.env.example :: (?:postgres://documenso:password@127\.0\.0\.1:54320/documenso|="documenso"|=documenso$|`documenso` / `password`)
+.env.example :: ^# Telemetry helps us understand how Documenso is being used.*$
+.gitignore :: \.documenso-license(?:-backup)?\.json
+
+# === 6. Upstream infrastructure and automation. Our deployment is docker/smartroofing and the host service. =========
+.github/**
+docker/build.sh
+docker/buildx.sh
+docker/buildx-and-push.sh
+docker/start.sh
+docker/README.md
+docker/Dockerfile.chromium
+docker/development/**
+docker/production/**
+docker/testing/**
+apps/openpage-api/**
+.opencode/**
+# Upstream documentation site (decision D5). Pages we own are clean: signing.mdx, mcp.mdx, acp.mdx.
+apps/docs/**
+# Agent plans and notes are historical records.
+.agents/**
+# These describe the upstream codebase, and state the fork relationship at the top.
+ARCHITECTURE.md
+AGENTS.md
+CLAUDE.md
+
+# === 7. Comments are not user-visible ===============================================================================
+**/*.ts :: ^\s*(?://|/\*+|\*).*$
+**/*.tsx :: ^\s*(?://|/\*+|\*).*$
+**/*.mts :: ^\s*(?://|/\*+|\*).*$
+**/*.cjs :: ^\s*(?://|/\*+|\*).*$
+**/*.js :: ^\s*(?://|/\*+|\*).*$
+**/*.css :: ^\s*(?://|/\*+|\*).*$
+# Trailing comments after code.
+**/*.ts :: \s//.*$
+**/*.tsx :: \s//.*$
