@@ -1,13 +1,13 @@
 ---
 title: Agent Communication Protocol (ACP)
-description: Discover and invoke Documenso as an agent from other agents and orchestrators.
+description: Discover and invoke SR Sign as an agent from other agents and orchestrators.
 ---
 
 import { Callout } from 'fumadocs-ui/components/callout';
 
 ## Overview
 
-Documenso exposes its signing workflows as agents over the
+SR Sign exposes its signing workflows as agents over the
 [Agent Communication Protocol](https://agentcommunicationprotocol.dev) (ACP) REST surface, with an
 [Agent2Agent](https://a2a-protocol.org) (A2A) Agent Card and JSON-RPC task methods served from the same
 core. An orchestrator discovers the agents, starts a run with a typed message, streams the run's events,
@@ -65,7 +65,7 @@ curl https://sign.example.com/.well-known/agent-card.json   # A2A Agent Card
 
 ## Authentication
 
-Every run endpoint requires a Documenso API token, exactly like API V2:
+Every run endpoint requires an SR Sign API token, exactly like API V2:
 
 ```
 Authorization: Bearer api_xxxxxxxxxxxx
@@ -290,7 +290,7 @@ accepted as aliases.
 
 ## Errors
 
-Errors use the ACP `Error` shape with the Documenso error code in `data.code`:
+Errors use the ACP `Error` shape with the SR Sign error code in `data.code`:
 
 ```json
 { "code": "invalid_input", "message": "Run is not awaiting input", "data": { "code": "INVALID_REQUEST" } }

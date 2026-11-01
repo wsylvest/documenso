@@ -18,8 +18,8 @@
 	}
 
 	# Keep the signer's real address so the audit trail records them rather
-	# than the proxy. Documenso reads X-Forwarded-For.
-	reverse_proxy documenso:3000 {
+	# than the proxy. SR Sign reads X-Forwarded-For.
+	reverse_proxy sr-sign:3000 {
 		header_up X-Forwarded-Proto {scheme}
 		header_up X-Forwarded-Host {host}
 	}

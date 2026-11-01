@@ -6,12 +6,12 @@
 #
 # Caddy is the only published service. It terminates TLS for the hostname in
 # SIGN_HOST with an automatic Let's Encrypt certificate and proxies to the
-# Documenso container, which is never exposed directly. Postgres is reachable
-# only from Documenso on the private network.
+# SR Sign container, which is never exposed directly. Postgres is reachable
+# only from SR Sign on the private network.
 #
-# The Documenso image is built from this fork so the native Signing API,
+# The SR Sign image is built from this fork so the native Signing API,
 # consent gate and digest logging ship with it. Rebuild after pulling:
-#   docker compose up -d --build documenso
+#   docker compose up -d --build sr-sign
 
 name: smartroofing-sign
 
@@ -37,17 +37,17 @@ services:
       - caddy_config:/config
     networks: [edge]
     depends_on:
-      - documenso
+      - sr-sign
 
   database:
     <<: *restart
     image: postgres:15
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-documenso}
+      POSTGRES_USER: ${POSTGRES_USER:-sr_sign}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
-      POSTGRES_DB: ${POSTGRES_DB:-documenso}
+      POSTGRES_DB: ${POSTGRES_DB:-sr_sign}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-documenso} -d ${POSTGRES_DB:-documenso}']
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-sr_sign} -d ${POSTGRES_DB:-sr_sign}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -55,7 +55,7 @@ services:
       - database:/var/lib/postgresql/data
     networks: [core]
 
-  documenso:
+  sr-sign:
     <<: *restart
     build:
       context: ../..
@@ -63,7 +63,7 @@ services:
     depends_on:
       database:
         condition: service_healthy
-    # Everything Documenso reads comes from .env in this directory. Keep
+    # Everything SR Sign reads comes from .env in this directory. Keep
     # secrets there (or render it from your secret store); never bake them
     # into the image.
     env_file:
@@ -71,14 +71,14 @@ services:
     environment:
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      NEXT_PRIVATE_INTERNAL_WEBAPP_URL: http://documenso:3000
-      NEXT_PRIVATE_DATABASE_URL: postgresql://${POSTGRES_USER:-documenso}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-documenso}
-      NEXT_PRIVATE_DIRECT_DATABASE_URL: postgresql://${POSTGRES_USER:-documenso}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-documenso}
-      NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/documenso/cert.p12
+      NEXT_PRIVATE_INTERNAL_WEBAPP_URL: http://sr-sign:3000
+      NEXT_PRIVATE_DATABASE_URL: postgresql://${POSTGRES_USER:-sr_sign}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-sr_sign}
+      NEXT_PRIVATE_DIRECT_DATABASE_URL: postgresql://${POSTGRES_USER:-sr_sign}:${POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-sr_sign}
+      NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH: /opt/sr-sign/cert.p12
     volumes:
       # The PKCS#12 bundle produced by scripts/generate-signing-certificate.sh
       # (or your CA-issued certificate). Read-only inside the container.
-      - ${SIGNING_CERT_PATH:?set SIGNING_CERT_PATH in .env}:/opt/documenso/cert.p12:ro
+      - ${SIGNING_CERT_PATH:?set SIGNING_CERT_PATH in .env}:/opt/sr-sign/cert.p12:ro
     networks: [edge, core]
 
 networks:

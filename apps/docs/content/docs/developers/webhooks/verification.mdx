@@ -30,6 +30,10 @@ X-Documenso-Secret: your_webhook_secret_here
 | Header               | Description                                             |
 | -------------------- | ------------------------------------------------------- |
 | `X-Documenso-Secret` | The secret key you configured when creating the webhook |
+| `X-SR-Sign-Secret`   | Same value. Sent by SR Sign instances; prefer this header |
+
+On SR Sign instances (the SmartRoofing AI fork of Documenso) both headers are sent with the same value. The
+`X-Documenso-Secret` header is kept for existing receivers and will be removed in a later release.
 
 The header contains your webhook secret as a plain string. If you did not configure a secret, the header will be an empty string.
 

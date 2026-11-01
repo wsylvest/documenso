@@ -13,6 +13,9 @@ on:
 jobs:
   build_and_publish_platform_containers:
     name: Build and publish platform containers
+    # Pushes to Documenso's Docker Hub and GHCR namespaces. Not for forks: SR Sign images are built from
+    # docker/smartroofing instead. Remove this guard only after retargeting the image names and secrets.
+    if: github.repository == 'documenso/documenso'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
