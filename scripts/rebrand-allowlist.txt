@@ -31,9 +31,6 @@ packages/ee/**
 apps/remix/app/components/general/admin-license-*.tsx
 apps/remix/app/root.tsx :: This is an expired license instance of Documenso
 ** :: https://license\.documenso\.com
-# PENDING LEGAL REVIEW: the ESIGN disclosure names the service provider. It must name the operating entity and the
-# consent version must be bumped when it changes (see CLAUDE.md). Do not edit without review.
-apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 
 # Intentional attribution and fork-relationship text that we wrote.
 README.md

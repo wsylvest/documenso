@@ -5,7 +5,7 @@
  * disclosure article changes so the audit log records which text a recipient
  * agreed to.
  */
-export const ELECTRONIC_CONSENT_DISCLOSURE_VERSION = '2026-10-15';
+export const ELECTRONIC_CONSENT_DISCLOSURE_VERSION = '2026-11-01';
 
 /**
  * Rejection reason recorded when a recipient declines electronic signing and
