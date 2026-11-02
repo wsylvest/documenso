@@ -31,6 +31,7 @@ import type { Logger } from 'pino';
 import { aiRoute } from './api/ai/route';
 import { downloadRoute } from './api/download/download';
 import { filesRoute } from './api/files/files';
+import { provisioningRoute } from './api/provisioning/route';
 import { type AppContext, appContext } from './context';
 import { appMiddleware } from './middleware';
 import { securityHeadersMiddleware } from './security-headers';
@@ -140,6 +141,8 @@ app.use('/api/trpc/*', reactRouterTrpcServer);
 app.get(`/api/v2/openapi.json`, (c) => c.json(openApiDocument));
 // Shadows the download routes that tRPC defines since tRPC-to-openapi doesn't support their return types.
 app.route(`/api/v2`, downloadRoute);
+// SmartRoofing tenant provisioning: 404 unless NEXT_PRIVATE_PROVISIONING_SECRET is set.
+app.route(`/api/v2/provisioning`, provisioningRoute);
 app.use(`/api/v2/*`, async (c) =>
   openApiTrpcServerHandler(c, {
     isBeta: false,
