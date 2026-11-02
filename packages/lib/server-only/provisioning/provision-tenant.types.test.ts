@@ -19,6 +19,20 @@ describe('isProvisioningSecretValid', () => {
     expect(isProvisioningSecretValid(SECRET, undefined)).toBe(false);
   });
 
+  test('accepts either of two secrets while one is being rotated, and nothing else', () => {
+    const next = 'n'.repeat(40);
+    const both = `${SECRET},${next}`;
+
+    expect(isProvisioningSecretValid(both, SECRET)).toBe(true);
+    expect(isProvisioningSecretValid(both, next)).toBe(true);
+    expect(isProvisioningSecretValid(both, 'x'.repeat(40))).toBe(false);
+  });
+
+  test('ignores a short entry so a typo cannot weaken the route', () => {
+    expect(isProvisioningSecretValid(`short,${SECRET}`, 'short')).toBe(false);
+    expect(isProvisioningSecretValid(`short,${SECRET}`, SECRET)).toBe(true);
+  });
+
   test('is off when the configured secret is unset or too short', () => {
     expect(isProvisioningSecretValid(undefined, SECRET)).toBe(false);
     expect(isProvisioningSecretValid('short', 'short')).toBe(false);

@@ -66,15 +66,32 @@ export type TTenantStatus = {
 
 export const MIN_PROVISIONING_SECRET_LENGTH = 32;
 
-/** Constant-time compare of the presented secret against the configured one. */
+/**
+ * The configured secrets: NEXT_PRIVATE_PROVISIONING_SECRET holds one, or two
+ * separated by a comma while it is being rotated (the old and the new are both
+ * accepted until every caller has the new one). Entries shorter than the
+ * minimum are ignored, so a typo cannot switch the route on with a weak value.
+ */
+export const parseProvisioningSecrets = (configured: string | undefined) =>
+  (configured ?? '')
+    .split(',')
+    .map((secret) => secret.trim())
+    .filter((secret) => secret.length >= MIN_PROVISIONING_SECRET_LENGTH)
+    .slice(0, 2);
+
+/** Constant-time compare of the presented secret against each configured one. */
 export const isProvisioningSecretValid = (configured: string | undefined, presented: string | undefined) => {
-  if (!configured || configured.length < MIN_PROVISIONING_SECRET_LENGTH || !presented) {
+  const secrets = parseProvisioningSecrets(configured);
+
+  if (secrets.length === 0 || !presented) {
     return false;
   }
 
   const digest = (value: string) => createHash('sha256').update(value).digest();
+  const presentedDigest = digest(presented);
 
-  return timingSafeEqual(digest(configured), digest(presented));
+  // No early exit: the time taken must not say which entry matched.
+  return secrets.map((secret) => timingSafeEqual(digest(secret), presentedDigest)).reduce((a, b) => a || b, false);
 };
 
 export const parseBearer = (header: string | undefined) => {
