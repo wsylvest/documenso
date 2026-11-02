@@ -89,6 +89,8 @@ package-lock.json
 packages/app-tests/**
 packages/lib/types/name.test.ts
 **/*.test.ts :: https?://[a-z.]*documenso\.com
+# Example URL of the receiving app's webhook route in a provisioning test. That path is the receiver's, not ours.
+packages/lib/server-only/provisioning/*.test.ts :: /api/signing-webhooks/documenso
 # Default props used only by the email preview app and when a template renders without props.
 packages/email/templates/** :: (?:https?://documenso\.com|[A-Za-z0-9._-]+@documenso\.com)
 packages/email/preview/**
