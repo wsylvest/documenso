@@ -3,6 +3,7 @@ import { getTenantStatus, provisionTenant } from '@documenso/lib/server-only/pro
 import {
   isProvisioningSecretValid,
   parseBearer,
+  parseProvisioningSecrets,
   ZProvisionTenantRequestSchema,
   ZTenantSlugSchema,
 } from '@documenso/lib/server-only/provisioning/provision-tenant.types';
@@ -15,15 +16,16 @@ import type { HonoEnv } from '../../router';
  * Tenant provisioning (SmartRoofing AI fork, not upstream).
  *
  * Authenticated by NEXT_PRIVATE_PROVISIONING_SECRET, a platform secret that is
- * not a team API token. With the variable unset or shorter than 32 characters
- * the routes answer 404, as if they did not exist. The caller never gets a
+ * not a team API token. With the variable unset or holding no value of 32+
+ * characters the routes answer 404, as if they did not exist. During a rotation
+ * it may hold the old and the new secret, comma separated; both are accepted. The caller never gets a
  * reason for a 401, and no response carries the secret or an existing token.
  */
 export const provisioningRoute = new Hono<HonoEnv>()
   .use('*', async (c, next) => {
     const configured = env('NEXT_PRIVATE_PROVISIONING_SECRET');
 
-    if (!configured || configured.length < 32) {
+    if (parseProvisioningSecrets(configured).length === 0) {
       return c.json({ error: 'Not found' }, 404);
     }
 
