@@ -27,6 +27,10 @@ Deployment bundle for the SmartRoofing AI signing instance: Caddy with automatic
 
 4. Sign in with the first admin account (create it with `npm run prisma:seed` equivalents or through the admin API), create the **SmartRoofing AI** organisation and team, then in **Admin → Organisations** confirm the claim shows unlimited members and teams.
 
+## Provisioning a company
+
+`POST /api/v2/provisioning/tenants` with `Authorization: Bearer <NEXT_PRIVATE_PROVISIONING_SECRET>` creates one company's service owner (no password), organisation, team, completion webhook and team API token, with the organisation defaults below applied. It is idempotent on `slug`; the token is returned once, on the call that issues it, and `rotateToken: true` issues a new one and revokes the old. `GET /api/v2/provisioning/tenants/{slug}` reports what exists (never a secret). With the variable blank the routes answer 404. Contract templates are still uploaded by the company's admin.
+
 ## Organisation defaults to set once
 
 Organisation settings → Preferences:
